@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
+<html lang="zh-TW"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NID 快速回覆工具</title>
@@ -70,14 +68,15 @@
 </head>
 <body><div id="app">
 <div class="tab-bar">
-  <button class="tab-btn active" onclick="switchTab('p1',this)">📋 費用回覆</button>
+  <button class="tab-btn" onclick="switchTab('p1',this)">📋 費用回覆</button>
   <button class="tab-btn" onclick="switchTab('p2',this)">✅ 確認報名</button>
   <button class="tab-btn" onclick="switchTab('p3',this)">📣 通知教練</button>
   <button class="tab-btn" onclick="switchTab('p5',this)">☑️ 核對清單</button>
+  
 </div>
 
 <!-- PAGE 1 -->
-<div class="page active" id="p1">
+<div class="page" id="p1">
   <h2>🏃 費用快速回覆</h2>
   <p class="sub">選類別 → 星期 → 班級 → 複製</p>
   <div class="card">
@@ -91,7 +90,7 @@
   </div>
   <div class="card" id="day-card">
     <span class="card-label">選擇星期</span>
-    <div class="g4" id="day-grid"></div>
+    <div class="g4" id="day-grid"><button class="gbtn">週一</button><button class="gbtn">週二</button><button class="gbtn">週三</button><button class="gbtn">週四</button><button class="gbtn">週五</button><button class="gbtn">週六</button><button class="gbtn">週日</button></div>
   </div>
   <div class="card">
     <span class="card-label" id="class-label">選擇班級</span>
@@ -449,6 +448,7 @@
     </button>
   </div>
 </div>
+
 </div>
 
 <!-- hidden fallback fields -->
@@ -1553,5 +1553,373 @@ function resetChecklist(){
   });
 }
 
+// ── PAGE 4 管理後台 ──
+var mgmtCls=null, mgmtStatus="active", mgmtSeason=null, mgmtWeekday=null;
+var newClsSeason=null, newClsWeekday=null;
+
+// 產生某期某星期的所有日期
+function genDates(seasonKey, weekday){
+  var s=SEASONS.find(function(x){return x.key===seasonKey;});
+  if(!s) return [];
+  var baseYear=s.year||new Date().getFullYear();
+  var months=s.months||[];
+  var dayOfWeek=["週日","週一","週二","週三","週四","週五","週六"].indexOf(weekday);
+  if(dayOfWeek<0) return [];
+  var dates=[];
+  months.forEach(function(m){
+    var y=baseYear;
+    // winter: Dec stays in base year, Jan/Feb goes to next year
+    if(m<=2 && months.includes(12)) y=baseYear+1;
+    var daysInMonth=new Date(y,m,0).getDate();
+    for(var d=1;d<=daysInMonth;d++){
+      var dt=new Date(y,m-1,d);
+      if(dt.getDay()===dayOfWeek){
+        dates.push(m+"/"+d);
+      }
+    }
+  });
+  return dates;
+}
+
+function mgmtCalcFee(){
+  var p=parseInt(document.getElementById("mgmt-price").value)||0;
+  var datesRaw=document.getElementById("mgmt-dates")?document.getElementById("mgmt-dates").value:"";
+  var total=datesRaw.split(/[,，\n]/).map(function(d){return d.trim();}).filter(function(d){return d;}).length;
+  if(!total && mgmtCls && CL[mgmtCls]) total=CL[mgmtCls].total||0;
+  var fee=p*total;
+  var rf=Math.floor(fee*0.9);
+  var isStr=mgmtCls?SK.some(function(k){return mgmtCls.includes(k);}):false;
+  document.getElementById("mgmt-fee").value=fee||"";
+  document.getElementById("mgmt-rf").value=isStr?"":rf||"";
+}
+
+function newClsCalcFee(){
+  var p=parseInt(document.getElementById("new-cls-price").value)||0;
+  var datesRaw=document.getElementById("new-cls-dates").value;
+  var total=datesRaw.split(/[,，\n]/).map(function(d){return d.trim();}).filter(function(d){return d;}).length;
+  var name=document.getElementById("new-cls-name").value;
+  var isStr=SK.some(function(k){return name.includes(k);});
+  var fee=p*total;
+  var rf=Math.floor(fee*0.9);
+  document.getElementById("new-cls-fee").value=fee||"";
+  document.getElementById("new-cls-rf").value=isStr?"":rf||"";
+}
+
+function mgmtUpdateCount(){
+  var datesRaw=document.getElementById("mgmt-dates").value;
+  var dates=datesRaw.split(/[,，\n]/).map(function(d){return d.trim();}).filter(function(d){return d;});
+  document.getElementById("mgmt-count-box").textContent="共 "+dates.length+" 堂";
+  mgmtCalcFee();
+}
+
+function renderDateButtons(dates, containerId){
+  var el=document.getElementById(containerId);
+  if(!el) return;
+  el.innerHTML=dates.map(function(d){
+    var isHoliday=HOLIDAYS.has(d);
+    var bg=isHoliday?"#4a1010":"#2a2a2a";
+    var color=isHoliday?"#ff6b6b":"#ccc";
+    var border=isHoliday?"#ff6b6b":"#444";
+    var btnHtml="<button data-date=\""+d+"\" data-holiday=\""+isHoliday+"\" style=\"padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:"+bg+";color:"+color+";border:1.5px solid "+border+";cursor:pointer;transition:all .15s\">"+d+(isHoliday?" 🏖":"")+"</button>"; return btnHtml;
+  }).join("");
+  // Add click listeners
+  el.querySelectorAll("button[data-date]").forEach(function(b){
+    b.addEventListener("click", function(){ mgmtToggleDate(b, b.getAttribute("data-date")); });
+  });
+}
+
+function mgmtToggleDate(btn, d){
+  var active=btn.getAttribute("data-active")==="1";
+  var isHoliday=btn.getAttribute("data-holiday")==="true";
+  if(active){
+    // deselect - remove from textarea
+    btn.setAttribute("data-active","0");
+    btn.style.opacity="0.35";
+    btn.style.textDecoration="line-through";
+  } else {
+    // select - add back
+    btn.setAttribute("data-active","1");
+    btn.style.opacity="1";
+    btn.style.textDecoration="none";
+  }
+  // Rebuild textarea from active buttons
+  var container=btn.parentElement;
+  var activeDates=[];
+  container.querySelectorAll("button[data-date]").forEach(function(b){
+    if(b.getAttribute("data-active")!=="0") activeDates.push(b.getAttribute("data-date"));
+  });
+  var ta=document.getElementById("mgmt-dates");
+  if(ta) ta.value=activeDates.join(", ");
+  mgmtUpdateCount();
+}
+
+function mgmtSelSeason(season, btn){
+  mgmtSeason=season;
+  document.querySelectorAll("#mgmt-season-grid .gbtn").forEach(function(b){b.classList.remove("active");});
+  btn.classList.add("active");
+  // If weekday already known, auto-generate dates
+  if(mgmtWeekday){
+    var dates=genDates(mgmtSeason, mgmtWeekday);
+    document.getElementById("mgmt-dates").value=dates.join(", ");
+    renderDateButtons(dates,"mgmt-dates-display");
+    document.getElementById("mgmt-dates-preview").classList.remove("hidden");
+    mgmtUpdateCount();
+  } else if(mgmtCls){
+    var wd=["週一","週二","週三","週四","週五","週六","週日"].find(function(w){return mgmtCls.startsWith(w);});
+    if(wd){
+      mgmtWeekday=wd;
+      var dates=genDates(mgmtSeason, wd);
+      document.getElementById("mgmt-dates").value=dates.join(", ");
+      renderDateButtons(dates,"mgmt-dates-display");
+      document.getElementById("mgmt-dates-preview").classList.remove("hidden");
+      mgmtUpdateCount();
+    }
+  }
+}
+
+function mgmtSelWeekday(day, btn){
+  mgmtWeekday=day;
+  document.querySelectorAll("#mgmt-weekday-grid .gbtn").forEach(function(b){b.classList.remove("active");});
+  btn.classList.add("active");
+  if(mgmtSeason){
+    var dates=genDates(mgmtSeason, day);
+    document.getElementById("mgmt-dates").value=dates.join(", ");
+    renderDateButtons(dates,"mgmt-dates-display");
+    document.getElementById("mgmt-dates-preview").classList.remove("hidden");
+    mgmtUpdateCount();
+  }
+}
+
+function newClsSelSeason(season, btn){
+  newClsSeason=season;
+  document.querySelectorAll("#new-cls-season-grid .gbtn").forEach(function(b){b.classList.remove("active");});
+  btn.classList.add("active");
+  if(newClsWeekday){
+    var dates=genDates(newClsSeason, newClsWeekday);
+    document.getElementById("new-cls-dates").value=dates.join(", ");
+    newClsCalcFee();
+  }
+}
+
+function newClsSelWeekday(day, btn){
+  newClsWeekday=day;
+  document.querySelectorAll("#new-cls-weekday-grid .gbtn").forEach(function(b){b.classList.remove("active");});
+  btn.classList.add("active");
+  var dates=genDates(newClsSeason, day);
+  document.getElementById("new-cls-dates").value=dates.join(", ");
+  newClsCalcFee();
+}
+
+function mgmtSelCat(cat, btn){
+  document.querySelectorAll("#mgmt-cat-grid .gbtn").forEach(function(b){b.classList.remove("active");});
+  btn.classList.add("active");
+  var fi=CF[cat];
+  var names=Object.keys(CL).filter(function(n){return fi(n);});
+  var listEl=document.getElementById("mgmt-class-list");
+  listEl.innerHTML=names.map(function(n){
+    var saved=mgmtGetSaved(n);
+    var isInactive=saved?saved.inactive:n.includes("未開班");
+    var label=n.replace("(NEW)","").replace("(未開班)",""+(isInactive?" 🔴":""));
+    return "<button class=\"p2btn\" onclick=\"mgmtSelClass('"+n+"',this)\">"+label+"</button>";
+  }).join("");
+  document.getElementById("mgmt-class-wrap").classList.remove("hidden");
+  document.getElementById("mgmt-edit-card").classList.add("hidden");
+}
+
+function mgmtSelClass(n, btn){
+  mgmtCls=n; mgmtSeason=null; mgmtWeekday=null;
+  document.querySelectorAll("#mgmt-class-list .p2btn").forEach(function(b){b.classList.remove("active");});
+  btn.classList.add("active");
+  var c=CL[n]||{};
+  var saved=mgmtGetSaved(n)||{};
+  var time=saved.time!==undefined?saved.time:(c.time||"");
+  var price=saved.p!==undefined?saved.p:c.p;
+  var fee=saved.f!==undefined?saved.f:c.f;
+  var rf=saved.rf!==undefined?saved.rf:(c.rf||"");
+  var dates=saved.dates!==undefined?saved.dates:(c.dates||[]);
+  var inactive=saved.inactive!==undefined?saved.inactive:n.includes("未開班");
+  var isStr=SK.some(function(k){return n.includes(k);});
+
+  document.getElementById("mgmt-edit-title").textContent="編輯："+n.replace("(NEW)","");
+  document.getElementById("mgmt-time").value=time;
+  document.getElementById("mgmt-price").value=price||"";
+  document.getElementById("mgmt-fee").value=fee||"";
+  document.getElementById("mgmt-rf").value=isStr?"":rf||"";
+  document.getElementById("mgmt-dates").value=dates.join(", ");
+  document.getElementById("mgmt-count-box").textContent="共 "+dates.length+" 堂";
+  renderDateButtons(dates,"mgmt-dates-display");
+  document.getElementById("mgmt-dates-preview").classList.remove("hidden");
+  // reset season/weekday selection
+  // Auto-detect weekday from class name
+  document.querySelectorAll("#mgmt-season-grid .gbtn").forEach(function(b){b.classList.remove("active");});
+  document.getElementById("mgmt-weekday-wrap").classList.remove("hidden");
+  var wd=["週一","週二","週三","週四","週五","週六","週日"].find(function(w){return n.startsWith(w);});
+  var grid=document.getElementById("mgmt-weekday-grid");
+  grid.innerHTML="";
+  if(wd){
+    var b=document.createElement("button");
+    b.className="gbtn active"; b.textContent=wd;
+    b.onclick=function(){ mgmtSelWeekday(wd,b); };
+    grid.appendChild(b);
+    mgmtWeekday=wd;
+  }
+  mgmtStatus=inactive?"inactive":"active";
+  document.getElementById("mgmt-active-btn").classList.toggle("active",!inactive);
+  document.getElementById("mgmt-inactive-btn").classList.toggle("active",inactive);
+  document.getElementById("mgmt-edit-card").classList.remove("hidden");
+  document.getElementById("mgmt-save-msg").style.display="none";
+}
+
+function mgmtSetStatus(status, btn){
+  mgmtStatus=status;
+  document.getElementById("mgmt-active-btn").classList.toggle("active",status==="active");
+  document.getElementById("mgmt-inactive-btn").classList.toggle("active",status==="inactive");
+}
+
+function mgmtSave(){
+  if(!mgmtCls) return;
+  var time=document.getElementById("mgmt-time").value.trim();
+  var price=parseInt(document.getElementById("mgmt-price").value)||0;
+  var fee=parseInt(document.getElementById("mgmt-fee").value)||0;
+  var rfEl=document.getElementById("mgmt-rf").value.trim();
+  var rf=rfEl?parseInt(rfEl):null;
+  var datesRaw=document.getElementById("mgmt-dates").value;
+  var dates=datesRaw.split(/[,，\n]/).map(function(d){return d.trim();}).filter(function(d){return d;});
+  var inactive=mgmtStatus==="inactive";
+  CL[mgmtCls].time=time; CL[mgmtCls].p=price; CL[mgmtCls].f=fee;
+  CL[mgmtCls].total=dates.length; CL[mgmtCls].dates=dates;
+  if(rf) CL[mgmtCls].rf=rf;
+  mgmtSetSaved(mgmtCls,{time:time,p:price,f:fee,rf:rf,dates:dates,inactive:inactive});
+  document.getElementById("mgmt-save-msg").style.display="block";
+  setTimeout(function(){document.getElementById("mgmt-save-msg").style.display="none";},2000);
+  var activeCatBtn=document.querySelector("#mgmt-cat-grid .gbtn.active");
+  if(activeCatBtn) activeCatBtn.click();
+}
+
+function mgmtAddClass(){
+  var name=document.getElementById("new-cls-name").value.trim();
+  if(!name){ alert("請輸入班級名稱"); return; }
+  var price=parseInt(document.getElementById("new-cls-price").value)||0;
+  var fee=parseInt(document.getElementById("new-cls-fee").value)||0;
+  var rfVal=document.getElementById("new-cls-rf").value.trim();
+  var rf=rfVal?parseInt(rfVal):null;
+  var time=document.getElementById("new-cls-time").value.trim();
+  var datesRaw=document.getElementById("new-cls-dates").value;
+  var dates=datesRaw.split(/[,，\n]/).map(function(d){return d.trim();}).filter(function(d){return d;});
+  CL[name]={p:price,f:fee,total:dates.length,time:time,dates:dates};
+  if(rf) CL[name].rf=rf;
+  mgmtSetSaved(name,{p:price,f:fee,rf:rf,time:time,dates:dates,inactive:false});
+  var msg=document.getElementById("new-cls-msg");
+  msg.textContent="✅ 已新增 "+name+"！";
+  msg.style.display="block";
+  setTimeout(function(){msg.style.display="none";},3000);
+  ["new-cls-name","new-cls-price","new-cls-fee","new-cls-rf","new-cls-time","new-cls-dates"].forEach(function(id){
+    document.getElementById(id).value="";
+  });
+  document.querySelectorAll("#new-cls-season-grid .gbtn, #new-cls-weekday-grid .gbtn").forEach(function(b){b.classList.remove("active");});
+  document.getElementById("new-cls-weekday-wrap").classList.add("hidden");
+}
+
+function mgmtGetSaved(key){
+  try{ var raw=localStorage.getItem("nid_cls_"+key); return raw?JSON.parse(raw):null; }catch(e){return null;}
+}
+function mgmtSetSaved(key,val){
+  try{ localStorage.setItem("nid_cls_"+key,JSON.stringify(val)); }catch(e){}
+}
+
+(function applyOverrides(){
+  Object.keys(CL).forEach(function(n){
+    var saved=mgmtGetSaved(n);
+    if(!saved) return;
+    if(saved.time!==undefined) CL[n].time=saved.time;
+    if(saved.p) CL[n].p=saved.p;
+    if(saved.f) CL[n].f=saved.f;
+    if(saved.rf) CL[n].rf=saved.rf;
+    if(saved.dates&&saved.dates.length){CL[n].dates=saved.dates;CL[n].total=saved.dates.length;}
+  });
+  for(var i=0;i<localStorage.length;i++){
+    var k=localStorage.key(i);
+    if(k&&k.startsWith("nid_cls_")){
+      var cn=k.replace("nid_cls_","");
+      if(!CL[cn]){
+        var saved=mgmtGetSaved(cn);
+        if(saved) CL[cn]={p:saved.p||0,f:saved.f||0,rf:saved.rf||null,time:saved.time||"",dates:saved.dates||[],total:(saved.dates||[]).length};
+      }
+    }
+  }
+})();
+// ── GitHub 推送 ──
+const GH_USER = "daren9527";
+const GH_REPO = "quick-reply";
+const GH_FILE = "index.html";
+
+async function pushToGitHub(){
+  var token=document.getElementById("gh-token").value.trim();
+  if(!token){ alert("請先輸入 GitHub Token"); return; }
+
+  var btn=document.getElementById("gh-push-btn");
+  var status=document.getElementById("gh-status");
+  btn.textContent="⏳ 推送中..."; btn.disabled=true;
+  status.style.display="block"; status.style.color="#FFD600"; status.textContent="正在產生線上版...";
+
+  try{
+    // Build online version (no management page)
+    var onlineHtml=buildOnlineVersion();
+
+    status.textContent="正在取得目前檔案 SHA...";
+    var apiUrl="https://api.github.com/repos/"+GH_USER+"/"+GH_REPO+"/contents/"+GH_FILE;
+    var headers={"Authorization":"token "+token,"Content-Type":"application/json","Accept":"application/vnd.github.v3+json"};
+
+    // Get current file SHA
+    var getRes=await fetch(apiUrl,{method:"GET",headers:headers});
+    var sha="";
+    if(getRes.ok){
+      var fileData=await getRes.json();
+      sha=fileData.sha||"";
+    }
+
+    status.textContent="正在推送...";
+    var encoded=btoa(unescape(encodeURIComponent(onlineHtml)));
+    var body={message:"更新線上版 "+new Date().toLocaleString("zh-TW"),content:encoded};
+    if(sha) body.sha=sha;
+
+    var putRes=await fetch(apiUrl,{method:"PUT",headers:headers,body:JSON.stringify(body)});
+    if(putRes.ok){
+      status.style.color="#22c55e";
+      status.textContent="✅ 推送成功！約 1 分鐘後線上版生效。";
+      status.innerHTML+='<br><a href="https://'+GH_USER+'.github.io/'+GH_REPO+'" target="_blank" style="color:#FFD600">前往線上版 →</a>';
+    } else {
+      var err=await putRes.json();
+      status.style.color="#ff6b6b";
+      status.textContent="❌ 推送失敗："+( err.message||putRes.status);
+    }
+  } catch(e){
+    status.style.color="#ff6b6b";
+    status.textContent="❌ 錯誤："+e.message;
+  }
+  btn.textContent="🚀 推送線上版到 GitHub"; btn.disabled=false;
+}
+
+function buildOnlineVersion(){
+  // Get current HTML and strip management page
+  var html=document.documentElement.outerHTML;
+  // Remove management tab
+  html=html.replace(/<button[^>]*onclick="switchTab\('p4'[^>]*>[^<]*<\/button>/g,"");
+  // Remove p4 page
+  var p4Start=html.indexOf("<!-- PAGE 4");
+  var p4End=html.indexOf("<\/div>\n<\/div>\n\n<!-- hidden",p4Start);
+  if(p4Start>-1&&p4End>-1){
+    html=html.substring(0,p4Start)+"<\/div>\n\n<!-- hidden"+html.substring(p4End+("<\/div>\n<\/div>\n\n<!-- hidden").length);
+  }
+  // Remove management JS
+  var jsStart=html.indexOf("// ── PAGE 4 管理後台 ──");
+  var jsEnd=html.indexOf("\n<\/script>\n<\/body>");
+  if(jsStart>-1&&jsEnd>-1){
+    html=html.substring(0,jsStart)+html.substring(jsEnd);
+  }
+  return html;
+}
+
 </script>
+
 </body></html>
