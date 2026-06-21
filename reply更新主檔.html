@@ -465,7 +465,12 @@
       <button class="gbtn" onclick="mgmtSelCat('nurture',this)">🏃 跑者養成班</button>
       <button class="gbtn" onclick="mgmtSelCat('strength',this)">💪 肌力班</button>
     </div>
+    <div class="hidden" id="mgmt-day-filter-wrap" style="margin-top:10px">
+      <div class="stitle">選擇星期</div>
+      <div class="g4" id="mgmt-day-filter-grid"></div>
+    </div>
     <div class="hidden" id="mgmt-class-wrap" style="margin-top:10px">
+      <div class="stitle" id="mgmt-class-title">選擇班級</div>
       <div class="p2list" id="mgmt-class-list"></div>
     </div>
   </div>
@@ -475,7 +480,7 @@
     <span class="card-label" id="mgmt-edit-title">編輯班級</span>
 
     <div class="stitle">上課時間</div>
-    <input type="text" id="mgmt-time" placeholder="例：19:30~21:00" oninput="mgmtPreview()">
+    <input type="text" id="mgmt-time" placeholder="例：19:30~21:00" oninput="mgmtCalcFee()">
 
     <div class="stitle" style="margin-top:4px">單堂費用（新生）</div>
     <input type="number" id="mgmt-price" placeholder="例：375" oninput="mgmtCalcFee()">
@@ -497,11 +502,7 @@
       <button class="gbtn" onclick="mgmtSelSeason('autumn2027',this)">🍂 秋2027</button>
       <button class="gbtn" onclick="mgmtSelSeason('winter2027',this)">❄️ 冬2027</button>
     </div>
-    <div class="hidden" id="mgmt-weekday-wrap" style="margin-bottom:8px">
-      <div class="stitle">選擇星期</div>
-      <div class="g4" id="mgmt-weekday-grid"></div>
-    </div>
-    <div class="hidden" id="mgmt-dates-preview">
+    <div id="mgmt-dates-preview" style="display:none">
       <div class="stitle">自動生成日期 <span style="color:#888;font-weight:normal">（紅色=國定假日）</span></div>
       <div id="mgmt-dates-display" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px"></div>
       <div class="stitle" style="margin-top:4px">完整日期（可手動編輯）</div>
@@ -522,15 +523,40 @@
   <!-- 新增班級 -->
   <div class="card">
     <span class="card-label">➕ 新增班級</span>
-    <input type="text" id="new-cls-name" placeholder="班級名稱（例：週一信義跑步班）">
-    <div class="g2">
-      <input type="number" id="new-cls-price" placeholder="單堂費用（新生）" oninput="newClsCalcFee()">
-      <input type="number" id="new-cls-fee" placeholder="報名費用（自動）" readonly style="opacity:0.7">
+
+    <div class="stitle">班級名稱</div>
+    <input type="text" id="new-cls-name" placeholder="例：週一信義跑步班" oninput="newClsAutoWeekday()">
+
+    <div class="stitle" style="margin-top:4px">上課時間</div>
+    <input type="text" id="new-cls-time" placeholder="例：19:30~21:00">
+
+    <div class="stitle" style="margin-top:4px">教練名稱</div>
+    <input type="text" id="new-cls-coach" placeholder="例：阿飛教練">
+
+    <div class="stitle" style="margin-top:4px">集合地點</div>
+    <input type="text" id="new-cls-loc" placeholder="例：大安森林公園東側入口">
+
+    <div class="stitle" style="margin-top:4px">教練電話</div>
+    <input type="text" id="new-cls-phone" placeholder="例：0912-345-678">
+
+    <div class="stitle" style="margin-top:4px">LINE 群組連結</div>
+    <input type="text" id="new-cls-line" placeholder="例：https://line.me/R/ti/g/...">
+
+    <div class="stitle" style="margin-top:4px">單堂費用（新生）</div>
+    <input type="number" id="new-cls-price" placeholder="例：375" oninput="newClsCalcFee()">
+
+    <div class="g2" style="margin-top:4px">
+      <div>
+        <div class="stitle">報名費用（新生，自動）</div>
+        <input type="number" id="new-cls-fee" readonly style="opacity:0.7">
+      </div>
+      <div>
+        <div class="stitle">續報費用（舊生，自動）</div>
+        <input type="number" id="new-cls-rf" readonly style="opacity:0.7">
+      </div>
     </div>
-    <div class="g2">
-      <input type="number" id="new-cls-rf" placeholder="續報費用（自動）" readonly style="opacity:0.7">
-      <input type="text" id="new-cls-time" placeholder="上課時間">
-    </div>
+
+    <div class="stitle" style="margin-top:8px">選擇期別</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px" id="new-cls-season-grid">
       <button class="gbtn" onclick="newClsSelSeason('spring2026',this)">🌸 春2026</button>
       <button class="gbtn" onclick="newClsSelSeason('summer2026',this)">☀️ 夏2026</button>
@@ -541,12 +567,21 @@
       <button class="gbtn" onclick="newClsSelSeason('autumn2027',this)">🍂 秋2027</button>
       <button class="gbtn" onclick="newClsSelSeason('winter2027',this)">❄️ 冬2027</button>
     </div>
-    <div class="hidden" id="new-cls-weekday-wrap" style="margin-bottom:8px">
-      <div class="stitle">選擇星期</div>
+
+    <div id="new-cls-weekday-wrap" style="margin-bottom:8px">
+      <div class="stitle">星期（從班級名稱自動偵測）</div>
       <div class="g4" id="new-cls-weekday-grid"></div>
     </div>
-    <textarea id="new-cls-dates" rows="3" placeholder="自動生成，或手動輸入（逗號分隔）"></textarea>
-    <button class="copy-btn" onclick="mgmtAddClass()" style="margin-top:4px;background:#22c55e">➕ 新增班級</button>
+
+    <div id="new-cls-dates-wrap" style="display:none">
+      <div class="stitle">自動生成日期 <span style="color:#888;font-weight:normal">（點選可排除）</span></div>
+      <div id="new-cls-dates-display" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px"></div>
+      <div class="stitle" style="margin-top:4px">完整日期（可手動編輯）</div>
+      <textarea id="new-cls-dates" rows="3" placeholder="自動生成，或手動輸入（逗號分隔）" oninput="newClsCalcFee()"></textarea>
+      <div class="info-box" id="new-cls-count-box">共 0 堂</div>
+    </div>
+
+    <button class="copy-btn" onclick="mgmtAddClass()" style="margin-top:10px;background:#22c55e">➕ 新增班級</button>
     <div id="new-cls-msg" style="text-align:center;margin-top:8px;font-size:13px;color:#22c55e;display:none"></div>
   </div>
 
@@ -1674,25 +1709,35 @@ var newClsSeason=null, newClsWeekday=null;
 // 產生某期某星期的所有日期
 function genDates(seasonKey, weekday){
   var s=SEASONS.find(function(x){return x.key===seasonKey;});
-  if(!s) return [];
+  if(!s) return {normal:[], holidays:[]};
   var baseYear=s.year||new Date().getFullYear();
   var months=s.months||[];
   var dayOfWeek=["週日","週一","週二","週三","週四","週五","週六"].indexOf(weekday);
-  if(dayOfWeek<0) return [];
-  var dates=[];
+  if(dayOfWeek<0) return {normal:[], holidays:[]};
+  // Build with sortKey to preserve correct month order
+  var normal=[], holidays=[];
   months.forEach(function(m){
     var y=baseYear;
-    // winter: Dec stays in base year, Jan/Feb goes to next year
     if(m<=2 && months.includes(12)) y=baseYear+1;
     var daysInMonth=new Date(y,m,0).getDate();
     for(var d=1;d<=daysInMonth;d++){
       var dt=new Date(y,m-1,d);
       if(dt.getDay()===dayOfWeek){
-        dates.push(m+"/"+d);
+        var ds=m+"/"+d;
+        // sortKey uses actual year for correct ordering
+        var sortKey=y*10000+m*100+d;
+        if(HOLIDAYS.has(ds)) holidays.push({d:ds,k:sortKey});
+        else normal.push({d:ds,k:sortKey});
       }
     }
   });
-  return dates;
+  // Sort by actual date
+  normal.sort(function(a,b){return a.k-b.k;});
+  holidays.sort(function(a,b){return a.k-b.k;});
+  return {
+    normal:normal.map(function(x){return x.d;}),
+    holidays:holidays.map(function(x){return x.d;})
+  };
 }
 
 function mgmtCalcFee(){
@@ -1724,6 +1769,150 @@ function mgmtUpdateCount(){
   var dates=datesRaw.split(/[,，\n]/).map(function(d){return d.trim();}).filter(function(d){return d;});
   document.getElementById("mgmt-count-box").textContent="共 "+dates.length+" 堂";
   mgmtCalcFee();
+}
+
+function renderDateButtonsForExisting(dates, weekday, containerId, textareaId){
+  // Show existing dates; holidays that are included show orange warning
+  // Other holidays on same weekday that are NOT included show as red excluded
+  var el=document.getElementById(containerId);
+  if(!el) return;
+  el.innerHTML="";
+  var dateSet=new Set(dates);
+  // Also find holidays on same weekday not in dates (to show as excluded)
+  var extraHolidays=[];
+  HOLIDAYS.forEach(function(h){
+    if(!dateSet.has(h) && weekday){
+      // Check if this holiday falls on the right weekday
+      var parts=h.split("/");
+      var m=parseInt(parts[0])-1, d=parseInt(parts[1]);
+      // Try current and next year
+      [2026,2027].forEach(function(y){
+        var dt=new Date(y,m,d);
+        var dayNames=["週日","週一","週二","週三","週四","週五","週六"];
+        if(dayNames[dt.getDay()]===weekday) extraHolidays.push(h);
+      });
+    }
+  });
+  // Combine: existing dates first, then unincluded holidays
+  var allToShow=dates.slice();
+  extraHolidays.forEach(function(h){ if(!dateSet.has(h)) allToShow.push(h); });
+  // Sort by M/D
+  allToShow.sort(function(a,b){
+    var ap=a.split("/"), bp=b.split("/");
+    return (parseInt(ap[0])*100+parseInt(ap[1]))-(parseInt(bp[0])*100+parseInt(bp[1]));
+  });
+  allToShow.forEach(function(d){
+    var isHoliday=HOLIDAYS.has(d);
+    var isActive=dateSet.has(d);
+    var btn=document.createElement("button");
+    if(isActive&&isHoliday){
+      btn.style.cssText="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#3a1a00;color:#ffaa44;border:1.5px solid #ffaa44;cursor:pointer;";
+      btn.textContent=d+" 🏖⚠️"; btn.title="國定假日（已選入）點擊排除";
+    } else if(isActive){
+      btn.style.cssText="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;";
+      btn.textContent=d; btn.title="點擊排除此日期";
+    } else {
+      btn.style.cssText="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#4a1010;color:#ff6b6b;border:1.5px dashed #ff6b6b;cursor:pointer;opacity:0.7;";
+      btn.textContent=d+" 🏖"; btn.title="國定假日（已排除）點擊加入";
+    }
+    btn.setAttribute("data-date",d);
+    btn.setAttribute("data-active",isActive?"1":"0");
+    btn.addEventListener("click",function(){
+      var active=btn.getAttribute("data-active")==="1";
+      if(active){
+        btn.setAttribute("data-active","0");
+        btn.style.cssText="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#4a1010;color:#ff6b6b;border:1.5px dashed #ff6b6b;cursor:pointer;opacity:0.7;";
+        btn.textContent=d+(isHoliday?" 🏖":""); btn.title="已排除，點擊加回";
+      } else {
+        btn.setAttribute("data-active","1");
+        btn.style.cssText="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:"+(isHoliday?"#3a1a00":"#2a2a2a")+";color:"+(isHoliday?"#ffaa44":"#ccc")+";border:1.5px solid "+(isHoliday?"#ffaa44":"#444")+";cursor:pointer;";
+        btn.textContent=d+(isHoliday?" 🏖⚠️":""); btn.title=isHoliday?"國定假日（已選入）點擊排除":"點擊排除此日期";
+      }
+      var activeDates=[];
+      el.querySelectorAll("button[data-date]").forEach(function(b){
+        if(b.getAttribute("data-active")==="1") activeDates.push(b.getAttribute("data-date"));
+      });
+      // Sort before saving
+      activeDates.sort(sortDateStr);
+      var ta=document.getElementById(textareaId);
+      if(ta) ta.value=activeDates.join(", ");
+      mgmtUpdateCount();
+    });
+    el.appendChild(btn);
+  });
+}
+
+function genDatesAll(seasonKey, weekday){
+  var r=genDates(seasonKey, weekday);
+  return r.normal.concat(r.holidays);
+}
+
+function renderDateButtonsWithHolidays(datesObj, unused, containerId, textareaId){
+  var el=document.getElementById(containerId);
+  if(!el) return;
+  el.innerHTML="";
+  var normal=datesObj.normal||[]; var holidays=datesObj.holidays||[];
+  // Combine sorted
+  var all=normal.concat(holidays);
+  // Sort using a winter-aware comparison: 12 before 1,2
+  function sortDateStr(a,b){
+    var am=parseInt(a.split("/")[0]), ad=parseInt(a.split("/")[1]);
+    var bm=parseInt(b.split("/")[0]), bd=parseInt(b.split("/")[1]);
+    // If one is Dec and other is Jan/Feb, Dec comes first
+    var aWinter=(am===12)?0:am; // treat 12 as 0 for winter sort
+    var bWinter=(bm===12)?0:bm;
+    if(aWinter!==bWinter) return aWinter-bWinter;
+    return ad-bd;
+  }
+  all.sort(sortDateStr);
+  all.forEach(function(d){
+    var isHoliday=HOLIDAYS.has(d);
+    var startActive=!isHoliday; // normal=active, holiday=excluded
+    var btn=document.createElement("button");
+    function setStyle(active){
+      if(active){
+        btn.style.cssText="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;background:#2a2a2a;color:#ccc;border:1.5px solid #444;";
+        btn.textContent=d; btn.title="點擊排除";
+      } else if(isHoliday){
+        btn.style.cssText="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;background:#4a1010;color:#ff6b6b;border:1.5px dashed #ff6b6b;opacity:0.8;";
+        btn.textContent=d+" 🏖"; btn.title="國定假日（已排除）點擊加回";
+      } else {
+        btn.style.cssText="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;background:#1a1a1a;color:#555;border:1.5px dashed #555;opacity:0.5;";
+        btn.textContent=d; btn.title="已排除，點擊加回";
+      }
+    }
+    btn.setAttribute("data-date",d);
+    btn.setAttribute("data-active",startActive?"1":"0");
+    setStyle(startActive);
+    btn.addEventListener("click",function(){
+      var active=btn.getAttribute("data-active")==="1";
+      var newActive=!active;
+      btn.setAttribute("data-active",newActive?"1":"0");
+      setStyle(newActive);
+      var activeDates=[];
+      el.querySelectorAll("button[data-date]").forEach(function(b){
+        if(b.getAttribute("data-active")==="1") activeDates.push(b.getAttribute("data-date"));
+      });
+      activeDates.sort(sortDateStr);
+      var ta=document.getElementById(textareaId);
+      if(ta) ta.value=activeDates.join(", ");
+      if(textareaId==="mgmt-dates") mgmtUpdateCount();
+      if(textareaId==="new-cls-dates"){
+        document.getElementById("new-cls-count-box").textContent="共 "+activeDates.length+" 堂";
+        newClsCalcFee();
+      }
+    });
+    el.appendChild(btn);
+  });
+  // Set textarea to normal dates only (holidays excluded)
+  normal.sort(sortDateStr);
+  var ta=document.getElementById(textareaId);
+  if(ta) ta.value=normal.join(", ");
+  if(textareaId==="mgmt-dates") mgmtUpdateCount();
+  if(textareaId==="new-cls-dates"){
+    document.getElementById("new-cls-count-box").textContent="共 "+normal.length+" 堂";
+    newClsCalcFee();
+  }
 }
 
 function renderDateButtons(dates, containerId){
@@ -1773,19 +1962,19 @@ function mgmtSelSeason(season, btn){
   btn.classList.add("active");
   // If weekday already known, auto-generate dates
   if(mgmtWeekday){
-    var dates=genDates(mgmtSeason, mgmtWeekday);
-    document.getElementById("mgmt-dates").value=dates.join(", ");
-    renderDateButtons(dates,"mgmt-dates-display");
-    document.getElementById("mgmt-dates-preview").classList.remove("hidden");
+    var datesObj=genDates(mgmtSeason, mgmtWeekday);
+    renderDateButtonsWithHolidays(datesObj, null, "mgmt-dates-display", "mgmt-dates");
+    document.getElementById("mgmt-dates-preview").style.display="";
     mgmtUpdateCount();
+
   } else if(mgmtCls){
     var wd=["週一","週二","週三","週四","週五","週六","週日"].find(function(w){return mgmtCls.startsWith(w);});
     if(wd){
       mgmtWeekday=wd;
-      var dates=genDates(mgmtSeason, wd);
-      document.getElementById("mgmt-dates").value=dates.join(", ");
-      renderDateButtons(dates,"mgmt-dates-display");
-      document.getElementById("mgmt-dates-preview").classList.remove("hidden");
+      mgmtWeekday=wd;
+      var datesObj2=genDates(mgmtSeason, wd);
+      renderDateButtonsWithHolidays(datesObj2, null, "mgmt-dates-display", "mgmt-dates");
+      document.getElementById("mgmt-dates-preview").style.display="";
       mgmtUpdateCount();
     }
   }
@@ -1796,11 +1985,40 @@ function mgmtSelWeekday(day, btn){
   document.querySelectorAll("#mgmt-weekday-grid .gbtn").forEach(function(b){b.classList.remove("active");});
   btn.classList.add("active");
   if(mgmtSeason){
-    var dates=genDates(mgmtSeason, day);
-    document.getElementById("mgmt-dates").value=dates.join(", ");
-    renderDateButtons(dates,"mgmt-dates-display");
-    document.getElementById("mgmt-dates-preview").classList.remove("hidden");
+    var datesObj3=genDates(mgmtSeason, day);
+    renderDateButtonsWithHolidays(datesObj3, null, "mgmt-dates-display", "mgmt-dates");
+    document.getElementById("mgmt-dates-preview").style.display="";
     mgmtUpdateCount();
+
+
+  }
+}
+
+function newClsAutoWeekday(){
+  var name=document.getElementById("new-cls-name").value;
+  var wd=["週一","週二","週三","週四","週五","週六","週日"].find(function(w){return name.startsWith(w);});
+  var grid=document.getElementById("new-cls-weekday-grid");
+  grid.innerHTML="";
+  if(wd){
+    newClsWeekday=wd;
+    var b=document.createElement("button");
+    b.className="gbtn active"; b.textContent=wd;
+    b.onclick=function(){ newClsSelWeekday(wd,b); };
+    grid.appendChild(b);
+  } else {
+    newClsWeekday=null;
+    ["週一","週二","週三","週四","週五","週六","週日"].forEach(function(d){
+      var b=document.createElement("button");
+      b.className="gbtn"; b.textContent=d;
+      b.onclick=function(){ newClsSelWeekday(d,b); };
+      grid.appendChild(b);
+    });
+  }
+  // If season already selected, highlight matching weekday but DON'T auto-generate
+  if(newClsSeason){
+    document.querySelectorAll("#new-cls-weekday-grid .gbtn").forEach(function(b){
+      b.classList.toggle("active", b.textContent===wd);
+    });
   }
 }
 
@@ -1808,40 +2026,107 @@ function newClsSelSeason(season, btn){
   newClsSeason=season;
   document.querySelectorAll("#new-cls-season-grid .gbtn").forEach(function(b){b.classList.remove("active");});
   btn.classList.add("active");
-  if(newClsWeekday){
-    var dates=genDates(newClsSeason, newClsWeekday);
-    document.getElementById("new-cls-dates").value=dates.join(", ");
-    newClsCalcFee();
-  }
+  // Always show weekday buttons after season selected
+  var grid=document.getElementById("new-cls-weekday-grid");
+  var autoWd=newClsWeekday; // keep previously detected weekday
+  grid.innerHTML="";
+  ["週一","週二","週三","週四","週五","週六","週日"].forEach(function(d){
+    var b=document.createElement("button");
+    b.className="gbtn"+(d===autoWd?" active":"");
+    b.textContent=d;
+    b.onclick=function(){newClsSelWeekday(d,b);};
+    grid.appendChild(b);
+  });
+  // Auto-generate if weekday already known
+  if(autoWd) newClsGenDates();
 }
 
 function newClsSelWeekday(day, btn){
   newClsWeekday=day;
   document.querySelectorAll("#new-cls-weekday-grid .gbtn").forEach(function(b){b.classList.remove("active");});
   btn.classList.add("active");
-  var dates=genDates(newClsSeason, day);
-  document.getElementById("new-cls-dates").value=dates.join(", ");
+  // Auto-fill class name prefix if field is empty or only has a weekday prefix
+  var nameEl=document.getElementById("new-cls-name");
+  var current=nameEl.value;
+  var days=["週一","週二","週三","週四","週五","週六","週日"];
+  var hasPrefix=days.some(function(d){return current===d||current.startsWith(d);});
+  if(!current||hasPrefix){
+    // Replace or set the weekday prefix, keep the rest
+    var rest=hasPrefix?current.replace(/^週[一二三四五六日]/,""):"";
+    nameEl.value=day+rest;
+    nameEl.focus();
+    // Move cursor to end
+    nameEl.setSelectionRange(nameEl.value.length, nameEl.value.length);
+  }
+  if(newClsSeason) newClsGenDates();
+}
+
+function newClsGenDates(){
+  var datesObj=genDates(newClsSeason, newClsWeekday);
+  renderDateButtonsWithHolidays(datesObj, null, "new-cls-dates-display", "new-cls-dates");
+  document.getElementById("new-cls-dates-wrap").style.display="";
+  document.getElementById("new-cls-count-box").textContent="共 "+datesObj.normal.length+" 堂";
   newClsCalcFee();
 }
 
+var mgmtCurrentCat=null;
 function mgmtSelCat(cat, btn){
+  mgmtCurrentCat=cat;
   document.querySelectorAll("#mgmt-cat-grid .gbtn").forEach(function(b){b.classList.remove("active");});
   btn.classList.add("active");
+  // Show weekday filter
+  document.getElementById("mgmt-day-filter-wrap").classList.remove("hidden");
+  document.getElementById("mgmt-class-wrap").classList.add("hidden");
+  document.getElementById("mgmt-edit-card").classList.add("hidden");
   var fi=CF[cat];
-  var names=Object.keys(CL).filter(function(n){return fi(n);});
+  var grid=document.getElementById("mgmt-day-filter-grid");
+  grid.innerHTML="";
+  // Find which weekdays have classes in this category
+  var availDays=[];
+  DAYS.forEach(function(d){
+    var has=Object.keys(CL).some(function(n){return n.startsWith(d)&&!n.includes("未開班")&&fi(n);});
+    if(has) availDays.push(d);
+  });
+  // For strength/nurture, might not start with weekday - show all with classes
+  if(availDays.length===0){
+    // Show all classes directly
+    mgmtShowClasses(cat, null);
+    return;
+  }
+  availDays.forEach(function(d){
+    var b=document.createElement("button");
+    b.className="gbtn"; b.textContent=d;
+    b.onclick=function(){ 
+      document.querySelectorAll("#mgmt-day-filter-grid .gbtn").forEach(function(x){x.classList.remove("active");});
+      b.classList.add("active");
+      mgmtShowClasses(cat, d);
+    };
+    grid.appendChild(b);
+  });
+}
+
+function mgmtShowClasses(cat, day){
+  if(day) mgmtWeekday=day; // store selected weekday
+  var fi=CF[cat];
+  var names=Object.keys(CL).filter(function(n){
+    if(!fi(n)) return false;
+    if(day && !n.startsWith(day)) return false;
+    return true;
+  });
   var listEl=document.getElementById("mgmt-class-list");
+  var titleEl=document.getElementById("mgmt-class-title");
+  titleEl.textContent="選擇班級（"+names.length+" 個）";
   listEl.innerHTML=names.map(function(n){
     var saved=mgmtGetSaved(n);
     var isInactive=saved?saved.inactive:n.includes("未開班");
-    var label=n.replace("(NEW)","").replace("(未開班)",""+(isInactive?" 🔴":""));
+    var label=n.replace("(NEW)","")+(isInactive?" 🔴":"");
     return "<button class=\"p2btn\" onclick=\"mgmtSelClass('"+n+"',this)\">"+label+"</button>";
   }).join("");
   document.getElementById("mgmt-class-wrap").classList.remove("hidden");
-  document.getElementById("mgmt-edit-card").classList.add("hidden");
 }
 
 function mgmtSelClass(n, btn){
-  mgmtCls=n; mgmtSeason=null; mgmtWeekday=null;
+  mgmtCls=n; mgmtSeason=null; // keep mgmtWeekday from day-filter
   document.querySelectorAll("#mgmt-class-list .p2btn").forEach(function(b){b.classList.remove("active");});
   btn.classList.add("active");
   var c=CL[n]||{};
@@ -1859,24 +2144,23 @@ function mgmtSelClass(n, btn){
   document.getElementById("mgmt-price").value=price||"";
   document.getElementById("mgmt-fee").value=fee||"";
   document.getElementById("mgmt-rf").value=isStr?"":rf||"";
+
+  // Show existing dates using unified renderDateButtonsWithHolidays
+  // For existing class, pass dates as "active" and holidays within dates as included
   document.getElementById("mgmt-dates").value=dates.join(", ");
   document.getElementById("mgmt-count-box").textContent="共 "+dates.length+" 堂";
-  renderDateButtons(dates,"mgmt-dates-display");
-  document.getElementById("mgmt-dates-preview").classList.remove("hidden");
-  // reset season/weekday selection
-  // Auto-detect weekday from class name
+  // Build allDates = dates + any holidays that fall on same weekday (if we know it)
+  var wd2=["週一","週二","週三","週四","週五","週六","週日"].find(function(w){return n.startsWith(w);});
+  renderDateButtonsForExisting(dates, wd2, "mgmt-dates-display", "mgmt-dates");
+  document.getElementById("mgmt-dates-preview").style.display="";
+
+  // weekday already known from day-filter selection
   document.querySelectorAll("#mgmt-season-grid .gbtn").forEach(function(b){b.classList.remove("active");});
-  document.getElementById("mgmt-weekday-wrap").classList.remove("hidden");
+  document.getElementById("mgmt-dates-preview").style.display="none";
+  // Auto-detect weekday from class name if not yet set
   var wd=["週一","週二","週三","週四","週五","週六","週日"].find(function(w){return n.startsWith(w);});
-  var grid=document.getElementById("mgmt-weekday-grid");
-  grid.innerHTML="";
-  if(wd){
-    var b=document.createElement("button");
-    b.className="gbtn active"; b.textContent=wd;
-    b.onclick=function(){ mgmtSelWeekday(wd,b); };
-    grid.appendChild(b);
-    mgmtWeekday=wd;
-  }
+  if(wd) mgmtWeekday=wd;
+
   mgmtStatus=inactive?"inactive":"active";
   document.getElementById("mgmt-active-btn").classList.toggle("active",!inactive);
   document.getElementById("mgmt-inactive-btn").classList.toggle("active",inactive);
@@ -1918,20 +2202,41 @@ function mgmtAddClass(){
   var rfVal=document.getElementById("new-cls-rf").value.trim();
   var rf=rfVal?parseInt(rfVal):null;
   var time=document.getElementById("new-cls-time").value.trim();
+  var coach=document.getElementById("new-cls-coach").value.trim();
+  var loc=document.getElementById("new-cls-loc").value.trim();
+  var phone=document.getElementById("new-cls-phone").value.trim();
+  var line=document.getElementById("new-cls-line").value.trim();
   var datesRaw=document.getElementById("new-cls-dates").value;
   var dates=datesRaw.split(/[,，\n]/).map(function(d){return d.trim();}).filter(function(d){return d;});
+  if(!dates.length){ alert("請先選擇期別和星期來生成日期"); return; }
+
+  // Add to CL
   CL[name]={p:price,f:fee,total:dates.length,time:time,dates:dates};
   if(rf) CL[name].rf=rf;
-  mgmtSetSaved(name,{p:price,f:fee,rf:rf,time:time,dates:dates,inactive:false});
+
+  // Add to CLASS_INFO
+  CLASS_INFO[name]={coach:coach,line:line,loc:loc,phone:phone};
+
+  // Save to localStorage
+  mgmtSetSaved(name,{p:price,f:fee,rf:rf,time:time,dates:dates,inactive:false,
+    coach:coach,line:line,loc:loc,phone:phone});
+
   var msg=document.getElementById("new-cls-msg");
-  msg.textContent="✅ 已新增 "+name+"！";
+  msg.textContent="✅ 已新增「"+name+"」！共 "+dates.length+" 堂";
   msg.style.display="block";
   setTimeout(function(){msg.style.display="none";},3000);
-  ["new-cls-name","new-cls-price","new-cls-fee","new-cls-rf","new-cls-time","new-cls-dates"].forEach(function(id){
-    document.getElementById(id).value="";
+
+  // Clear all fields
+  ["new-cls-name","new-cls-price","new-cls-fee","new-cls-rf","new-cls-time",
+   "new-cls-coach","new-cls-loc","new-cls-phone","new-cls-line","new-cls-dates"].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value="";
   });
-  document.querySelectorAll("#new-cls-season-grid .gbtn, #new-cls-weekday-grid .gbtn").forEach(function(b){b.classList.remove("active");});
-  document.getElementById("new-cls-weekday-wrap").classList.add("hidden");
+  document.querySelectorAll("#new-cls-season-grid .gbtn").forEach(function(b){b.classList.remove("active");});
+  document.getElementById("new-cls-weekday-grid").innerHTML="";
+  document.getElementById("new-cls-dates-display").innerHTML="";
+  document.getElementById("new-cls-dates-wrap").style.display="none";
+  document.getElementById("new-cls-count-box").textContent="共 0 堂";
+  newClsSeason=null; newClsWeekday=null;
 }
 
 function mgmtGetSaved(key){
@@ -1950,6 +2255,13 @@ function mgmtSetSaved(key,val){
     if(saved.f) CL[n].f=saved.f;
     if(saved.rf) CL[n].rf=saved.rf;
     if(saved.dates&&saved.dates.length){CL[n].dates=saved.dates;CL[n].total=saved.dates.length;}
+    if(saved.coach||saved.loc||saved.phone||saved.line){
+      if(!CLASS_INFO[n]) CLASS_INFO[n]={};
+      if(saved.coach) CLASS_INFO[n].coach=saved.coach;
+      if(saved.loc) CLASS_INFO[n].loc=saved.loc;
+      if(saved.phone) CLASS_INFO[n].phone=saved.phone;
+      if(saved.line) CLASS_INFO[n].line=saved.line;
+    }
   });
   for(var i=0;i<localStorage.length;i++){
     var k=localStorage.key(i);
@@ -1957,7 +2269,10 @@ function mgmtSetSaved(key,val){
       var cn=k.replace("nid_cls_","");
       if(!CL[cn]){
         var saved=mgmtGetSaved(cn);
-        if(saved) CL[cn]={p:saved.p||0,f:saved.f||0,rf:saved.rf||null,time:saved.time||"",dates:saved.dates||[],total:(saved.dates||[]).length};
+        if(saved){
+          CL[cn]={p:saved.p||0,f:saved.f||0,rf:saved.rf||null,time:saved.time||"",dates:saved.dates||[],total:(saved.dates||[]).length};
+          CLASS_INFO[cn]={coach:saved.coach||"",loc:saved.loc||"",phone:saved.phone||"",line:saved.line||""};
+        }
       }
     }
   }
