@@ -397,7 +397,7 @@
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px" id="mgmt-season-grid">
       <button class="gbtn" onclick="mgmtSelSeason('spring2026',this)">🌸 春2026</button>
       <button class="gbtn" onclick="mgmtSelSeason('summer2026',this)">☀️ 夏2026</button>
-      <button class="gbtn active" onclick="mgmtSelSeason('autumn2026',this)">🍂 秋2026</button>
+      <button class="gbtn" onclick="mgmtSelSeason('autumn2026',this)">🍂 秋2026</button>
       <button class="gbtn" onclick="mgmtSelSeason('winter2026',this)">❄️ 冬2026</button>
       <button class="gbtn" onclick="mgmtSelSeason('spring2027',this)">🌸 春2027</button>
       <button class="gbtn" onclick="mgmtSelSeason('summer2027',this)">☀️ 夏2027</button>
@@ -410,10 +410,10 @@
     </div>
     <div class="" id="mgmt-dates-preview">
       <div class="stitle">自動生成日期 <span style="color:#888;font-weight:normal">（紅色=國定假日）</span></div>
-      <div id="mgmt-dates-display" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px"><button data-date="9/7" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">9/7</button><button data-date="9/14" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">9/14</button><button data-date="9/21" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">9/21</button><button data-date="9/28" data-holiday="true" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#4a1010;color:#ff6b6b;border:1.5px solid #ff6b6b;cursor:pointer;transition:all .15s">9/28 🏖</button><button data-date="10/5" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">10/5</button><button data-date="10/12" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">10/12</button><button data-date="10/19" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">10/19</button><button data-date="10/26" data-holiday="true" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#4a1010;color:#ff6b6b;border:1.5px solid #ff6b6b;cursor:pointer;transition:all .15s">10/26 🏖</button><button data-date="11/2" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">11/2</button><button data-date="11/9" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">11/9</button><button data-date="11/16" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">11/16</button><button data-date="11/23" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">11/23</button><button data-date="11/30" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">11/30</button></div>
+      <div id="mgmt-dates-display" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px"><button data-date="9/7" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">9/7</button><button data-date="9/14" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">9/14</button><button data-date="9/21" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">9/21</button><button data-date="10/5" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">10/5</button><button data-date="10/12" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">10/12</button><button data-date="10/19" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">10/19</button><button data-date="11/2" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">11/2</button><button data-date="11/9" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">11/9</button><button data-date="11/16" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">11/16</button><button data-date="11/23" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">11/23</button><button data-date="11/30" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">11/30</button></div>
       <div class="stitle" style="margin-top:4px">完整日期（可手動編輯）</div>
       <textarea id="mgmt-dates" rows="3" placeholder="6/1, 6/8, 6/15..." oninput="mgmtUpdateCount()"></textarea>
-      <div class="info-box" id="mgmt-count-box">共 13 堂</div>
+      <div class="info-box" id="mgmt-count-box">共 11 堂</div>
     </div>
 
     <div class="stitle" style="margin-top:4px">班級狀態</div>
@@ -423,7 +423,7 @@
     </div>
 
     <button class="copy-btn" onclick="mgmtSave()" style="margin-top:12px">💾 儲存變更</button>
-    <div id="mgmt-save-msg" style="text-align:center;margin-top:8px;font-size:13px;color:#22c55e;display:none">✅ 已儲存！</div>
+    <div id="mgmt-save-msg" style="text-align: center; margin-top: 8px; font-size: 13px; color: rgb(34, 197, 94); display: none;">✅ 已儲存！</div>
     
     <button class="copy-btn" onclick="oneClickSync()" style="margin-top:8px;background:#0ea5e9">🔄 一鍵同步（下載）</button>
     
@@ -491,25 +491,22 @@ function flink(n){if(n.includes("跑者養成"))return FL.nurture;if(KK.some(k=>
 const CL={
   "週一北田跑步班": {
     "p": 375,
-    "f": 5250,
-    "rf": 4725,
-    "total": 14,
+    "f": 4125,
+    "rf": 3712,
+    "total": 11,
     "time": "19:30~21:00",
     "dates": [
-      "6/1",
-      "6/8",
-      "6/15",
-      "6/22",
-      "6/29",
-      "7/6",
-      "7/13",
-      "7/20",
-      "7/27",
-      "8/3",
-      "8/10",
-      "8/17",
-      "8/24",
-      "8/31"
+      "9/7",
+      "9/14",
+      "9/21",
+      "10/5",
+      "10/12",
+      "10/19",
+      "11/2",
+      "11/9",
+      "11/16",
+      "11/23",
+      "11/30"
     ]
   },
   "週一中和跑步班": {
