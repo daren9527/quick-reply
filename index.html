@@ -1,4 +1,6 @@
-<html lang="zh-TW"><head>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NID 快速回覆工具</title>
@@ -8,6 +10,8 @@
 #app .tab-bar{display:flex;background:#1a1a1a;border-bottom:2px solid #2a2a2a;position:sticky;top:0;z-index:100;}
 #app .tab-btn{flex:1;padding:14px 8px;background:none;border:none;border-bottom:3px solid transparent;color:#666;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:-2px;transition:all 0.2s;}
 #app .tab-btn.active{color:#FFD600;border-bottom-color:#FFD600;}
+#app .tab-btn.locked{color:#444!important;border-bottom-color:transparent!important;pointer-events:none;}
+#app .tab-btn.locked::after{content:" 🔒";font-size:10px;}
 #app .page{display:none;padding:14px;}
 #app .page.active{display:block;}
 #app h2{font-size:16px;font-weight:700;color:#FFD600;margin-bottom:3px;}
@@ -50,20 +54,30 @@
 #app textarea{width:100%;padding:10px 12px;border:1.5px solid #333;border-radius:9px;font-size:13px;color:#fff;background:#2a2a2a;outline:none;margin-bottom:7px;resize:vertical;font-family:inherit;}
 #app textarea:focus{border-color:#FFD600;}
 #app .empty{color:#555;font-size:12px;text-align:center;padding:14px 0;}
+#app .chk-item{display:flex;align-items:center;gap:14px;padding:14px;border:1.5px solid #333;border-radius:12px;cursor:pointer;transition:all .2s;margin-bottom:10px;background:#1e1e1e;}
+#app .chk-item.done{border-color:#FFD600;background:#2a2200;}
+#app .chk-box{width:28px;height:28px;border-radius:50%;border:2.5px solid #444;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+#app .chk-item.done .chk-box{border-color:#FFD600;background:#FFD600;}
+#app .chk-inner{width:10px;height:6px;border-left:2.5px solid #111;border-bottom:2.5px solid #111;transform:rotate(-45deg) translate(1px,-1px);opacity:0;transition:opacity .2s;}
+#app .chk-item.done .chk-inner{opacity:1;}
+#app .chk-content{flex:1;}
+#app .chk-title{font-size:15px;font-weight:700;color:#eee;margin-bottom:3px;}
+#app .chk-item.done .chk-title{color:#FFD600;}
+#app .chk-desc{font-size:12px;color:#888;}
 #app .irow{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
 #app .irow input,#app .irow select{margin-bottom:0;}
 </style>
 </head>
 <body><div id="app">
 <div class="tab-bar">
-  <button class="tab-btn" onclick="switchTab('p1',this)">📋 費用回覆</button>
+  <button class="tab-btn active" onclick="switchTab('p1',this)">📋 費用回覆</button>
   <button class="tab-btn" onclick="switchTab('p2',this)">✅ 確認報名</button>
   <button class="tab-btn" onclick="switchTab('p3',this)">📣 通知教練</button>
-  
+  <button class="tab-btn" onclick="switchTab('p5',this)">☑️ 核對清單</button>
 </div>
 
 <!-- PAGE 1 -->
-<div class="page" id="p1">
+<div class="page active" id="p1">
   <h2>🏃 費用快速回覆</h2>
   <p class="sub">選類別 → 星期 → 班級 → 複製</p>
   <div class="card">
@@ -77,7 +91,7 @@
   </div>
   <div class="card" id="day-card">
     <span class="card-label">選擇星期</span>
-    <div class="g4" id="day-grid"><button class="gbtn">週一</button><button class="gbtn">週二</button><button class="gbtn">週三</button><button class="gbtn">週四</button><button class="gbtn">週五</button><button class="gbtn">週六</button><button class="gbtn">週日</button></div>
+    <div class="g4" id="day-grid"></div>
   </div>
   <div class="card">
     <span class="card-label" id="class-label">選擇班級</span>
@@ -330,6 +344,19 @@
     </div>
   </div>
 
+  <!-- 確認打勾 -->
+  <div class="card hidden" id="c-confirm-chk-card">
+    <div id="c-confirm-chk-item" onclick="toggleConfirmChk()" style="display:flex;align-items:center;gap:14px;padding:4px;cursor:pointer">
+      <div id="c-confirm-chk-box" style="width:28px;height:28px;border-radius:50%;border:2.5px solid #444;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s">
+        <div id="c-confirm-chk-inner" style="width:10px;height:6px;border-left:2.5px solid #111;border-bottom:2.5px solid #111;transform:rotate(-45deg) translate(1px,-1px);opacity:0;transition:opacity .2s"></div>
+      </div>
+      <div>
+        <div style="font-size:15px;font-weight:700;color:#eee" id="c-confirm-chk-label">確認已完成報名流程</div>
+        <div style="font-size:12px;color:#888">打勾後將鎖定此頁面及通知教練頁面</div>
+      </div>
+    </div>
+  </div>
+
   <!-- 結果 -->
   <div class="card hidden" id="c-result-card">
     <span class="card-label">回覆內容</span>
@@ -359,6 +386,69 @@
   </div>
 </div>
 
+<!-- PAGE 5 核對清單 -->
+<div class="page" id="p5">
+  <h2 style="margin-top:4px">☑️ 報名核對清單</h2>
+  <p class="sub">完成每項後打勾，三項完成才算報名完成</p>
+
+  <div class="card">
+    <div id="chk-progress" style="text-align:center;margin-bottom:14px">
+      <div style="font-size:28px;font-weight:800;color:#FFD600" id="chk-count">0 / 3</div>
+      <div style="font-size:12px;color:#888;margin-top:2px">完成項目</div>
+    </div>
+
+    <!-- 進度條 -->
+    <div style="background:#2a2a2a;border-radius:20px;height:8px;overflow:hidden;margin-bottom:16px">
+      <div id="chk-bar" style="height:100%;width:0%;background:#FFD600;border-radius:20px;transition:width 0.3s"></div>
+    </div>
+
+    <!-- 項目 1 -->
+    <div class="chk-item" id="chk1-wrap" onclick="toggleCheck(1);checkLockFromChk()">
+      <div class="chk-box" id="chk1-box">
+        <div class="chk-inner" id="chk1-inner"></div>
+      </div>
+      <div class="chk-content">
+        <div class="chk-title">💰 核對繳款金額</div>
+        <div class="chk-desc">應繳金額：<span id="chk-amount-display" style="color:#FFD600;font-weight:700">【待確認】</span></div>
+      </div>
+    </div>
+
+    <!-- 項目 2 -->
+    <div class="chk-item" id="chk2-wrap" onclick="toggleCheck(2);checkLockFromChk()">
+      <div class="chk-box" id="chk2-box">
+        <div class="chk-inner" id="chk2-inner"></div>
+      </div>
+      <div class="chk-content">
+        <div class="chk-title">📱 通知學生</div>
+        <div class="chk-desc">
+          已發送確認訊息給
+          <span id="chk-student-name-display" style="color:#FFD600;font-weight:700;margin-left:4px">【待填入】</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 項目 3 -->
+    <div class="chk-item" id="chk3-wrap" onclick="toggleCheck(3);checkLockFromChk()">
+      <div class="chk-box" id="chk3-box">
+        <div class="chk-inner" id="chk3-inner"></div>
+      </div>
+      <div class="chk-content">
+        <div class="chk-title">👨‍🏫 通知上課教練</div>
+        <div class="chk-desc">已將學生資料傳給 <span id="chk-coach-display" style="color:#FFD600;font-weight:700">【教練】</span>（班級：<span id="chk-class-display" style="color:#FFD600;font-weight:700">【待選擇】</span>）</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 完成提示 -->
+  <div class="card hidden" id="chk-done-card" style="text-align:center;border:2px solid #22c55e">
+    <div style="font-size:40px">🎉</div>
+    <div style="font-size:18px;font-weight:700;color:#22c55e;margin:8px 0">報名完成！</div>
+    <div style="font-size:13px;color:#888;margin-bottom:14px">所有項目已確認完成</div>
+    <button class="copy-btn" onclick="resetChecklist()" style="background:#333;color:#FFD600;border:1.5px solid #FFD600">
+      ➡️ 下一位學生
+    </button>
+  </div>
+</div>
 </div>
 
 <!-- hidden fallback fields -->
@@ -638,6 +728,7 @@ function selTrialDate(d,btn){
   document.querySelectorAll("#app #trial-date-grid .dbtn").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
   document.getElementById("c-result-card").classList.remove("hidden");
+  document.getElementById("c-confirm-chk-card").classList.remove("hidden");
   buildConfirm();
   buildNotify();
 }
@@ -673,6 +764,7 @@ function selFullCls(n,btn){
   document.getElementById("full-info-box").innerHTML=`${timeStr}共 <span>${c.total}</span> 堂　報名費用：<span>${c.f.toLocaleString()}</span> 元`;
   document.getElementById("full-class-info").classList.remove("hidden");
   document.getElementById("c-result-card").classList.remove("hidden");
+  document.getElementById("c-confirm-chk-card").classList.remove("hidden");
   buildConfirm();
 }
 
@@ -713,6 +805,7 @@ function selDate(d,btn){
   document.querySelectorAll("#app .dbtn").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
   document.getElementById("c-result-card").classList.remove("hidden");
+  document.getElementById("c-confirm-chk-card").classList.remove("hidden");
   buildConfirm();
 }
 
@@ -818,13 +911,37 @@ function buildConfirm(){
 }
 
 function doCopy(bid,btnid){
-  const t=document.getElementById(bid).textContent;
-  if(!t)return;
-  navigator.clipboard.writeText(t).then(()=>{
-    const b=document.getElementById(btnid);
-    b.textContent="✅ 已複製！";b.classList.add("copied");
-    setTimeout(()=>{b.textContent="複製回覆內容";b.classList.remove("copied");},2500);
-  });
+  var t=document.getElementById(bid).textContent;
+  if(!t||t.trim()==="") return;
+  var b=document.getElementById(btnid);
+  // Try modern clipboard API first, fallback to execCommand
+  if(navigator.clipboard&&window.isSecureContext){
+    navigator.clipboard.writeText(t).then(function(){
+      b.textContent="✅ 已複製！"; b.classList.add("copied");
+      setTimeout(function(){b.textContent="複製回覆內容";b.classList.remove("copied");},2500);
+    }).catch(function(){ fallbackCopy(t,b); });
+  } else {
+    fallbackCopy(t,b);
+  }
+}
+
+function fallbackCopy(t,b){
+  var ta=document.createElement("textarea");
+  ta.value=t;
+  ta.style.position="fixed";
+  ta.style.top="0";
+  ta.style.opacity="0";
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try{
+    document.execCommand("copy");
+    b.textContent="✅ 已複製！"; b.classList.add("copied");
+    setTimeout(function(){b.textContent="複製回覆內容";b.classList.remove("copied");},2500);
+  }catch(e){
+    b.textContent="❌ 請手動複製";
+    setTimeout(function(){b.textContent="複製回覆內容";},2500);
+  }
+  document.body.removeChild(ta);
 }
 // ── 退費申請邏輯 ──
 var rfCls=null, rfReason=null, rfDate=null, rfStudent=null, rfCat=null, rfInjuryType=null;
@@ -989,6 +1106,8 @@ function rfCalc(){
   else {
     document.getElementById("c-result-box").textContent="📌 NID 退費制度\n1️⃣ 課程審閱期\n課程審閱期為 3天，在審閱期內提出退費可 全額退款。\n2️⃣ 課程尚未開始\n課程開始前取消，可退回 70% 費用。\n3️⃣ 課程已開始\n若課程進行至 第5堂課（含第5堂） 前提出退費：\n退還 50% 費用，但需扣除已上過堂數的費用後計算。\n4️⃣ 課程進行至第5堂後\n其他情況一律不予退費。\n5️⃣ 因受傷或疾病無法繼續課程\n請提供 醫師證明（證明日期須為報名後）。\nNID 將依剩餘堂數計算，並進行 全額退費。\n⚠️ 退費帳戶資訊\n請提供『富邦銀行帳戶』進行退款。\n若提供非富邦銀行帳戶，需額外扣除『手續費』。\n\n因開課已超過5堂，所以不予以退費。\n如有特殊狀況（受傷或工作調職）請提供相關證明，我們將另行處理。";
     document.getElementById("c-result-card").classList.remove("hidden");
+  document.getElementById("c-confirm-chk-card").classList.remove("hidden");
+    document.getElementById("c-confirm-chk-card").classList.remove("hidden");
     resetBtn("c-copy-btn");
     buildRefundNotify();
   }
@@ -1037,9 +1156,12 @@ function buildRefundResult(amt, desc){
 
   document.getElementById("c-result-box").textContent=t;
   document.getElementById("c-result-card").classList.remove("hidden");
+  document.getElementById("c-confirm-chk-card").classList.remove("hidden");
+  document.getElementById("c-confirm-chk-card").classList.remove("hidden");
   resetBtn("c-copy-btn");
   buildNotify();
   buildRefundNotify();
+  syncToChecklist();
 }
 
 // ── 退費通知教練 ──
@@ -1201,373 +1323,235 @@ function selNbSize(type, size, btn){
   buildConfirm();
   buildNotify();
 }
-// ── PAGE 4 管理後台 ──
-var mgmtCls=null, mgmtStatus="active", mgmtSeason=null, mgmtWeekday=null;
-var newClsSeason=null, newClsWeekday=null;
 
-// 產生某期某星期的所有日期
-function genDates(seasonKey, weekday){
-  var s=SEASONS.find(function(x){return x.key===seasonKey;});
-  if(!s) return [];
-  var baseYear=s.year||new Date().getFullYear();
-  var months=s.months||[];
-  var dayOfWeek=["週日","週一","週二","週三","週四","週五","週六"].indexOf(weekday);
-  if(dayOfWeek<0) return [];
-  var dates=[];
-  months.forEach(function(m){
-    var y=baseYear;
-    // winter: Dec stays in base year, Jan/Feb goes to next year
-    if(m<=2 && months.includes(12)) y=baseYear+1;
-    var daysInMonth=new Date(y,m,0).getDate();
-    for(var d=1;d<=daysInMonth;d++){
-      var dt=new Date(y,m-1,d);
-      if(dt.getDay()===dayOfWeek){
-        dates.push(m+"/"+d);
-      }
-    }
-  });
-  return dates;
-}
+// ── 核對清單 + 鎖定邏輯 ──
+var chkState={1:false,2:false,3:false};
+var isLocked=false;
 
-function mgmtCalcFee(){
-  var p=parseInt(document.getElementById("mgmt-price").value)||0;
-  var datesRaw=document.getElementById("mgmt-dates")?document.getElementById("mgmt-dates").value:"";
-  var total=datesRaw.split(/[,，\n]/).map(function(d){return d.trim();}).filter(function(d){return d;}).length;
-  if(!total && mgmtCls && CL[mgmtCls]) total=CL[mgmtCls].total||0;
-  var fee=p*total;
-  var rf=Math.floor(fee*0.9);
-  var isStr=mgmtCls?SK.some(function(k){return mgmtCls.includes(k);}):false;
-  document.getElementById("mgmt-fee").value=fee||"";
-  document.getElementById("mgmt-rf").value=isStr?"":rf||"";
-}
+// Lock is controlled by checklist page checkboxes
 
-function newClsCalcFee(){
-  var p=parseInt(document.getElementById("new-cls-price").value)||0;
-  var datesRaw=document.getElementById("new-cls-dates").value;
-  var total=datesRaw.split(/[,，\n]/).map(function(d){return d.trim();}).filter(function(d){return d;}).length;
-  var name=document.getElementById("new-cls-name").value;
-  var isStr=SK.some(function(k){return name.includes(k);});
-  var fee=p*total;
-  var rf=Math.floor(fee*0.9);
-  document.getElementById("new-cls-fee").value=fee||"";
-  document.getElementById("new-cls-rf").value=isStr?"":rf||"";
-}
-
-function mgmtUpdateCount(){
-  var datesRaw=document.getElementById("mgmt-dates").value;
-  var dates=datesRaw.split(/[,，\n]/).map(function(d){return d.trim();}).filter(function(d){return d;});
-  document.getElementById("mgmt-count-box").textContent="共 "+dates.length+" 堂";
-  mgmtCalcFee();
-}
-
-function renderDateButtons(dates, containerId){
-  var el=document.getElementById(containerId);
-  if(!el) return;
-  el.innerHTML=dates.map(function(d){
-    var isHoliday=HOLIDAYS.has(d);
-    var bg=isHoliday?"#4a1010":"#2a2a2a";
-    var color=isHoliday?"#ff6b6b":"#ccc";
-    var border=isHoliday?"#ff6b6b":"#444";
-    var btnHtml="<button data-date=\""+d+"\" data-holiday=\""+isHoliday+"\" style=\"padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:"+bg+";color:"+color+";border:1.5px solid "+border+";cursor:pointer;transition:all .15s\">"+d+(isHoliday?" 🏖":"")+"</button>"; return btnHtml;
-  }).join("");
-  // Add click listeners
-  el.querySelectorAll("button[data-date]").forEach(function(b){
-    b.addEventListener("click", function(){ mgmtToggleDate(b, b.getAttribute("data-date")); });
-  });
-}
-
-function mgmtToggleDate(btn, d){
-  var active=btn.getAttribute("data-active")==="1";
-  var isHoliday=btn.getAttribute("data-holiday")==="true";
-  if(active){
-    // deselect - remove from textarea
-    btn.setAttribute("data-active","0");
-    btn.style.opacity="0.35";
-    btn.style.textDecoration="line-through";
-  } else {
-    // select - add back
-    btn.setAttribute("data-active","1");
-    btn.style.opacity="1";
-    btn.style.textDecoration="none";
-  }
-  // Rebuild textarea from active buttons
-  var container=btn.parentElement;
-  var activeDates=[];
-  container.querySelectorAll("button[data-date]").forEach(function(b){
-    if(b.getAttribute("data-active")!=="0") activeDates.push(b.getAttribute("data-date"));
-  });
-  var ta=document.getElementById("mgmt-dates");
-  if(ta) ta.value=activeDates.join(", ");
-  mgmtUpdateCount();
-}
-
-function mgmtSelSeason(season, btn){
-  mgmtSeason=season;
-  document.querySelectorAll("#mgmt-season-grid .gbtn").forEach(function(b){b.classList.remove("active");});
-  btn.classList.add("active");
-  // If weekday already known, auto-generate dates
-  if(mgmtWeekday){
-    var dates=genDates(mgmtSeason, mgmtWeekday);
-    document.getElementById("mgmt-dates").value=dates.join(", ");
-    renderDateButtons(dates,"mgmt-dates-display");
-    document.getElementById("mgmt-dates-preview").classList.remove("hidden");
-    mgmtUpdateCount();
-  } else if(mgmtCls){
-    var wd=["週一","週二","週三","週四","週五","週六","週日"].find(function(w){return mgmtCls.startsWith(w);});
-    if(wd){
-      mgmtWeekday=wd;
-      var dates=genDates(mgmtSeason, wd);
-      document.getElementById("mgmt-dates").value=dates.join(", ");
-      renderDateButtons(dates,"mgmt-dates-display");
-      document.getElementById("mgmt-dates-preview").classList.remove("hidden");
-      mgmtUpdateCount();
-    }
-  }
-}
-
-function mgmtSelWeekday(day, btn){
-  mgmtWeekday=day;
-  document.querySelectorAll("#mgmt-weekday-grid .gbtn").forEach(function(b){b.classList.remove("active");});
-  btn.classList.add("active");
-  if(mgmtSeason){
-    var dates=genDates(mgmtSeason, day);
-    document.getElementById("mgmt-dates").value=dates.join(", ");
-    renderDateButtons(dates,"mgmt-dates-display");
-    document.getElementById("mgmt-dates-preview").classList.remove("hidden");
-    mgmtUpdateCount();
-  }
-}
-
-function newClsSelSeason(season, btn){
-  newClsSeason=season;
-  document.querySelectorAll("#new-cls-season-grid .gbtn").forEach(function(b){b.classList.remove("active");});
-  btn.classList.add("active");
-  if(newClsWeekday){
-    var dates=genDates(newClsSeason, newClsWeekday);
-    document.getElementById("new-cls-dates").value=dates.join(", ");
-    newClsCalcFee();
-  }
-}
-
-function newClsSelWeekday(day, btn){
-  newClsWeekday=day;
-  document.querySelectorAll("#new-cls-weekday-grid .gbtn").forEach(function(b){b.classList.remove("active");});
-  btn.classList.add("active");
-  var dates=genDates(newClsSeason, day);
-  document.getElementById("new-cls-dates").value=dates.join(", ");
-  newClsCalcFee();
-}
-
-function mgmtSelCat(cat, btn){
-  document.querySelectorAll("#mgmt-cat-grid .gbtn").forEach(function(b){b.classList.remove("active");});
-  btn.classList.add("active");
-  var fi=CF[cat];
-  var names=Object.keys(CL).filter(function(n){return fi(n);});
-  var listEl=document.getElementById("mgmt-class-list");
-  listEl.innerHTML=names.map(function(n){
-    var saved=mgmtGetSaved(n);
-    var isInactive=saved?saved.inactive:n.includes("未開班");
-    var label=n.replace("(NEW)","").replace("(未開班)",""+(isInactive?" 🔴":""));
-    return "<button class=\"p2btn\" onclick=\"mgmtSelClass('"+n+"',this)\">"+label+"</button>";
-  }).join("");
-  document.getElementById("mgmt-class-wrap").classList.remove("hidden");
-  document.getElementById("mgmt-edit-card").classList.add("hidden");
-}
-
-function mgmtSelClass(n, btn){
-  mgmtCls=n; mgmtSeason=null; mgmtWeekday=null;
-  document.querySelectorAll("#mgmt-class-list .p2btn").forEach(function(b){b.classList.remove("active");});
-  btn.classList.add("active");
-  var c=CL[n]||{};
-  var saved=mgmtGetSaved(n)||{};
-  var time=saved.time!==undefined?saved.time:(c.time||"");
-  var price=saved.p!==undefined?saved.p:c.p;
-  var fee=saved.f!==undefined?saved.f:c.f;
-  var rf=saved.rf!==undefined?saved.rf:(c.rf||"");
-  var dates=saved.dates!==undefined?saved.dates:(c.dates||[]);
-  var inactive=saved.inactive!==undefined?saved.inactive:n.includes("未開班");
-  var isStr=SK.some(function(k){return n.includes(k);});
-
-  document.getElementById("mgmt-edit-title").textContent="編輯："+n.replace("(NEW)","");
-  document.getElementById("mgmt-time").value=time;
-  document.getElementById("mgmt-price").value=price||"";
-  document.getElementById("mgmt-fee").value=fee||"";
-  document.getElementById("mgmt-rf").value=isStr?"":rf||"";
-  document.getElementById("mgmt-dates").value=dates.join(", ");
-  document.getElementById("mgmt-count-box").textContent="共 "+dates.length+" 堂";
-  renderDateButtons(dates,"mgmt-dates-display");
-  document.getElementById("mgmt-dates-preview").classList.remove("hidden");
-  // reset season/weekday selection
-  // Auto-detect weekday from class name
-  document.querySelectorAll("#mgmt-season-grid .gbtn").forEach(function(b){b.classList.remove("active");});
-  document.getElementById("mgmt-weekday-wrap").classList.remove("hidden");
-  var wd=["週一","週二","週三","週四","週五","週六","週日"].find(function(w){return n.startsWith(w);});
-  var grid=document.getElementById("mgmt-weekday-grid");
-  grid.innerHTML="";
-  if(wd){
-    var b=document.createElement("button");
-    b.className="gbtn active"; b.textContent=wd;
-    b.onclick=function(){ mgmtSelWeekday(wd,b); };
-    grid.appendChild(b);
-    mgmtWeekday=wd;
-  }
-  mgmtStatus=inactive?"inactive":"active";
-  document.getElementById("mgmt-active-btn").classList.toggle("active",!inactive);
-  document.getElementById("mgmt-inactive-btn").classList.toggle("active",inactive);
-  document.getElementById("mgmt-edit-card").classList.remove("hidden");
-  document.getElementById("mgmt-save-msg").style.display="none";
-}
-
-function mgmtSetStatus(status, btn){
-  mgmtStatus=status;
-  document.getElementById("mgmt-active-btn").classList.toggle("active",status==="active");
-  document.getElementById("mgmt-inactive-btn").classList.toggle("active",status==="inactive");
-}
-
-function mgmtSave(){
-  if(!mgmtCls) return;
-  var time=document.getElementById("mgmt-time").value.trim();
-  var price=parseInt(document.getElementById("mgmt-price").value)||0;
-  var fee=parseInt(document.getElementById("mgmt-fee").value)||0;
-  var rfEl=document.getElementById("mgmt-rf").value.trim();
-  var rf=rfEl?parseInt(rfEl):null;
-  var datesRaw=document.getElementById("mgmt-dates").value;
-  var dates=datesRaw.split(/[,，\n]/).map(function(d){return d.trim();}).filter(function(d){return d;});
-  var inactive=mgmtStatus==="inactive";
-  CL[mgmtCls].time=time; CL[mgmtCls].p=price; CL[mgmtCls].f=fee;
-  CL[mgmtCls].total=dates.length; CL[mgmtCls].dates=dates;
-  if(rf) CL[mgmtCls].rf=rf;
-  mgmtSetSaved(mgmtCls,{time:time,p:price,f:fee,rf:rf,dates:dates,inactive:inactive});
-  document.getElementById("mgmt-save-msg").style.display="block";
-  setTimeout(function(){document.getElementById("mgmt-save-msg").style.display="none";},2000);
-  var activeCatBtn=document.querySelector("#mgmt-cat-grid .gbtn.active");
-  if(activeCatBtn) activeCatBtn.click();
-}
-
-function mgmtAddClass(){
-  var name=document.getElementById("new-cls-name").value.trim();
-  if(!name){ alert("請輸入班級名稱"); return; }
-  var price=parseInt(document.getElementById("new-cls-price").value)||0;
-  var fee=parseInt(document.getElementById("new-cls-fee").value)||0;
-  var rfVal=document.getElementById("new-cls-rf").value.trim();
-  var rf=rfVal?parseInt(rfVal):null;
-  var time=document.getElementById("new-cls-time").value.trim();
-  var datesRaw=document.getElementById("new-cls-dates").value;
-  var dates=datesRaw.split(/[,，\n]/).map(function(d){return d.trim();}).filter(function(d){return d;});
-  CL[name]={p:price,f:fee,total:dates.length,time:time,dates:dates};
-  if(rf) CL[name].rf=rf;
-  mgmtSetSaved(name,{p:price,f:fee,rf:rf,time:time,dates:dates,inactive:false});
-  var msg=document.getElementById("new-cls-msg");
-  msg.textContent="✅ 已新增 "+name+"！";
-  msg.style.display="block";
-  setTimeout(function(){msg.style.display="none";},3000);
-  ["new-cls-name","new-cls-price","new-cls-fee","new-cls-rf","new-cls-time","new-cls-dates"].forEach(function(id){
-    document.getElementById(id).value="";
-  });
-  document.querySelectorAll("#new-cls-season-grid .gbtn, #new-cls-weekday-grid .gbtn").forEach(function(b){b.classList.remove("active");});
-  document.getElementById("new-cls-weekday-wrap").classList.add("hidden");
-}
-
-function mgmtGetSaved(key){
-  try{ var raw=localStorage.getItem("nid_cls_"+key); return raw?JSON.parse(raw):null; }catch(e){return null;}
-}
-function mgmtSetSaved(key,val){
-  try{ localStorage.setItem("nid_cls_"+key,JSON.stringify(val)); }catch(e){}
-}
-
-(function applyOverrides(){
-  Object.keys(CL).forEach(function(n){
-    var saved=mgmtGetSaved(n);
-    if(!saved) return;
-    if(saved.time!==undefined) CL[n].time=saved.time;
-    if(saved.p) CL[n].p=saved.p;
-    if(saved.f) CL[n].f=saved.f;
-    if(saved.rf) CL[n].rf=saved.rf;
-    if(saved.dates&&saved.dates.length){CL[n].dates=saved.dates;CL[n].total=saved.dates.length;}
-  });
-  for(var i=0;i<localStorage.length;i++){
-    var k=localStorage.key(i);
-    if(k&&k.startsWith("nid_cls_")){
-      var cn=k.replace("nid_cls_","");
-      if(!CL[cn]){
-        var saved=mgmtGetSaved(cn);
-        if(saved) CL[cn]={p:saved.p||0,f:saved.f||0,rf:saved.rf||null,time:saved.time||"",dates:saved.dates||[],total:(saved.dates||[]).length};
-      }
-    }
-  }
-})();
-// ── GitHub 推送 ──
-const GH_USER = "daren9527";
-const GH_REPO = "quick-reply";
-const GH_FILE = "index.html";
-
-async function pushToGitHub(){
-  var token=document.getElementById("gh-token").value.trim();
-  if(!token){ alert("請先輸入 GitHub Token"); return; }
-
-  var btn=document.getElementById("gh-push-btn");
-  var status=document.getElementById("gh-status");
-  btn.textContent="⏳ 推送中..."; btn.disabled=true;
-  status.style.display="block"; status.style.color="#FFD600"; status.textContent="正在產生線上版...";
-
-  try{
-    // Build online version (no management page)
-    var onlineHtml=buildOnlineVersion();
-
-    status.textContent="正在取得目前檔案 SHA...";
-    var apiUrl="https://api.github.com/repos/"+GH_USER+"/"+GH_REPO+"/contents/"+GH_FILE;
-    var headers={"Authorization":"token "+token,"Content-Type":"application/json","Accept":"application/vnd.github.v3+json"};
-
-    // Get current file SHA
-    var getRes=await fetch(apiUrl,{method:"GET",headers:headers});
-    var sha="";
-    if(getRes.ok){
-      var fileData=await getRes.json();
-      sha=fileData.sha||"";
-    }
-
-    status.textContent="正在推送...";
-    var encoded=btoa(unescape(encodeURIComponent(onlineHtml)));
-    var body={message:"更新線上版 "+new Date().toLocaleString("zh-TW"),content:encoded};
-    if(sha) body.sha=sha;
-
-    var putRes=await fetch(apiUrl,{method:"PUT",headers:headers,body:JSON.stringify(body)});
-    if(putRes.ok){
-      status.style.color="#22c55e";
-      status.textContent="✅ 推送成功！約 1 分鐘後線上版生效。";
-      status.innerHTML+='<br><a href="https://'+GH_USER+'.github.io/'+GH_REPO+'" target="_blank" style="color:#FFD600">前往線上版 →</a>';
+function setLock(lock){
+  isLocked=lock;
+  var p2=document.getElementById("p2");
+  var p3=document.getElementById("p3");
+  // IDs to always keep enabled
+  var skipIds=["c-copy-btn","n-copy-btn","c-confirm-chk-box","c-confirm-chk-item"];
+  [p2,p3].forEach(function(page){
+    if(!page) return;
+    if(lock){
+      page.querySelectorAll("button, input, select, textarea").forEach(function(el){
+        var id=el.id||"";
+        var skip=skipIds.indexOf(id)>-1||el.closest("#c-confirm-chk-card")!==null||
+                 id.indexOf("copy")>-1;
+        if(!skip){
+          el.disabled=true;
+          el.style.opacity="0.35";
+          el.style.pointerEvents="none";
+        }
+      });
+      page.querySelectorAll(".result-box").forEach(function(el){
+        el.style.opacity="1";
+      });
     } else {
-      var err=await putRes.json();
-      status.style.color="#ff6b6b";
-      status.textContent="❌ 推送失敗："+( err.message||putRes.status);
+      page.querySelectorAll("button, input, select, textarea").forEach(function(el){
+        el.disabled=false;
+        el.style.opacity="";
+        el.style.pointerEvents="";
+      });
     }
-  } catch(e){
-    status.style.color="#ff6b6b";
-    status.textContent="❌ 錯誤："+e.message;
-  }
-  btn.textContent="🚀 推送線上版到 GitHub"; btn.disabled=false;
+  });
 }
 
-function buildOnlineVersion(){
-  // Get current HTML and strip management page
-  var html=document.documentElement.outerHTML;
-  // Remove management tab
-  html=html.replace(/<button[^>]*onclick="switchTab\('p4'[^>]*>[^<]*<\/button>/g,"");
-  // Remove p4 page
-  var p4Start=html.indexOf("<!-- PAGE 4");
-  var p4End=html.indexOf("<\/div>\n<\/div>\n\n<!-- hidden",p4Start);
-  if(p4Start>-1&&p4End>-1){
-    html=html.substring(0,p4Start)+"<\/div>\n\n<!-- hidden"+html.substring(p4End+("<\/div>\n<\/div>\n\n<!-- hidden").length);
+var confirmChked=false;
+
+function syncToChecklist(){
+  var name="【待填入】";
+  var cls="【待選擇】";
+  var coach="【教練】";
+
+  // Use ctype to determine which fields to read
+  if(ctype==="full"&&fullCls){
+    var el=document.getElementById("cf-name");
+    if(el&&el.value.trim()) name=el.value.trim();
+    cls=fullCls.replace("(NEW)","");
+  } else if(ctype==="insert"&&insertCls){
+    var el=document.getElementById("ci-name");
+    if(el&&el.value.trim()) name=el.value.trim();
+    cls=insertCls.replace("(NEW)","");
+  } else if(ctype==="trial"&&trialCls){
+    var el=document.getElementById("ct-name");
+    if(el&&el.value.trim()) name=el.value.trim();
+    cls=trialCls.replace("(NEW)","");
+  } else if(ctype==="refund"&&rfCls){
+    var el=document.getElementById("rf-name");
+    if(el&&el.value.trim()) name=el.value.trim();
+    cls=rfCls.replace("(NEW)","");
   }
-  // Remove management JS
-  var jsStart=html.indexOf("// ── PAGE 4 管理後台 ──");
-  var jsEnd=html.indexOf("\n<\/script>\n<\/body>");
-  if(jsStart>-1&&jsEnd>-1){
-    html=html.substring(0,jsStart)+html.substring(jsEnd);
+
+  // Get coach from CLASS_INFO
+  var infoKey=cls;
+  if(!CLASS_INFO[infoKey]){
+    // Try with (NEW) suffix
+    Object.keys(CLASS_INFO).forEach(function(k){
+      if(k.replace("(NEW)","")===cls) infoKey=k;
+    });
   }
-  return html;
+  var info=CLASS_INFO[infoKey]||{};
+  if(info.coach) coach=info.coach;
+
+  // Get amount
+  var amount="【待確認】";
+  if(ctype==="full"&&fullCls&&CL[fullCls]){
+    var fee=CL[fullCls].f;
+    amount=fee.toLocaleString()+" 元";
+  } else if(ctype==="insert"&&insertCls&&CL[insertCls]&&selectedDate){
+    var c=CL[insertCls];
+    var remaining=c.dates.filter(function(d){return dateToNum(d)>=dateToNum(selectedDate);}).length;
+    var fee=c.p*remaining;
+    amount=fee.toLocaleString()+" 元（"+remaining+" 堂 × "+c.p+" 元）";
+  } else if(ctype==="trial"&&trialCls&&CL[trialCls]){
+    amount="體驗課（請確認金額）";
+  } else if(ctype==="refund"&&rfCls){
+    var amtEl=document.getElementById("rf-fee-amt");
+    if(amtEl&&amtEl.textContent) amount="退費 "+amtEl.textContent;
+  }
+
+  var nameEl=document.getElementById("chk-student-name-display");
+  var coachEl=document.getElementById("chk-coach-display");
+  var clsEl=document.getElementById("chk-class-display");
+  var amtEl2=document.getElementById("chk-amount-display");
+  if(nameEl) nameEl.textContent=name;
+  if(coachEl) coachEl.textContent=coach;
+  if(clsEl) clsEl.textContent=cls;
+  if(amtEl2) amtEl2.textContent=amount;
+}
+function toggleConfirmChk(){
+  confirmChked=!confirmChked;
+  var box=document.getElementById("c-confirm-chk-box");
+  var inner=document.getElementById("c-confirm-chk-inner");
+  var label=document.getElementById("c-confirm-chk-label");
+  if(confirmChked){
+    box.style.borderColor="#FFD600";
+    box.style.background="#FFD600";
+    inner.style.opacity="1";
+    label.style.color="#FFD600";
+    label.textContent="已確認完成報名流程 ✅";
+    setLock(true);
+    syncToChecklist();
+  } else {
+    box.style.borderColor="#444";
+    box.style.background="";
+    inner.style.opacity="0";
+    label.style.color="#eee";
+    label.textContent="確認已完成報名流程";
+    setLock(false);
+  }
+}
+
+function checkLockFromChk(){
+  // handled by resetChecklist when all 3 done
+}
+
+function toggleCheck(n){
+  chkState[n]=!chkState[n];
+  var wrap=document.getElementById("chk"+n+"-wrap");
+  wrap.classList.toggle("done",chkState[n]);
+  updateProgress();
+}
+
+function updateProgress(){
+  var done=Object.values(chkState).filter(Boolean).length;
+  document.getElementById("chk-count").textContent=done+" / 3";
+  document.getElementById("chk-bar").style.width=(done/3*100)+"%";
+  var doneCard=document.getElementById("chk-done-card");
+  if(done===3){
+    doneCard.classList.remove("hidden");
+    document.getElementById("chk-bar").style.background="#22c55e";
+  } else {
+    doneCard.classList.add("hidden");
+    document.getElementById("chk-bar").style.background="#FFD600";
+  }
+}
+
+function resetChecklist(){
+  // Reset checklist
+  chkState={1:false,2:false,3:false};
+  [1,2,3].forEach(function(n){
+    document.getElementById("chk"+n+"-wrap").classList.remove("done");
+  });
+  
+  document.getElementById("chk-done-card").classList.add("hidden");
+  updateProgress();
+
+  // Reset confirm page fields
+  ["cf-name","cf-phone","cf-goal","ci-name","ci-phone","ci-goal","ct-name","ct-phone","ct-goal"].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.value="";
+  });
+
+  // Reset confirm page selections
+  ctype=null; fullCls=null; insertCls=null; selectedDate=null;
+  trialCls=null; trialDate=null; ciVestSize=null; ciTshirtSize=null;
+  rfCls=null; rfReason=null; rfDate=null; rfStudent=null;
+
+  // Reset all active buttons in p2
+  document.querySelectorAll("#p2 .gbtn.active, #p2 .dbtn.active, #p2 .p2btn.active").forEach(function(b){
+    b.classList.remove("active");
+  });
+  document.querySelectorAll("#p2 .card.hidden").forEach(function(c){});
+  document.getElementById("c-full-card").classList.add("hidden");
+  document.getElementById("c-insert-card").classList.add("hidden");
+  document.getElementById("c-trial-card").classList.add("hidden");
+  document.getElementById("c-refund-card").classList.add("hidden");
+  document.getElementById("c-result-card").classList.add("hidden");
+  document.getElementById("c-confirm-chk-card").classList.add("hidden");
+  document.getElementById("full-class-info").classList.add("hidden");
+  document.getElementById("insert-class-info").classList.add("hidden");
+  document.getElementById("trial-class-info").classList.add("hidden");
+
+  // Reset confirm chk
+  confirmChked=false;
+  var box=document.getElementById("c-confirm-chk-box");
+  var inner=document.getElementById("c-confirm-chk-inner");
+  var label=document.getElementById("c-confirm-chk-label");
+  if(box){ box.style.borderColor="#444"; box.style.background=""; }
+  if(inner){ inner.style.opacity="0"; }
+  if(label){ label.style.color="#eee"; label.textContent="確認已完成報名流程"; }
+  document.getElementById("c-confirm-chk-card").classList.add("hidden");
+
+  // Unlock tabs
+  setLock(false);
+
+  // Reset notify page
+  document.getElementById("p3-empty").classList.remove("hidden");
+  document.getElementById("p3-info-box").classList.add("hidden");
+  document.getElementById("p3-result-card").classList.add("hidden");
+  document.getElementById("n-result-box").textContent="";
+  // Reset p3 variables
+  nType=null;
+  // Re-enable p3 content (in case it was locked)
+  var p3=document.getElementById("p3");
+  if(p3){
+    p3.querySelectorAll("button,input,select,textarea").forEach(function(el){
+      el.disabled=false; el.style.opacity=""; el.style.pointerEvents="";
+    });
+  }
+
+  // Reset checklist display spans
+  var amtEl=document.getElementById("chk-amount-display");
+  if(amtEl) amtEl.textContent="【待確認】";
+  var nameEl=document.getElementById("chk-student-name-display");
+  if(nameEl) nameEl.textContent="【待填入】";
+  var coachEl=document.getElementById("chk-coach-display");
+  if(coachEl) coachEl.textContent="【教練】";
+  var clsEl=document.getElementById("chk-class-display");
+  if(clsEl) clsEl.textContent="【待選擇】";
+
+  // Reset p2 type buttons
+  document.querySelectorAll("#p2 .gbtn[onclick*='selConfirm']").forEach(function(b){
+    b.classList.remove("active");
+  });
 }
 
 </script>
-
 </body></html>
