@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
+<html lang="zh-TW"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NID 快速回覆工具</title>
@@ -58,10 +56,10 @@
 </head>
 <body><div id="app">
 <div class="tab-bar">
-  <button class="tab-btn active" onclick="switchTab('p4',this)">⚙️ 管理</button>
   <button class="tab-btn" onclick="switchTab('p1',this)">📋 費用回覆</button>
   <button class="tab-btn" onclick="switchTab('p2',this)">✅ 確認報名</button>
   <button class="tab-btn" onclick="switchTab('p3',this)">📣 通知教練</button>
+  <button class="tab-btn active" onclick="switchTab('p4',this)">⚙️ 管理</button>
 </div>
 
 <!-- PAGE 1 -->
@@ -79,7 +77,7 @@
   </div>
   <div class="card" id="day-card">
     <span class="card-label">選擇星期</span>
-    <div class="g4" id="day-grid"></div>
+    <div class="g4" id="day-grid"><button class="gbtn">週一</button><button class="gbtn">週二</button><button class="gbtn">週三</button><button class="gbtn">週四</button><button class="gbtn">週五</button><button class="gbtn">週六</button><button class="gbtn">週日</button></div>
   </div>
   <div class="card">
     <span class="card-label" id="class-label">選擇班級</span>
@@ -360,7 +358,6 @@
     <button class="copy-btn" id="n-copy-btn" onclick="doCopy('n-result-box','n-copy-btn')">複製通知內容</button>
   </div>
 </div>
-</div>
 <!-- PAGE 4 管理後台 -->
 <div class="page active" id="p4" style="padding-top:8px">
   <h2 style="margin-top:4px">⚙️ 管理後台</h2>
@@ -370,19 +367,19 @@
   <div class="card">
     <span class="card-label">選擇要編輯的班級</span>
     <div class="g2" id="mgmt-cat-grid">
-      <button class="gbtn" onclick="mgmtSelCat('taipei',this)">🏙️ 台北跑步班</button>
+      <button class="gbtn active" onclick="mgmtSelCat('taipei',this)">🏙️ 台北跑步班</button>
       <button class="gbtn" onclick="mgmtSelCat('kaohsiung',this)">🌆 高雄跑步班</button>
       <button class="gbtn" onclick="mgmtSelCat('nurture',this)">🏃 跑者養成班</button>
       <button class="gbtn" onclick="mgmtSelCat('strength',this)">💪 肌力班</button>
     </div>
-    <div class="hidden" id="mgmt-class-wrap" style="margin-top:10px">
-      <div class="p2list" id="mgmt-class-list"></div>
+    <div class="" id="mgmt-class-wrap" style="margin-top:10px">
+      <div class="p2list" id="mgmt-class-list"><button class="p2btn active" onclick="mgmtSelClass('週一北田跑步班',this)">週一北田跑步班</button><button class="p2btn" onclick="mgmtSelClass('週一中和跑步班',this)">週一中和跑步班</button><button class="p2btn" onclick="mgmtSelClass('週一中正初階跑步班',this)">週一中正初階跑步班</button><button class="p2btn" onclick="mgmtSelClass('週一大同初階跑步班',this)">週一大同初階跑步班</button><button class="p2btn" onclick="mgmtSelClass('週二內湖跑步班',this)">週二內湖跑步班</button><button class="p2btn" onclick="mgmtSelClass('週二龍江跑步班',this)">週二龍江跑步班</button><button class="p2btn" onclick="mgmtSelClass('週二中正初階跑步班',this)">週二中正初階跑步班</button><button class="p2btn" onclick="mgmtSelClass('週二北田初階跑步班',this)">週二北田初階跑步班</button><button class="p2btn" onclick="mgmtSelClass('週二板一初階跑步班',this)">週二板一初階跑步班</button><button class="p2btn" onclick="mgmtSelClass('週三北田跑步班',this)">週三北田跑步班</button><button class="p2btn" onclick="mgmtSelClass('週三板一跑步班',this)">週三板一跑步班</button><button class="p2btn" onclick="mgmtSelClass('週三內湖跑步班',this)">週三內湖跑步班</button><button class="p2btn" onclick="mgmtSelClass('週三北田初階跑步班',this)">週三北田初階跑步班</button><button class="p2btn" onclick="mgmtSelClass('週三新莊初階跑步班',this)">週三新莊初階跑步班</button><button class="p2btn" onclick="mgmtSelClass('週三信義初階跑步班',this)">週三信義初階跑步班</button><button class="p2btn" onclick="mgmtSelClass('週四大同跑步班',this)">週四大同跑步班</button><button class="p2btn" onclick="mgmtSelClass('週四北田初階跑步班',this)">週四北田初階跑步班</button><button class="p2btn" onclick="mgmtSelClass('週四內湖初階跑步班',this)">週四內湖初階跑步班</button><button class="p2btn" onclick="mgmtSelClass('週四板一初階跑步班',this)">週四板一初階跑步班</button><button class="p2btn" onclick="mgmtSelClass('週四中正跑步班(NEW)',this)">週四中正跑步班</button><button class="p2btn" onclick="mgmtSelClass('週五新莊跑步班',this)">週五新莊跑步班</button><button class="p2btn" onclick="mgmtSelClass('週五北田跑步班',this)">週五北田跑步班</button><button class="p2btn" onclick="mgmtSelClass('週五板二初階跑步班',this)">週五板二初階跑步班</button><button class="p2btn" onclick="mgmtSelClass('週五內湖初階跑步班',this)">週五內湖初階跑步班</button><button class="p2btn" onclick="mgmtSelClass('週六汐止早跑班',this)">週六汐止早跑班</button><button class="p2btn" onclick="mgmtSelClass('週六北田初階早跑班',this)">週六北田初階早跑班</button><button class="p2btn" onclick="mgmtSelClass('週六Hyrox訓練營',this)">週六Hyrox訓練營</button><button class="p2btn" onclick="mgmtSelClass('週日北田早跑班',this)">週日北田早跑班</button></div>
     </div>
   </div>
 
   <!-- 編輯區 -->
-  <div class="card hidden" id="mgmt-edit-card">
-    <span class="card-label" id="mgmt-edit-title">編輯班級</span>
+  <div class="card" id="mgmt-edit-card">
+    <span class="card-label" id="mgmt-edit-title">編輯：週一北田跑步班</span>
 
     <div class="stitle">上課時間</div>
     <input type="text" id="mgmt-time" placeholder="例：19:30~21:00" oninput="mgmtPreview()">
@@ -391,32 +388,32 @@
     <input type="number" id="mgmt-price" placeholder="例：375" oninput="mgmtCalcFee()">
 
     <div class="stitle" style="margin-top:4px">報名費用（新生）</div>
-    <input type="number" id="mgmt-fee" placeholder="自動計算" readonly style="opacity:0.7">
+    <input type="number" id="mgmt-fee" placeholder="自動計算" readonly="" style="opacity:0.7">
 
     <div class="stitle" style="margin-top:4px">續報費用（舊生）</div>
-    <input type="number" id="mgmt-rf" placeholder="自動計算（肌力班留空）" readonly style="opacity:0.7">
+    <input type="number" id="mgmt-rf" placeholder="自動計算（肌力班留空）" readonly="" style="opacity:0.7">
 
     <div class="stitle" style="margin-top:4px">上課日期</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px" id="mgmt-season-grid">
       <button class="gbtn" onclick="mgmtSelSeason('spring2026',this)">🌸 春2026</button>
       <button class="gbtn" onclick="mgmtSelSeason('summer2026',this)">☀️ 夏2026</button>
-      <button class="gbtn" onclick="mgmtSelSeason('autumn2026',this)">🍂 秋2026</button>
+      <button class="gbtn active" onclick="mgmtSelSeason('autumn2026',this)">🍂 秋2026</button>
       <button class="gbtn" onclick="mgmtSelSeason('winter2026',this)">❄️ 冬2026</button>
       <button class="gbtn" onclick="mgmtSelSeason('spring2027',this)">🌸 春2027</button>
       <button class="gbtn" onclick="mgmtSelSeason('summer2027',this)">☀️ 夏2027</button>
       <button class="gbtn" onclick="mgmtSelSeason('autumn2027',this)">🍂 秋2027</button>
       <button class="gbtn" onclick="mgmtSelSeason('winter2027',this)">❄️ 冬2027</button>
     </div>
-    <div class="hidden" id="mgmt-weekday-wrap" style="margin-bottom:8px">
+    <div class="" id="mgmt-weekday-wrap" style="margin-bottom:8px">
       <div class="stitle">選擇星期</div>
-      <div class="g4" id="mgmt-weekday-grid"></div>
+      <div class="g4" id="mgmt-weekday-grid"><button class="gbtn active">週一</button></div>
     </div>
-    <div class="hidden" id="mgmt-dates-preview">
+    <div class="" id="mgmt-dates-preview">
       <div class="stitle">自動生成日期 <span style="color:#888;font-weight:normal">（紅色=國定假日）</span></div>
-      <div id="mgmt-dates-display" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px"></div>
+      <div id="mgmt-dates-display" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px"><button data-date="9/7" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">9/7</button><button data-date="9/14" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">9/14</button><button data-date="9/21" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">9/21</button><button data-date="9/28" data-holiday="true" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#4a1010;color:#ff6b6b;border:1.5px solid #ff6b6b;cursor:pointer;transition:all .15s">9/28 🏖</button><button data-date="10/5" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">10/5</button><button data-date="10/12" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">10/12</button><button data-date="10/19" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">10/19</button><button data-date="10/26" data-holiday="true" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#4a1010;color:#ff6b6b;border:1.5px solid #ff6b6b;cursor:pointer;transition:all .15s">10/26 🏖</button><button data-date="11/2" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">11/2</button><button data-date="11/9" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">11/9</button><button data-date="11/16" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">11/16</button><button data-date="11/23" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">11/23</button><button data-date="11/30" data-holiday="false" style="padding:5px 9px;border-radius:6px;font-size:12px;font-weight:600;background:#2a2a2a;color:#ccc;border:1.5px solid #444;cursor:pointer;transition:all .15s">11/30</button></div>
       <div class="stitle" style="margin-top:4px">完整日期（可手動編輯）</div>
       <textarea id="mgmt-dates" rows="3" placeholder="6/1, 6/8, 6/15..." oninput="mgmtUpdateCount()"></textarea>
-      <div class="info-box" id="mgmt-count-box">共 0 堂</div>
+      <div class="info-box" id="mgmt-count-box">共 13 堂</div>
     </div>
 
     <div class="stitle" style="margin-top:4px">班級狀態</div>
@@ -427,6 +424,21 @@
 
     <button class="copy-btn" onclick="mgmtSave()" style="margin-top:12px">💾 儲存變更</button>
     <div id="mgmt-save-msg" style="text-align:center;margin-top:8px;font-size:13px;color:#22c55e;display:none">✅ 已儲存！</div>
+    
+    <button class="copy-btn" onclick="oneClickSync()" style="margin-top:8px;background:#0ea5e9">🔄 一鍵同步（下載）</button>
+    
+<div style="margin-top:12px;padding:10px;background:#0f172a;border-radius:8px;border:1px solid #334155">
+  <div style="font-size:11px;color:#0ea5e9;font-weight:700;margin-bottom:6px">🚀 自動上傳設定（選填）</div>
+  <input type="text" id="gh-token" placeholder="GitHub Token (ghp_...)" style="margin-bottom:5px;font-size:12px">
+  <div class="irow">
+    <input type="text" id="gh-owner" placeholder="擁有者" style="font-size:12px">
+    <input type="text" id="gh-repo" placeholder="倉庫名" style="font-size:12px">
+  </div>
+  <input type="text" id="gh-path" placeholder="檔案路徑 (預設 index.html)" value="index.html" style="margin-top:5px;font-size:12px">
+  <button class="copy-btn" onclick="autoSyncGitHub()" style="margin-top:8px;background:#22c55e">⚡ 自動同步上傳</button>
+</div>
+
+    <div id="sync-msg" style="text-align: center; margin-top: 6px; font-size: 12px; color: rgb(14, 165, 233); display: block;">⏳ 正在產生檔案...</div>
   </div>
 
   <!-- 新增班級 -->
@@ -435,10 +447,10 @@
     <input type="text" id="new-cls-name" placeholder="班級名稱（例：週一信義跑步班）">
     <div class="g2">
       <input type="number" id="new-cls-price" placeholder="單堂費用（新生）" oninput="newClsCalcFee()">
-      <input type="number" id="new-cls-fee" placeholder="報名費用（自動）" readonly style="opacity:0.7">
+      <input type="number" id="new-cls-fee" placeholder="報名費用（自動）" readonly="" style="opacity:0.7">
     </div>
     <div class="g2">
-      <input type="number" id="new-cls-rf" placeholder="續報費用（自動）" readonly style="opacity:0.7">
+      <input type="number" id="new-cls-rf" placeholder="續報費用（自動）" readonly="" style="opacity:0.7">
       <input type="text" id="new-cls-time" placeholder="上課時間">
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px" id="new-cls-season-grid">
@@ -460,6 +472,7 @@
     <div id="new-cls-msg" style="text-align:center;margin-top:8px;font-size:13px;color:#22c55e;display:none"></div>
   </div>
 </div>
+</div>
 
 <!-- hidden fallback fields -->
 <input type="hidden" id="n-insert-name">
@@ -476,55 +489,1078 @@ const CF={taipei:n=>!KK.some(k=>n.includes(k))&&!n.includes("跑者養成")&&!SK
 function flink(n){if(n.includes("跑者養成"))return FL.nurture;if(KK.some(k=>n.includes(k)))return FL.kaohsiung;if(SK.some(k=>n.includes(k)))return FL.strength;return FL.taipei;}
 
 const CL={
-  "週一北田跑步班":      {p:375,f:5250,rf:4725,total:14,time:"19:30~21:00",dates:["6/1","6/8","6/15","6/22","6/29","7/6","7/13","7/20","7/27","8/3","8/10","8/17","8/24","8/31"]},
-  "週一中和跑步班":      {p:375,f:5250,rf:4725,total:14,time:"19:30~21:00",dates:["6/1","6/8","6/15","6/22","6/29","7/6","7/13","7/20","7/27","8/3","8/10","8/17","8/24","8/31"]},
-  "週一中正初階跑步班":  {p:375,f:5250,rf:4725,total:14,time:"19:30~21:00",dates:["6/1","6/8","6/15","6/22","6/29","7/6","7/13","7/20","7/27","8/3","8/10","8/17","8/24","8/31"]},
-  "週一大同初階跑步班":  {p:375,f:5250,rf:4725,total:14,time:"19:30~21:00",dates:["6/1","6/8","6/15","6/22","6/29","7/6","7/13","7/20","7/27","8/3","8/10","8/17","8/24","8/31"]},
-  "週一北田跑者養成班":  {p:350,f:4900,rf:4410,total:14,time:"19:00~20:00",dates:["6/1","6/8","6/15","6/22","6/29","7/6","7/13","7/20","7/27","8/3","8/10","8/17","8/24","8/31"]},
-  "週二內湖跑步班":      {p:375,f:4875,rf:4387,total:13,time:"18:30~20:00",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
-  "週二龍江跑步班":      {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
-  "週二中正初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
-  "週二北田初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
-  "週二板一初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
-  "週二苓雅初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
-  "週二高大初階跑步班(NEW)":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
-  "週三北田跑步班":      {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
-  "週三板一跑步班":      {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
-  "週三內湖跑步班":      {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
-  "週三北田初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
-  "週三新莊初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
-  "週三信義初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
-  "週三高大跑步班":      {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
-  "週三鳳山跑步班(NEW)": {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
-  "週四大同跑步班":      {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
-  "週四北田初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
-  "週四內湖初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
-  "週四板一初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
-  "週四中正跑步班(NEW)": {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
-  "週四龍江跑者養成班":  {p:350,f:4550,rf:4095,total:13,time:"19:30~20:30",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
-  "週四苓雅跑步班(NEW)": {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
-  "週四高大初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
-  "週五新莊跑步班":      {p:375,f:4500,rf:4050,total:12,time:"19:40~21:10",dates:["6/5","6/12","6/26","7/3","7/10","7/17","7/24","7/31","8/7","8/14","8/21","8/28"]},
-  "週五北田跑步班":      {p:375,f:4500,rf:4050,total:12,time:"19:30~21:00",dates:["6/5","6/12","6/26","7/3","7/10","7/17","7/24","7/31","8/7","8/14","8/21","8/28"]},
-  "週五板二初階跑步班":  {p:375,f:4500,rf:4050,total:12,time:"19:30~21:00",dates:["6/5","6/12","6/26","7/3","7/10","7/17","7/24","7/31","8/7","8/14","8/21","8/28"]},
-  "週五內湖初階跑步班":  {p:375,f:4500,rf:4050,total:12,time:"19:30~21:00",dates:["6/5","6/12","6/26","7/3","7/10","7/17","7/24","7/31","8/7","8/14","8/21","8/28"]},
-  "週六汐止早跑班":      {p:375,f:4500,rf:4050,total:12,time:"06:00~07:30",dates:["6/6","6/13","6/27","7/4","7/11","7/18","7/25","8/1","8/8","8/15","8/22","8/29"]},
-  "週六北田初階早跑班":  {p:375,f:4500,rf:4050,total:12,time:"06:30~08:00",dates:["6/6","6/13","6/27","7/4","7/11","7/18","7/25","8/1","8/8","8/15","8/22","8/29"]},
-  "週六Hyrox訓練營":     {p:480,f:5760,rf:5184,total:12,time:"09:00~10:30",dates:["6/6","6/13","6/27","7/4","7/11","7/18","7/25","8/1","8/8","8/15","8/22","8/29"]},
-  "週六苓雅早跑班":      {p:375,f:4500,rf:4050,total:12,time:"19:30~21:00",dates:["6/6","6/13","6/27","7/4","7/11","7/18","7/25","8/1","8/8","8/15","8/22","8/29"]},
-  "週日北田早跑班":      {p:375,f:4500,rf:4050,total:12,time:"06:30~08:00",dates:["6/7","6/14","6/28","7/5","7/12","7/19","7/26","8/2","8/9","8/16","8/23","8/30"]},
-  "週一北田跑者肌力班1830":{p:250,f:3500,total:14,time:"18:30-19:30",dates:["6/1","6/8","6/15","6/22","6/29","7/6","7/13","7/20","7/27","8/3","8/10","8/17","8/24","8/31"]},
-  "週一北田跑者肌力班1930":{p:250,f:3500,total:14,time:"19:30-20:30",dates:["6/1","6/8","6/15","6/22","6/29","7/6","7/13","7/20","7/27","8/3","8/10","8/17","8/24","8/31"]},
-  "週一松江跑者肌力班":  {p:500,f:7000,total:14,time:"19:00-20:00",dates:["6/1","6/8","6/15","6/22","6/29","7/6","7/13","7/20","7/27","8/3","8/10","8/17","8/24","8/31"]},
-  "週一北田繩流律動肌力班":{p:250,f:3500,total:14,time:"19:30-20:30",dates:["6/1","6/8","6/15","6/22","6/29","7/6","7/13","7/20","7/27","8/3","8/10","8/17","8/24","8/31"]},
-  "週二北田跑者肌力班1830":{p:250,f:3250,total:13,time:"18:30-19:30",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
-  "週二北田跑者肌力班1930":{p:250,f:3250,total:13,time:"19:30-20:30",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
-  "週四中正敏捷肌力班(未開班)":{p:250,f:3250,total:13,time:"19:10-20:10",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
-  "週五大直跑者肌力班":  {p:500,f:5500,total:11,time:"19:00-20:00",dates:["6/12","6/26","7/3","7/10","7/17","7/24","7/31","8/7","8/14","8/21","8/28"]},
-  "週六松江跑者肌力班0900(未開班)":{p:500,f:6000,total:12,time:"09:00-10:00",dates:["6/6","6/13","6/27","7/4","7/11","7/18","7/25","8/1","8/8","8/15","8/22","8/29"]},
-  "週六松江跑者肌力班1700":{p:500,f:6000,total:12,time:"17:00-18:00",dates:["6/6","6/13","6/27","7/4","7/11","7/18","7/25","8/1","8/8","8/15","8/22","8/29"]},
-  "週六大直跑者肌力班(未開班)":{p:500,f:6000,total:12,time:"",dates:["6/6","6/13","6/27","7/4","7/11","7/18","7/25","8/1","8/8","8/15","8/22","8/29"]},
-  "週日松江跑者肌力班(未開班)":{p:500,f:6000,total:12,time:"09:00-10:00",dates:["6/7","6/14","6/28","7/5","7/12","7/19","7/26","8/2","8/9","8/16","8/23","8/30"]},
+  "週一北田跑步班": {
+    "p": 375,
+    "f": 5250,
+    "rf": 4725,
+    "total": 14,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/1",
+      "6/8",
+      "6/15",
+      "6/22",
+      "6/29",
+      "7/6",
+      "7/13",
+      "7/20",
+      "7/27",
+      "8/3",
+      "8/10",
+      "8/17",
+      "8/24",
+      "8/31"
+    ]
+  },
+  "週一中和跑步班": {
+    "p": 375,
+    "f": 5250,
+    "rf": 4725,
+    "total": 14,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/1",
+      "6/8",
+      "6/15",
+      "6/22",
+      "6/29",
+      "7/6",
+      "7/13",
+      "7/20",
+      "7/27",
+      "8/3",
+      "8/10",
+      "8/17",
+      "8/24",
+      "8/31"
+    ]
+  },
+  "週一中正初階跑步班": {
+    "p": 375,
+    "f": 5250,
+    "rf": 4725,
+    "total": 14,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/1",
+      "6/8",
+      "6/15",
+      "6/22",
+      "6/29",
+      "7/6",
+      "7/13",
+      "7/20",
+      "7/27",
+      "8/3",
+      "8/10",
+      "8/17",
+      "8/24",
+      "8/31"
+    ]
+  },
+  "週一大同初階跑步班": {
+    "p": 375,
+    "f": 5250,
+    "rf": 4725,
+    "total": 14,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/1",
+      "6/8",
+      "6/15",
+      "6/22",
+      "6/29",
+      "7/6",
+      "7/13",
+      "7/20",
+      "7/27",
+      "8/3",
+      "8/10",
+      "8/17",
+      "8/24",
+      "8/31"
+    ]
+  },
+  "週一北田跑者養成班": {
+    "p": 350,
+    "f": 4900,
+    "rf": 4410,
+    "total": 14,
+    "time": "19:00~20:00",
+    "dates": [
+      "6/1",
+      "6/8",
+      "6/15",
+      "6/22",
+      "6/29",
+      "7/6",
+      "7/13",
+      "7/20",
+      "7/27",
+      "8/3",
+      "8/10",
+      "8/17",
+      "8/24",
+      "8/31"
+    ]
+  },
+  "週二內湖跑步班": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "18:30~20:00",
+    "dates": [
+      "6/2",
+      "6/9",
+      "6/16",
+      "6/23",
+      "6/30",
+      "7/7",
+      "7/14",
+      "7/21",
+      "7/28",
+      "8/4",
+      "8/11",
+      "8/18",
+      "8/25"
+    ]
+  },
+  "週二龍江跑步班": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/2",
+      "6/9",
+      "6/16",
+      "6/23",
+      "6/30",
+      "7/7",
+      "7/14",
+      "7/21",
+      "7/28",
+      "8/4",
+      "8/11",
+      "8/18",
+      "8/25"
+    ]
+  },
+  "週二中正初階跑步班": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/2",
+      "6/9",
+      "6/16",
+      "6/23",
+      "6/30",
+      "7/7",
+      "7/14",
+      "7/21",
+      "7/28",
+      "8/4",
+      "8/11",
+      "8/18",
+      "8/25"
+    ]
+  },
+  "週二北田初階跑步班": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/2",
+      "6/9",
+      "6/16",
+      "6/23",
+      "6/30",
+      "7/7",
+      "7/14",
+      "7/21",
+      "7/28",
+      "8/4",
+      "8/11",
+      "8/18",
+      "8/25"
+    ]
+  },
+  "週二板一初階跑步班": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/2",
+      "6/9",
+      "6/16",
+      "6/23",
+      "6/30",
+      "7/7",
+      "7/14",
+      "7/21",
+      "7/28",
+      "8/4",
+      "8/11",
+      "8/18",
+      "8/25"
+    ]
+  },
+  "週二苓雅初階跑步班": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/2",
+      "6/9",
+      "6/16",
+      "6/23",
+      "6/30",
+      "7/7",
+      "7/14",
+      "7/21",
+      "7/28",
+      "8/4",
+      "8/11",
+      "8/18",
+      "8/25"
+    ]
+  },
+  "週二高大初階跑步班(NEW)": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/2",
+      "6/9",
+      "6/16",
+      "6/23",
+      "6/30",
+      "7/7",
+      "7/14",
+      "7/21",
+      "7/28",
+      "8/4",
+      "8/11",
+      "8/18",
+      "8/25"
+    ]
+  },
+  "週三北田跑步班": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/3",
+      "6/10",
+      "6/17",
+      "6/24",
+      "7/1",
+      "7/8",
+      "7/15",
+      "7/22",
+      "7/29",
+      "8/5",
+      "8/12",
+      "8/19",
+      "8/26"
+    ]
+  },
+  "週三板一跑步班": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/3",
+      "6/10",
+      "6/17",
+      "6/24",
+      "7/1",
+      "7/8",
+      "7/15",
+      "7/22",
+      "7/29",
+      "8/5",
+      "8/12",
+      "8/19",
+      "8/26"
+    ]
+  },
+  "週三內湖跑步班": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/3",
+      "6/10",
+      "6/17",
+      "6/24",
+      "7/1",
+      "7/8",
+      "7/15",
+      "7/22",
+      "7/29",
+      "8/5",
+      "8/12",
+      "8/19",
+      "8/26"
+    ]
+  },
+  "週三北田初階跑步班": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/3",
+      "6/10",
+      "6/17",
+      "6/24",
+      "7/1",
+      "7/8",
+      "7/15",
+      "7/22",
+      "7/29",
+      "8/5",
+      "8/12",
+      "8/19",
+      "8/26"
+    ]
+  },
+  "週三新莊初階跑步班": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/3",
+      "6/10",
+      "6/17",
+      "6/24",
+      "7/1",
+      "7/8",
+      "7/15",
+      "7/22",
+      "7/29",
+      "8/5",
+      "8/12",
+      "8/19",
+      "8/26"
+    ]
+  },
+  "週三信義初階跑步班": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/3",
+      "6/10",
+      "6/17",
+      "6/24",
+      "7/1",
+      "7/8",
+      "7/15",
+      "7/22",
+      "7/29",
+      "8/5",
+      "8/12",
+      "8/19",
+      "8/26"
+    ]
+  },
+  "週三高大跑步班": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/3",
+      "6/10",
+      "6/17",
+      "6/24",
+      "7/1",
+      "7/8",
+      "7/15",
+      "7/22",
+      "7/29",
+      "8/5",
+      "8/12",
+      "8/19",
+      "8/26"
+    ]
+  },
+  "週三鳳山跑步班(NEW)": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/3",
+      "6/10",
+      "6/17",
+      "6/24",
+      "7/1",
+      "7/8",
+      "7/15",
+      "7/22",
+      "7/29",
+      "8/5",
+      "8/12",
+      "8/19",
+      "8/26"
+    ]
+  },
+  "週四大同跑步班": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/4",
+      "6/11",
+      "6/18",
+      "6/25",
+      "7/2",
+      "7/9",
+      "7/16",
+      "7/23",
+      "7/30",
+      "8/6",
+      "8/13",
+      "8/20",
+      "8/27"
+    ]
+  },
+  "週四北田初階跑步班": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/4",
+      "6/11",
+      "6/18",
+      "6/25",
+      "7/2",
+      "7/9",
+      "7/16",
+      "7/23",
+      "7/30",
+      "8/6",
+      "8/13",
+      "8/20",
+      "8/27"
+    ]
+  },
+  "週四內湖初階跑步班": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/4",
+      "6/11",
+      "6/18",
+      "6/25",
+      "7/2",
+      "7/9",
+      "7/16",
+      "7/23",
+      "7/30",
+      "8/6",
+      "8/13",
+      "8/20",
+      "8/27"
+    ]
+  },
+  "週四板一初階跑步班": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/4",
+      "6/11",
+      "6/18",
+      "6/25",
+      "7/2",
+      "7/9",
+      "7/16",
+      "7/23",
+      "7/30",
+      "8/6",
+      "8/13",
+      "8/20",
+      "8/27"
+    ]
+  },
+  "週四中正跑步班(NEW)": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/4",
+      "6/11",
+      "6/18",
+      "6/25",
+      "7/2",
+      "7/9",
+      "7/16",
+      "7/23",
+      "7/30",
+      "8/6",
+      "8/13",
+      "8/20",
+      "8/27"
+    ]
+  },
+  "週四龍江跑者養成班": {
+    "p": 350,
+    "f": 4550,
+    "rf": 4095,
+    "total": 13,
+    "time": "19:30~20:30",
+    "dates": [
+      "6/4",
+      "6/11",
+      "6/18",
+      "6/25",
+      "7/2",
+      "7/9",
+      "7/16",
+      "7/23",
+      "7/30",
+      "8/6",
+      "8/13",
+      "8/20",
+      "8/27"
+    ]
+  },
+  "週四苓雅跑步班(NEW)": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/4",
+      "6/11",
+      "6/18",
+      "6/25",
+      "7/2",
+      "7/9",
+      "7/16",
+      "7/23",
+      "7/30",
+      "8/6",
+      "8/13",
+      "8/20",
+      "8/27"
+    ]
+  },
+  "週四高大初階跑步班": {
+    "p": 375,
+    "f": 4875,
+    "rf": 4387,
+    "total": 13,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/4",
+      "6/11",
+      "6/18",
+      "6/25",
+      "7/2",
+      "7/9",
+      "7/16",
+      "7/23",
+      "7/30",
+      "8/6",
+      "8/13",
+      "8/20",
+      "8/27"
+    ]
+  },
+  "週五新莊跑步班": {
+    "p": 375,
+    "f": 4500,
+    "rf": 4050,
+    "total": 12,
+    "time": "19:40~21:10",
+    "dates": [
+      "6/5",
+      "6/12",
+      "6/26",
+      "7/3",
+      "7/10",
+      "7/17",
+      "7/24",
+      "7/31",
+      "8/7",
+      "8/14",
+      "8/21",
+      "8/28"
+    ]
+  },
+  "週五北田跑步班": {
+    "p": 375,
+    "f": 4500,
+    "rf": 4050,
+    "total": 12,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/5",
+      "6/12",
+      "6/26",
+      "7/3",
+      "7/10",
+      "7/17",
+      "7/24",
+      "7/31",
+      "8/7",
+      "8/14",
+      "8/21",
+      "8/28"
+    ]
+  },
+  "週五板二初階跑步班": {
+    "p": 375,
+    "f": 4500,
+    "rf": 4050,
+    "total": 12,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/5",
+      "6/12",
+      "6/26",
+      "7/3",
+      "7/10",
+      "7/17",
+      "7/24",
+      "7/31",
+      "8/7",
+      "8/14",
+      "8/21",
+      "8/28"
+    ]
+  },
+  "週五內湖初階跑步班": {
+    "p": 375,
+    "f": 4500,
+    "rf": 4050,
+    "total": 12,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/5",
+      "6/12",
+      "6/26",
+      "7/3",
+      "7/10",
+      "7/17",
+      "7/24",
+      "7/31",
+      "8/7",
+      "8/14",
+      "8/21",
+      "8/28"
+    ]
+  },
+  "週六汐止早跑班": {
+    "p": 375,
+    "f": 4500,
+    "rf": 4050,
+    "total": 12,
+    "time": "06:00~07:30",
+    "dates": [
+      "6/6",
+      "6/13",
+      "6/27",
+      "7/4",
+      "7/11",
+      "7/18",
+      "7/25",
+      "8/1",
+      "8/8",
+      "8/15",
+      "8/22",
+      "8/29"
+    ]
+  },
+  "週六北田初階早跑班": {
+    "p": 375,
+    "f": 4500,
+    "rf": 4050,
+    "total": 12,
+    "time": "06:30~08:00",
+    "dates": [
+      "6/6",
+      "6/13",
+      "6/27",
+      "7/4",
+      "7/11",
+      "7/18",
+      "7/25",
+      "8/1",
+      "8/8",
+      "8/15",
+      "8/22",
+      "8/29"
+    ]
+  },
+  "週六Hyrox訓練營": {
+    "p": 480,
+    "f": 5760,
+    "rf": 5184,
+    "total": 12,
+    "time": "09:00~10:30",
+    "dates": [
+      "6/6",
+      "6/13",
+      "6/27",
+      "7/4",
+      "7/11",
+      "7/18",
+      "7/25",
+      "8/1",
+      "8/8",
+      "8/15",
+      "8/22",
+      "8/29"
+    ]
+  },
+  "週六苓雅早跑班": {
+    "p": 375,
+    "f": 4500,
+    "rf": 4050,
+    "total": 12,
+    "time": "19:30~21:00",
+    "dates": [
+      "6/6",
+      "6/13",
+      "6/27",
+      "7/4",
+      "7/11",
+      "7/18",
+      "7/25",
+      "8/1",
+      "8/8",
+      "8/15",
+      "8/22",
+      "8/29"
+    ]
+  },
+  "週日北田早跑班": {
+    "p": 375,
+    "f": 4500,
+    "rf": 4050,
+    "total": 12,
+    "time": "06:30~08:00",
+    "dates": [
+      "6/7",
+      "6/14",
+      "6/28",
+      "7/5",
+      "7/12",
+      "7/19",
+      "7/26",
+      "8/2",
+      "8/9",
+      "8/16",
+      "8/23",
+      "8/30"
+    ]
+  },
+  "週一北田跑者肌力班1830": {
+    "p": 250,
+    "f": 3500,
+    "rf": null,
+    "total": 14,
+    "time": "18:30-19:30",
+    "dates": [
+      "6/1",
+      "6/8",
+      "6/15",
+      "6/22",
+      "6/29",
+      "7/6",
+      "7/13",
+      "7/20",
+      "7/27",
+      "8/3",
+      "8/10",
+      "8/17",
+      "8/24",
+      "8/31"
+    ]
+  },
+  "週一北田跑者肌力班1930": {
+    "p": 250,
+    "f": 3500,
+    "rf": null,
+    "total": 14,
+    "time": "19:30-20:30",
+    "dates": [
+      "6/1",
+      "6/8",
+      "6/15",
+      "6/22",
+      "6/29",
+      "7/6",
+      "7/13",
+      "7/20",
+      "7/27",
+      "8/3",
+      "8/10",
+      "8/17",
+      "8/24",
+      "8/31"
+    ]
+  },
+  "週一松江跑者肌力班": {
+    "p": 500,
+    "f": 7000,
+    "rf": null,
+    "total": 14,
+    "time": "19:00-20:00",
+    "dates": [
+      "6/1",
+      "6/8",
+      "6/15",
+      "6/22",
+      "6/29",
+      "7/6",
+      "7/13",
+      "7/20",
+      "7/27",
+      "8/3",
+      "8/10",
+      "8/17",
+      "8/24",
+      "8/31"
+    ]
+  },
+  "週一北田繩流律動肌力班": {
+    "p": 250,
+    "f": 3500,
+    "rf": null,
+    "total": 14,
+    "time": "19:30-20:30",
+    "dates": [
+      "6/1",
+      "6/8",
+      "6/15",
+      "6/22",
+      "6/29",
+      "7/6",
+      "7/13",
+      "7/20",
+      "7/27",
+      "8/3",
+      "8/10",
+      "8/17",
+      "8/24",
+      "8/31"
+    ]
+  },
+  "週二北田跑者肌力班1830": {
+    "p": 250,
+    "f": 3250,
+    "rf": null,
+    "total": 13,
+    "time": "18:30-19:30",
+    "dates": [
+      "6/2",
+      "6/9",
+      "6/16",
+      "6/23",
+      "6/30",
+      "7/7",
+      "7/14",
+      "7/21",
+      "7/28",
+      "8/4",
+      "8/11",
+      "8/18",
+      "8/25"
+    ]
+  },
+  "週二北田跑者肌力班1930": {
+    "p": 250,
+    "f": 3250,
+    "rf": null,
+    "total": 13,
+    "time": "19:30-20:30",
+    "dates": [
+      "6/2",
+      "6/9",
+      "6/16",
+      "6/23",
+      "6/30",
+      "7/7",
+      "7/14",
+      "7/21",
+      "7/28",
+      "8/4",
+      "8/11",
+      "8/18",
+      "8/25"
+    ]
+  },
+  "週四中正敏捷肌力班(未開班)": {
+    "p": 250,
+    "f": 3250,
+    "rf": null,
+    "total": 13,
+    "time": "19:10-20:10",
+    "dates": [
+      "6/4",
+      "6/11",
+      "6/18",
+      "6/25",
+      "7/2",
+      "7/9",
+      "7/16",
+      "7/23",
+      "7/30",
+      "8/6",
+      "8/13",
+      "8/20",
+      "8/27"
+    ]
+  },
+  "週五大直跑者肌力班": {
+    "p": 500,
+    "f": 5500,
+    "rf": null,
+    "total": 11,
+    "time": "19:00-20:00",
+    "dates": [
+      "6/12",
+      "6/26",
+      "7/3",
+      "7/10",
+      "7/17",
+      "7/24",
+      "7/31",
+      "8/7",
+      "8/14",
+      "8/21",
+      "8/28"
+    ]
+  },
+  "週六松江跑者肌力班0900(未開班)": {
+    "p": 500,
+    "f": 6000,
+    "rf": null,
+    "total": 12,
+    "time": "09:00-10:00",
+    "dates": [
+      "6/6",
+      "6/13",
+      "6/27",
+      "7/4",
+      "7/11",
+      "7/18",
+      "7/25",
+      "8/1",
+      "8/8",
+      "8/15",
+      "8/22",
+      "8/29"
+    ]
+  },
+  "週六松江跑者肌力班1700": {
+    "p": 500,
+    "f": 6000,
+    "rf": null,
+    "total": 12,
+    "time": "17:00-18:00",
+    "dates": [
+      "6/6",
+      "6/13",
+      "6/27",
+      "7/4",
+      "7/11",
+      "7/18",
+      "7/25",
+      "8/1",
+      "8/8",
+      "8/15",
+      "8/22",
+      "8/29"
+    ]
+  },
+  "週六大直跑者肌力班(未開班)": {
+    "p": 500,
+    "f": 6000,
+    "rf": null,
+    "total": 12,
+    "time": "",
+    "dates": [
+      "6/6",
+      "6/13",
+      "6/27",
+      "7/4",
+      "7/11",
+      "7/18",
+      "7/25",
+      "8/1",
+      "8/8",
+      "8/15",
+      "8/22",
+      "8/29"
+    ]
+  },
+  "週日松江跑者肌力班(未開班)": {
+    "p": 500,
+    "f": 6000,
+    "rf": null,
+    "total": 12,
+    "time": "09:00-10:00",
+    "dates": [
+      "6/7",
+      "6/14",
+      "6/28",
+      "7/5",
+      "7/12",
+      "7/19",
+      "7/26",
+      "8/2",
+      "8/9",
+      "8/16",
+      "8/23",
+      "8/30"
+    ]
+  }
 };
 
 const DAYS=["週一","週二","週三","週四","週五","週六","週日"];
@@ -1596,5 +2632,118 @@ function mgmtSetSaved(key,val){
     }
   }
 })();
+
+
+async function autoSyncGitHub(){
+  var msg = document.getElementById("sync-msg");
+  try{
+    var token = document.getElementById("gh-token").value.trim();
+    var owner = document.getElementById("gh-owner").value.trim();
+    var repo = document.getElementById("gh-repo").value.trim();
+    var path = document.getElementById("gh-path").value.trim() || "index.html";
+    if(!token || !owner || !repo){ throw new Error("請填寫 Token、擁有者、倉庫名"); }
+    
+    msg.innerHTML = "⏳ 正在產生檔案...";
+    msg.style.display = "block";
+    msg.style.color = "#0ea5e9";
+    
+    // 產生最新 HTML
+    var exportData = {};
+    Object.keys(CL).forEach(function(name){
+      exportData[name] = {p:CL[name].p,f:CL[name].f,rf:CL[name].rf||null,total:CL[name].total,time:CL[name].time||"",dates:CL[name].dates||[]};
+    });
+    var html = document.documentElement.outerHTML;
+    var clString = "const CL=" + JSON.stringify(exportData, null, 2) + ";";
+    html = html.replace(/const CL=\{[\s\S]*?\};/, clString);
+    
+    // 取得原檔 SHA
+    msg.innerHTML = "⏳ 連接 GitHub...";
+    var getRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+      headers: {Authorization: "token " + token, Accept: "application/vnd.github.v3+json"}
+    });
+    var sha = null;
+    if(getRes.ok){ var data = await getRes.json(); sha = data.sha; }
+    
+    // 上傳
+    msg.innerHTML = "⏳ 上傳中...";
+    var content = btoa(unescape(encodeURIComponent(html)));
+    var putRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+      method: "PUT",
+      headers: {Authorization: "token " + token, Accept: "application/vnd.github.v3+json", "Content-Type":"application/json"},
+      body: JSON.stringify({
+        message: "chore: 自動同步班級資料 " + new Date().toISOString().slice(0,16).replace("T"," "),
+        content: content,
+        sha: sha,
+        branch: "main"
+      })
+    });
+    
+    if(!putRes.ok){ var err = await putRes.json(); throw new Error(err.message || "上傳失敗"); }
+    
+    // 儲存設定
+    localStorage.setItem("nid_gh_token", token);
+    localStorage.setItem("nid_gh_owner", owner);
+    localStorage.setItem("nid_gh_repo", repo);
+    localStorage.setItem("nid_gh_path", path);
+    
+    msg.innerHTML = "✅ 自動同步成功！<br>GitHub 已更新";
+    msg.style.color = "#22c55e";
+  }catch(e){
+    msg.textContent = "❌ " + e.message;
+    msg.style.color = "#ef4444";
+    msg.style.display = "block";
+  }
+}
+
+// 自動載入儲存的設定
+(function(){
+  var t = localStorage.getItem("nid_gh_token");
+  if(t) document.getElementById("gh-token").value = t;
+  var o = localStorage.getItem("nid_gh_owner");
+  if(o) document.getElementById("gh-owner").value = o;
+  var r = localStorage.getItem("nid_gh_repo");
+  if(r) document.getElementById("gh-repo").value = r;
+})();
+
+function oneClickSync(){
+  try{
+    var exportData = {};
+    Object.keys(CL).forEach(function(name){
+      exportData[name] = {
+        p: CL[name].p,
+        f: CL[name].f,
+        rf: CL[name].rf || null,
+        total: CL[name].total,
+        time: CL[name].time || "",
+        dates: CL[name].dates || []
+      };
+    });
+    var html = document.documentElement.outerHTML;
+    var clString = "const CL=" + JSON.stringify(exportData, null, 2) + ";";
+    html = html.replace(/const CL=\{[\s\S]*?\};/, clString);
+    var blob = new Blob([html], {type: "text/html;charset=utf-8"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    var date = new Date().toISOString().slice(0,10);
+    a.href = url;
+    a.download = "index-" + date + "-synced.html";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    var msg = document.getElementById("sync-msg");
+    msg.innerHTML = "✅ 已產生同步檔！<br>請上傳到 GitHub 覆蓋 index.html";
+    msg.style.display = "block";
+    msg.style.color = "#22c55e";
+    setTimeout(function(){ msg.style.display="none"; }, 5000);
+  }catch(e){
+    var msg = document.getElementById("sync-msg");
+    msg.textContent = "❌ 同步失敗：" + e.message;
+    msg.style.display = "block";
+    msg.style.color = "#ef4444";
+  }
+}
+
 </script>
+
 </body></html>
