@@ -609,7 +609,7 @@
 function dateToNum(s){var p=s.split("/");return parseInt(p[0])*100+parseInt(p[1]);}
 function getTodayNum(){var d=new Date();return(d.getMonth()+1)*100+d.getDate();}
 
-const FL={kaohsiung:"https://www.surveycake.com/s/vAldy",nurture:"https://www.surveycake.com/s/QyK4n",strength:"https://www.surveycake.com/s/K9p4y",taipei:"https://www.surveycake.com/s/grd10"};
+const FL={kaohsiung:"https://www.surveycake.com/s/gr1Zr",nurture:"https://www.surveycake.com/s/QyK4n",strength:"https://www.surveycake.com/s/K9p4y",taipei:"https://www.surveycake.com/s/grd10"};
 const KK=["苓雅","高大","鳳山"],SK=["肌力","敏捷","繩流律動"];
 const CF={taipei:n=>!KK.some(k=>n.includes(k))&&!n.includes("跑者養成")&&!SK.some(k=>n.includes(k)),kaohsiung:n=>KK.some(k=>n.includes(k)),nurture:n=>n.includes("跑者養成"),strength:n=>SK.some(k=>n.includes(k))};
 function flink(n){if(n.includes("跑者養成"))return FL.nurture;if(KK.some(k=>n.includes(k)))return FL.kaohsiung;if(SK.some(k=>n.includes(k)))return FL.strength;return FL.taipei;}
@@ -626,7 +626,7 @@ const CL={
   "週二北田初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
   "週二板一初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
   "週二苓雅初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
-  "週二高大初階跑步班(NEW)":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
+  "週二高大初階跑步班":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
   "週三北田跑步班":      {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
   "週三板一跑步班":      {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
   "週三內湖跑步班":      {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
@@ -634,14 +634,14 @@ const CL={
   "週三新莊初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
   "週三信義初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
   "週三高大跑步班":      {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
-  "週三鳳山跑步班(NEW)": {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
+  "週三鳳山跑步班": {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
   "週四大同跑步班":      {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
   "週四北田初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
   "週四內湖初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
   "週四板一初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
-  "週四中正跑步班(NEW)": {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
+  "週四中正跑步班": {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
   "週四龍江跑者養成班":  {p:350,f:4550,rf:4095,total:13,time:"19:30~20:30",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
-  "週四苓雅跑步班(NEW)": {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
+  "週四苓雅跑步班": {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
   "週四高大初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
   "週五新莊跑步班":      {p:375,f:4500,rf:4050,total:12,time:"19:40~21:10",dates:["6/5","6/12","6/26","7/3","7/10","7/17","7/24","7/31","8/7","8/14","8/21","8/28"]},
   "週五北田跑步班":      {p:375,f:4500,rf:4050,total:12,time:"19:30~21:00",dates:["6/5","6/12","6/26","7/3","7/10","7/17","7/24","7/31","8/7","8/14","8/21","8/28"]},
@@ -848,7 +848,7 @@ function p2SelDay(mode, day, btn) {
   titleEl.textContent=`選擇班級（${names.length} 個）`;
   listEl.innerHTML=names.map(n=>{
     const fn = mode==="full" ? `selFullCls` : mode==="insert" ? `selInsertCls` : `selTrialCls`;
-    return`<button class="p2btn" onclick="${fn}('${n}',this)">${n.replace(/^週./,"").replace("(NEW)","")}</button>`;
+    return`<button class="p2btn" onclick="${fn}('${n}',this)">${n.replace(/^週./,"").replace("","")}</button>`;
   }).join("");
   wrap.classList.remove("hidden");
   document.getElementById(`${prefix}-class-info`).classList.add("hidden");
@@ -970,7 +970,7 @@ const CLASS_INFO = {
   "週二北田初階跑步班":{coach:"智遠教練",line:"https://line.me/ti/g/92eXRugx6k",loc:"台北田徑場暖身場靠近小巨蛋的操場半圓集合",phone:"0979268123"},
   "週二板一初階跑步班":{coach:"佩珊教練",line:"https://line.me/ti/g/5_PzUxuRvh",loc:"板橋第一運動場面對司令台右邊操場半圓集合",phone:"0910800096"},
   "週二苓雅初階跑步班":{coach:"明儒教練",line:"https://line.me/ti/g/PMK-HH2BvG",loc:"苓雅田徑場主看台正前方",phone:"0933037076"},
-  "週二高大初階跑步班(NEW)":{coach:"傑化教練",line:"https://line.me/ti/g/86MAhXSTmW",loc:"高雄大學主司令台集合",phone:"0973012457"},
+  "週二高大初階跑步班":{coach:"傑化教練",line:"https://line.me/ti/g/86MAhXSTmW",loc:"高雄大學主司令台集合",phone:"0973012457"},
   "週三北田跑步班":{coach:"凱為教練",line:"https://line.me/ti/g/VkhSqTBDxJ",loc:"台北田徑場暖身場靠小巨蛋的操場半圓集合 / 台北田徑場主場館面對司令台右側半圓集合",phone:"0980685897"},
   "週三板一跑步班":{coach:"姚姚教練",line:"https://line.me/ti/g/CzrN_H9ENZ",loc:"板橋第一運動場面對司令台左側半圓集合",phone:"0912768909"},
   "週三內湖跑步班":{coach:"阿飛教練",line:"https://line.me/ti/g/HNSGm762ZE",loc:"內湖高工操場司令台集合",phone:"0981206608"},
@@ -978,14 +978,14 @@ const CLASS_INFO = {
   "週三新莊初階跑步班":{coach:"智遠教練",line:"https://line.me/ti/g/2H5gDOBe2P",loc:"新莊田徑場面對籃球場右側半圓集合",phone:"0979268123"},
   "週三信義初階跑步班":{coach:"明志教練",line:"https://line.me/ti/g/E8M-Lhvo-V",loc:"臺北市立信義國中 松仁路上側門入口進入",phone:"0919474467"},
   "週三高大跑步班":{coach:"傑化教練",line:"https://line.me/ti/g/dSSxd2KrkW",loc:"高雄大學主司令台集合",phone:"0973012457"},
-  "週三鳳山跑步班(NEW)":{coach:"明儒教練",line:"https://line.me/ti/g/wtRs-86tec",loc:"鳳山田徑場集合(靠近鳳山體育館區域)",phone:"0933037076"},
+  "週三鳳山跑步班":{coach:"明儒教練",line:"https://line.me/ti/g/wtRs-86tec",loc:"鳳山田徑場集合(靠近鳳山體育館區域)",phone:"0933037076"},
   "週四大同跑步班":{coach:"凱為教練",line:"https://line.me/ti/g/8XNOguNCbA",loc:"大同高中操場面對司令台右側階梯的最右側集合",phone:"0980685897"},
   "週四北田初階跑步班":{coach:"姚姚教練",line:"https://line.me/ti/g/DdONeHmVIQ",loc:"台北田徑場暖身場靠小巨蛋的操場半圓集合 / 台北田徑場主場館面對司令台右側半圓集合",phone:"0912768909"},
   "週四內湖初階跑步班":{coach:"柏鈞教練",line:"https://line.me/ti/g/40MASxX3yY",loc:"內湖高工操場司令台集合",phone:"0913672780"},
   "週四板一初階跑步班":{coach:"明志教練",line:"https://line.me/ti/g/-V4UmRb-Fd",loc:"板橋第一運動場面對司令台右側半圓集合",phone:"0919474467"},
-  "週四中正跑步班(NEW)":{coach:"承勳教練",line:"https://line.me/ti/g/WpVrp4f5bP",loc:"中正紀念堂廣場中間的旗杆旁集合",phone:"0919481100"},
+  "週四中正跑步班":{coach:"承勳教練",line:"https://line.me/ti/g/WpVrp4f5bP",loc:"中正紀念堂廣場中間的旗杆旁集合",phone:"0919481100"},
   "週四龍江跑者養成班":{coach:"肯尼教練",line:"https://line.me/ti/g/U7ykPQSf2C",loc:"台北市中正國小司令台集合",phone:"0919615282"},
-  "週四苓雅跑步班(NEW)":{coach:"宸瑨教練",line:"https://line.me/ti/g/EbsgVW3qSN",loc:"苓雅田徑場主看台正前方",phone:"0978866762"},
+  "週四苓雅跑步班":{coach:"宸瑨教練",line:"https://line.me/ti/g/EbsgVW3qSN",loc:"苓雅田徑場主看台正前方",phone:"0978866762"},
   "週四高大初階跑步班":{coach:"阿哲教練",line:"https://line.me/ti/g/CCny-RPvVm",loc:"高雄大學主司令台集合",phone:"0963017638"},
   "週五新莊跑步班":{coach:"凱為教練",line:"https://line.me/ti/g/TYgVCdnpj7",loc:"新莊田徑場面對司令台左側操場半圓集合",phone:"0980685897"},
   "週五北田跑步班":{coach:"智遠教練",line:"https://line.me/ti/g/t5B3QJV9d4",loc:"台北田徑場暖身場靠小巨蛋的操場半圓集合 / 台北田徑場主場館面對司令台右側半圓集合",phone:"0979268123"},
@@ -1043,7 +1043,8 @@ function buildConfirm(){
     const coach=info.coach||"【教練】";
     const loc=info.loc||"【集合地點】";
     const lineUrl=info.line||"【群組連結】";
-    t=`確認有收到款項，報名已完成✅\n⏰ 第一堂課上課日期：${selectedDate}${wdMap[wd]||""}，${timeStr}\n🔺上課集合地點：${loc}\n🔺授課教練：${coach}\n🔗一定要加！班級Line群組連結：${lineUrl}\n🔴課程貼心提醒：課程是沒有提供寄物，建議同學們不要帶太貴重的東西，隨身物品輕便為主，若需要寄物可以至附近捷運站至物櫃寄物。課程中會流比較多的汗，建議各位同學可以帶著水跟毛巾，適時的補充水分。\n🔴課程注意事項：課前千萬不要空腹，記得吃點東西再來上課，吃東西的時間建議提前1~1.5個小時，若是早上的課程沒辦法提前那麼早起，建議只少半小時前吃點東西，但不要吃太飽喔！\n🔴補課方法：\n1. 私訊原班教練補課申請補課\n2. NID『跑步課程』都可以補課\n3. 每期提供6次的補課機會，若請假次數超過則不再提供額外補課次數。\n4. 申請補課後若未出席，一樣算一次補課申請。\n5. 補課超過六次，每次則以單堂課程費用500元計費。\n歡迎加入NID大家庭😍`;
+    var makeupLine2=SK.some(function(k){return insertCls.includes(k);})?"NID『對應的肌力課程』都可以補課":"NID『跑步課程』都可以補課";
+    t=`確認有收到款項，報名已完成✅\n⏰ 第一堂課上課日期：${selectedDate}${wdMap[wd]||""}，${timeStr}\n🔺上課集合地點：${loc}\n🔺授課教練：${coach}\n🔗一定要加！班級Line群組連結：${lineUrl}\n🔴課程貼心提醒：課程是沒有提供寄物，建議同學們不要帶太貴重的東西，隨身物品輕便為主，若需要寄物可以至附近捷運站至物櫃寄物。課程中會流比較多的汗，建議各位同學可以帶著水跟毛巾，適時的補充水分。\n🔴課程注意事項：課前千萬不要空腹，記得吃點東西再來上課，吃東西的時間建議提前1~1.5個小時，若是早上的課程沒辦法提前那麼早起，建議只少半小時前吃點東西，但不要吃太飽喔！\n🔴補課方法：\n1. 私訊原班教練補課申請補課\n2. ${makeupLine2}\n3. 每期提供6次的補課機會，若請假次數超過則不再提供額外補課次數。\n4. 申請補課後若未出席，一樣算一次補課申請。\n5. 補課超過六次，每次則以單堂課程費用500元計費。\n歡迎加入NID大家庭😍`;
   }else if(ctype==="trial"&&trialCls&&trialDate){
     const c=CL[trialCls];
     const info=CLASS_INFO[trialCls]||{};
@@ -1126,7 +1127,7 @@ function rfSelDay(day, btn){
   var titleEl=document.getElementById("rf-class-title");
   titleEl.textContent="選擇班級（"+names.length+" 個）";
   listEl.innerHTML=names.map(function(n){
-    var dn=n.replace(/^週./,"").replace("(NEW)",""); return "<button class=\"p2btn\" onclick=\"rfSelClass('"+n+"',this)\">"+dn+"</button>";
+    var dn=n.replace(/^週./,"").replace("",""); return "<button class=\"p2btn\" onclick=\"rfSelClass('"+n+"',this)\">"+dn+"</button>";
   }).join("");
   document.getElementById("rf-class-wrap").classList.remove("hidden");
   document.getElementById("rf-detail-wrap").classList.add("hidden");
@@ -1141,7 +1142,7 @@ function rfSelClass(n, btn){
   var timeStr=c.time||"";
   var isStr=SK.some(function(k){return n.includes(k);});
   document.getElementById("rf-class-info").innerHTML=
-    "<span>"+n.replace("(NEW)","")+"</span>　單堂 <span>"+c.p+"</span> 元"+
+    "<span>"+n.replace("","")+"</span>　單堂 <span>"+c.p+"</span> 元"+
     (timeStr?"　上課時間：<span>"+timeStr+"</span>":"");
   document.getElementById("rf-detail-wrap").classList.remove("hidden");
   // 肌力班隱藏新生/舊生選項
@@ -1349,7 +1350,7 @@ function buildRefundNotify(){
   var now=new Date();
   var todayStr=(now.getFullYear()-2000)+"/"+String(now.getMonth()+1).padStart(2,"0")+"/"+String(now.getDate()).padStart(2,"0");
 
-  var t="以下是退費的學生\n姓名："+name+"\n退費原因："+reasonStr+"\n退課班級："+rfCls.replace("(NEW)","")+"\n退費日期："+todayStr+(remaining>0?"\n退費堂數："+remaining+" 堂":"")+"\n⚠️點名表部分再幫我們將退費學生後面日期的格子都劃掉喔！";
+  var t="以下是退費的學生\n姓名："+name+"\n退費原因："+reasonStr+"\n退課班級："+rfCls.replace("","")+"\n退費日期："+todayStr+(remaining>0?"\n退費堂數："+remaining+" 堂":"")+"\n⚠️點名表部分再幫我們將退費學生後面日期的格子都劃掉喔！";
 
 
 
@@ -1365,7 +1366,7 @@ function buildRefundNotify(){
 
   document.getElementById("p3-empty").classList.add("hidden");
   document.getElementById("p3-type-label").textContent="💸 退費學生";
-  document.getElementById("p3-summary").textContent=rfCls.replace("(NEW)","")+" ／ "+name;
+  document.getElementById("p3-summary").textContent=rfCls.replace("","")+" ／ "+name;
   document.getElementById("p3-info-box").classList.remove("hidden");
   document.getElementById("n-result-box").textContent=t;
   document.getElementById("p3-result-card").classList.remove("hidden");
@@ -1414,8 +1415,8 @@ function buildNotify(){
     const nbSizeStr=nbVestSize?"背心 "+nbVestSize:nbTshirtSize?"短袖 "+nbTshirtSize:"【未選】";
     const sizeRow=isStrength?"":"\n衣服尺寸："+nbSizeStr;
     typeLabel="🆕 新生學生";
-    summary=fullCls.replace("(NEW)","")+" ／ "+name;
-    t="以下是新生的同學\n姓名："+name+"\n電話："+phone+"\n上課班級："+fullCls.replace("(NEW)","")+"\n運動目標："+goal+sizeRow+"\n⚠️再麻煩將學生資訊寫到點名單上喔！";
+    summary=fullCls.replace("","")+" ／ "+name;
+    t="以下是新生的同學\n姓名："+name+"\n電話："+phone+"\n上課班級："+fullCls.replace("","")+"\n運動目標："+goal+sizeRow+"\n⚠️再麻煩將學生資訊寫到點名單上喔！";
 
   } else if(ctype==="insert" && insertCls && selectedDate){
     const c=CL[insertCls];
@@ -1428,8 +1429,8 @@ function buildNotify(){
     const isStrength=SK.some(k=>insertCls.includes(k));
     const sizeRow=isStrength?"":"\n衣服尺寸："+sizeStr;
     typeLabel="🔄 插班學生";
-    summary=insertCls.replace("(NEW)","")+" ／ "+selectedDate+" ／ "+name;
-    t="以下為插班上課的學生\n姓名："+name+"\n電話："+phone+"\n插班時間："+selectedDate+(wdMap[wd]||"")+"，"+(c.time||"【時間】")+"\n插班班級："+insertCls.replace("(NEW)","")+"\n插班堂數："+lessons+" 堂\n運動目標："+goal+sizeRow;
+    summary=insertCls.replace("","")+" ／ "+selectedDate+" ／ "+name;
+    t="以下為插班上課的學生\n姓名："+name+"\n電話："+phone+"\n插班時間："+selectedDate+(wdMap[wd]||"")+"，"+(c.time||"【時間】")+"\n插班班級："+insertCls.replace("","")+"\n插班堂數："+lessons+" 堂\n運動目標："+goal+sizeRow;
 
   } else if(ctype==="trial" && trialCls && trialDate){
     const c=CL[trialCls];
@@ -1438,8 +1439,8 @@ function buildNotify(){
     const phone=getField("ct-phone")||"【電話】";
     const goal=getField("ct-goal")||"【運動習慣】";
     typeLabel="🎉 體驗課學生";
-    summary=trialCls.replace("(NEW)","")+" ／ "+trialDate+" ／ "+name;
-    t="以下為體驗課的學生\n體驗時間："+trialDate+(wdMap[wd]||"")+"，"+(c.time||"【時間】")+"\n體驗班級："+trialCls.replace("(NEW)","")+"\n姓名："+name+"\n電話："+phone+"\n運動習慣："+goal;
+    summary=trialCls.replace("","")+" ／ "+trialDate+" ／ "+name;
+    t="以下為體驗課的學生\n體驗時間："+trialDate+(wdMap[wd]||"")+"，"+(c.time||"【時間】")+"\n體驗班級："+trialCls.replace("","")+"\n姓名："+name+"\n電話："+phone+"\n運動習慣："+goal;
 
   } else {
     document.getElementById("p3-empty").classList.remove("hidden");
@@ -1522,27 +1523,27 @@ function syncToChecklist(){
   if(ctype==="full"&&fullCls){
     var el=document.getElementById("cf-name");
     if(el&&el.value.trim()) name=el.value.trim();
-    cls=fullCls.replace("(NEW)","");
+    cls=fullCls.replace("","");
   } else if(ctype==="insert"&&insertCls){
     var el=document.getElementById("ci-name");
     if(el&&el.value.trim()) name=el.value.trim();
-    cls=insertCls.replace("(NEW)","");
+    cls=insertCls.replace("","");
   } else if(ctype==="trial"&&trialCls){
     var el=document.getElementById("ct-name");
     if(el&&el.value.trim()) name=el.value.trim();
-    cls=trialCls.replace("(NEW)","");
+    cls=trialCls.replace("","");
   } else if(ctype==="refund"&&rfCls){
     var el=document.getElementById("rf-name");
     if(el&&el.value.trim()) name=el.value.trim();
-    cls=rfCls.replace("(NEW)","");
+    cls=rfCls.replace("","");
   }
 
   // Get coach from CLASS_INFO
   var infoKey=cls;
   if(!CLASS_INFO[infoKey]){
-    // Try with (NEW) suffix
+    // Try with  suffix
     Object.keys(CLASS_INFO).forEach(function(k){
-      if(k.replace("(NEW)","")===cls) infoKey=k;
+      if(k.replace("","")===cls) infoKey=k;
     });
   }
   var info=CLASS_INFO[infoKey]||{};
@@ -2119,7 +2120,7 @@ function mgmtShowClasses(cat, day){
   listEl.innerHTML=names.map(function(n){
     var saved=mgmtGetSaved(n);
     var isInactive=saved?saved.inactive:n.includes("未開班");
-    var label=n.replace("(NEW)","")+(isInactive?" 🔴":"");
+    var label=n.replace("","")+(isInactive?" 🔴":"");
     return "<button class=\"p2btn\" onclick=\"mgmtSelClass('"+n+"',this)\">"+label+"</button>";
   }).join("");
   document.getElementById("mgmt-class-wrap").classList.remove("hidden");
@@ -2139,7 +2140,7 @@ function mgmtSelClass(n, btn){
   var inactive=saved.inactive!==undefined?saved.inactive:n.includes("未開班");
   var isStr=SK.some(function(k){return n.includes(k);});
 
-  document.getElementById("mgmt-edit-title").textContent="編輯："+n.replace("(NEW)","");
+  document.getElementById("mgmt-edit-title").textContent="編輯："+n.replace("","");
   document.getElementById("mgmt-time").value=time;
   document.getElementById("mgmt-price").value=price||"";
   document.getElementById("mgmt-fee").value=fee||"";
