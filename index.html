@@ -2047,6 +2047,13 @@ function mgmtSave(){
   if(activeCatBtn) activeCatBtn.click();
 }
 
+function toggleNewClsForm(btn){
+  var form=document.getElementById("new-cls-form");
+  var isOpen=form.style.display!=="none";
+  form.style.display=isOpen?"none":"block";
+  btn.textContent=isOpen?"➕ 新增班級":"✖ 收起";
+}
+
 function mgmtAddClass(){
   var name=document.getElementById("new-cls-name").value.trim();
   if(!name){ alert("請輸入班級名稱"); return; }
@@ -2077,7 +2084,14 @@ function mgmtAddClass(){
   var msg=document.getElementById("new-cls-msg");
   msg.textContent="✅ 已新增「"+name+"」！共 "+dates.length+" 堂";
   msg.style.display="block";
-  setTimeout(function(){msg.style.display="none";},3000);
+  setTimeout(function(){
+    msg.style.display="none";
+    // Collapse form after add
+    var form=document.getElementById("new-cls-form");
+    var btn=document.querySelector("[onclick='toggleNewClsForm(this)']");
+    if(form) form.style.display="none";
+    if(btn) btn.textContent="➕ 新增班級";
+  },2000);
 
   // Clear all fields
   ["new-cls-name","new-cls-price","new-cls-fee","new-cls-rf","new-cls-time",
