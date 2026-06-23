@@ -72,6 +72,7 @@
 <div style="text-align:left;padding:10px 14px 6px;font-size:16px;font-weight:700;letter-spacing:1px;border-bottom:1px solid #222;"><span style="color:#FFD600">NID</span><span style="color:#fff">・RUN CLUB</span><span style="color:#888">｜</span><span style="color:#06C755">LINE@</span><span style="color:#888"> 官方回覆系統</span></div>
 <div class="tab-bar">
   <button class="tab-btn active" onclick="switchTab('p4',this)">⚙️ 管理</button>
+  <button class="tab-btn" onclick="switchTab('p6',this)">📊 報名狀況</button>
   <button class="tab-btn" onclick="switchTab('p1',this)">📋 費用回覆</button>
   <button class="tab-btn" onclick="switchTab('p2',this)">✅ 確認報名</button>
   <button class="tab-btn" onclick="switchTab('p3',this)">📣 通知教練</button>
@@ -599,6 +600,30 @@
     <button class="copy-btn" onclick="pushToGitHub()" id="gh-push-btn">🚀 推送線上版到 GitHub</button>
     <div id="gh-status" style="margin-top:8px;font-size:13px;text-align:center;display:none"></div>
   </div>
+</div>
+
+<!-- PAGE 6 報名狀況 -->
+<div class="page" id="p6">
+  <h2 style="margin-top:4px">📊 報名狀況</h2>
+  <p class="sub">即時讀取 Google 試算表資料</p>
+
+  <div class="card">
+    <button class="copy-btn" onclick="loadClassStatus()" id="status-refresh-btn">🔄 更新報名狀況</button>
+    <div id="status-last-update" style="text-align:center;font-size:11px;color:#666;margin-top:6px"></div>
+  </div>
+
+  <div id="status-list" style="display:none">
+    <div class="card" id="status-full-card" style="display:none">
+      <span class="card-label" style="color:#ff6b6b">🔴 滿班</span>
+      <div id="status-full-list"></div>
+    </div>
+    <div class="card" id="status-open-card" style="display:none">
+      <span class="card-label" style="color:#22c55e">✅ 開放報名</span>
+      <div id="status-open-list"></div>
+    </div>
+  </div>
+
+  <div id="status-error" style="display:none;text-align:center;color:#ff6b6b;padding:20px;font-size:13px"></div>
 </div>
 </div>
 
@@ -2364,6 +2389,63 @@ function buildOnlineVersion(){
     html=html.substring(0,jsStart)+html.substring(jsEnd);
   }
   return html;
+}
+
+// ── 報名狀況 ──
+const SHEET_ID = "19ak8kuALBe-EPIam6LnpXW3zW5eS5Qq81gwGm29S0zo";
+const CAPACITY = 25;
+
+function loadClassStatus(){
+  var btn = document.getElementById("status-refresh-btn");
+  btn.textContent = "⏳ 讀取中...";
+  btn.disabled = true;
+
+  var url = "https://docs.google.com/spreadsheets/d/" + SHEET_ID + "/gviz/tq?tqx=out:json&sheet=工作表1";
+
+  fetch(url)
+    .then(function(r){ return r.text(); })
+    .then(function(text){
+      // Parse Google Visualization JSON
+      var json = JSON.parse(text.replace(/.*?\(/, "").replace(/\);?\s*$/, ""));
+      var rows = json.table.rows;
+
+      var full = [], open = [];
+      rows.forEach(function(row){
+        if(!row.c || !row.c[0] || !row.c[0].v) return;
+        var name = row.c[0].v;
+        var limit = row.c[1] ? (row.c[1].v || CAPACITY) : CAPACITY;
+        var current = row.c[2] ? (row.c[2].v || 0) : 0;
+        var pct = Math.round(current / limit * 100);
+
+        var item = '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #222;">' +
+          '<span style="font-size:13px;color:#eee">' + name + '</span>' +
+          '<span style="font-size:12px;color:' + (current >= limit ? "#ff6b6b" : "#22c55e") + ';font-weight:700">' + current + ' / ' + limit + '</span>' +
+          '</div>';
+
+        if(current >= limit) full.push(item);
+        else open.push(item);
+      });
+
+      document.getElementById("status-full-list").innerHTML = full.join("") || '<div style="color:#666;font-size:13px;padding:8px 0">目前沒有滿班班級</div>';
+      document.getElementById("status-open-list").innerHTML = open.join("") || '<div style="color:#666;font-size:13px;padding:8px 0">目前沒有開放報名班級</div>';
+
+      document.getElementById("status-full-card").style.display = "";
+      document.getElementById("status-open-card").style.display = "";
+      document.getElementById("status-list").style.display = "";
+      document.getElementById("status-error").style.display = "none";
+
+      var now = new Date();
+      document.getElementById("status-last-update").textContent = "最後更新：" + now.toLocaleTimeString("zh-TW");
+    })
+    .catch(function(err){
+      document.getElementById("status-error").textContent = "❌ 讀取失敗，請確認試算表已設為公開：" + err.message;
+      document.getElementById("status-error").style.display = "block";
+      document.getElementById("status-list").style.display = "none";
+    })
+    .finally(function(){
+      btn.textContent = "🔄 更新報名狀況";
+      btn.disabled = false;
+    });
 }
 
 </script>
