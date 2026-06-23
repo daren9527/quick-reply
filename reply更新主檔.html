@@ -70,15 +70,15 @@
 </head>
 <body><div id="app">
 <div class="tab-bar">
-  <button class="tab-btn active" onclick="switchTab('p1',this)">📋 費用回覆</button>
+  <button class="tab-btn active" onclick="switchTab('p4',this)">⚙️ 管理</button>
+  <button class="tab-btn" onclick="switchTab('p1',this)">📋 費用回覆</button>
   <button class="tab-btn" onclick="switchTab('p2',this)">✅ 確認報名</button>
   <button class="tab-btn" onclick="switchTab('p3',this)">📣 通知教練</button>
   <button class="tab-btn" onclick="switchTab('p5',this)">☑️ 核對清單</button>
-  <button class="tab-btn" onclick="switchTab('p4',this)">⚙️ 管理</button>
 </div>
 
 <!-- PAGE 1 -->
-<div class="page active" id="p1">
+<div class="page" id="p1">
   <h2>🏃 費用快速回覆</h2>
   <p class="sub">選類別 → 星期 → 班級 → 複製</p>
   <div class="card">
@@ -452,7 +452,7 @@
 </div>
 
 <!-- PAGE 4 管理後台 -->
-<div class="page" id="p4" style="padding-top:8px">
+<div class="page active" id="p4" style="padding-top:8px">
   <h2 style="margin-top:4px">⚙️ 管理後台</h2>
   <p class="sub">修改班級資料，儲存後立即生效</p>
 
