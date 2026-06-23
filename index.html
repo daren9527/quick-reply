@@ -67,12 +67,13 @@
 </style>
 </head>
 <body><div id="app">
+<div style="text-align:left;padding:10px 14px 6px;font-size:16px;font-weight:700;letter-spacing:1px;border-bottom:1px solid #222;"><span style="color:#FFD600">NID</span><span style="color:#fff">・RUN CLUB</span><span style="color:#888">｜</span><span style="color:#06C755">LINE@</span><span style="color:#888"> 官方回覆系統</span></div>
 <div class="tab-bar">
+  
   <button class="tab-btn" onclick="switchTab('p1',this)">📋 費用回覆</button>
   <button class="tab-btn" onclick="switchTab('p2',this)">✅ 確認報名</button>
   <button class="tab-btn" onclick="switchTab('p3',this)">📣 通知教練</button>
   <button class="tab-btn" onclick="switchTab('p5',this)">☑️ 核對清單</button>
-  
 </div>
 
 <!-- PAGE 1 -->
@@ -126,7 +127,7 @@
     <span class="card-label">確認類型</span>
     <div class="g2">
       <button class="gbtn" onclick="selConfirm('full',this)">💰 全額繳費</button>
-      <button class="gbtn active" onclick="selConfirm('insert',this)">🔄 插班報名</button>
+      <button class="gbtn" onclick="selConfirm('insert',this)">🔄 插班報名</button>
       <button class="gbtn" onclick="selConfirm('trial',this)">🎉 體驗課程報名</button>
       <button class="gbtn" onclick="selConfirm('refund',this)">💸 退費申請</button>
     </div>
@@ -189,27 +190,27 @@
   </div>
 
   <!-- 插班 -->
-  <div class="card" id="c-insert-card">
+  <div class="card hidden" id="c-insert-card">
     <span class="card-label">插班資訊</span>
     <div class="stitle">選擇類別</div>
     <div class="g2" id="insert-cat-grid">
       <button class="gbtn" onclick="p2SelCat('insert','taipei',this)">🏙️ 台北跑步班</button>
       <button class="gbtn" onclick="p2SelCat('insert','kaohsiung',this)">🌆 高雄跑步班</button>
       <button class="gbtn" onclick="p2SelCat('insert','nurture',this)">🏃 跑者養成班</button>
-      <button class="gbtn active" onclick="p2SelCat('insert','strength',this)">💪 肌力班</button>
+      <button class="gbtn" onclick="p2SelCat('insert','strength',this)">💪 肌力班</button>
     </div>
-    <div class="" id="insert-day-wrap" style="margin-top:10px">
+    <div class="hidden" id="insert-day-wrap" style="margin-top:10px">
       <div class="stitle">選擇星期</div>
-      <div class="g4" id="insert-day-grid"><button class="gbtn">週一</button><button class="gbtn active">週二</button><button class="gbtn">週五</button><button class="gbtn">週六</button></div>
+      <div class="g4" id="insert-day-grid"></div>
     </div>
-    <div class="" id="insert-class-wrap" style="margin-top:10px">
-      <div class="stitle" id="insert-class-title">選擇班級（2 個）</div>
-      <div class="p2list" id="insert-class-list"><button class="p2btn active" onclick="selInsertCls('週二北田跑者肌力班1830',this)">北田跑者肌力班1830</button><button class="p2btn" onclick="selInsertCls('週二北田跑者肌力班1930',this)">北田跑者肌力班1930</button></div>
+    <div class="hidden" id="insert-class-wrap" style="margin-top:10px">
+      <div class="stitle" id="insert-class-title">選擇班級</div>
+      <div class="p2list" id="insert-class-list"></div>
     </div>
-    <div id="insert-class-info" class="" style="margin-top:10px">
-      <div class="info-box" id="insert-info-box">上課時間：<span>18:30-19:30</span>　共 <span>13</span> 堂　單堂：<span>250</span> 元</div>
+    <div id="insert-class-info" class="hidden" style="margin-top:10px">
+      <div class="info-box" id="insert-info-box"></div>
       <div class="stitle">選擇第一堂上課日期</div>
-      <div class="date-grid" id="date-grid"><button class="dbtn" onclick="selDate('6/23',this)">6/23</button><button class="dbtn" onclick="selDate('6/30',this)">6/30</button><button class="dbtn" onclick="selDate('7/7',this)">7/7</button><button class="dbtn" onclick="selDate('7/14',this)">7/14</button><button class="dbtn" onclick="selDate('7/21',this)">7/21</button><button class="dbtn" onclick="selDate('7/28',this)">7/28</button><button class="dbtn" onclick="selDate('8/4',this)">8/4</button><button class="dbtn active" onclick="selDate('8/11',this)">8/11</button><button class="dbtn" onclick="selDate('8/18',this)">8/18</button><button class="dbtn" onclick="selDate('8/25',this)">8/25</button></div>
+      <div class="date-grid" id="date-grid"></div>
       <div id="insert-student-fields" style="margin-top:12px">
         <div class="stitle">學生姓名</div>
         <input type="text" id="ci-name" placeholder="請輸入姓名" oninput="buildConfirm();buildNotify()">
@@ -217,9 +218,9 @@
         <input type="text" id="ci-phone" placeholder="請輸入電話" oninput="buildConfirm();buildNotify()">
         <div class="stitle">運動目標</div>
         <input type="text" id="ci-goal" placeholder="例：減重、增強體能、完成馬拉松" oninput="buildConfirm();buildNotify()">
-        <div class="stitle" style="display: none;">衣服尺寸</div>
-        <div class="stitle" style="color: rgb(136, 136, 136); font-size: 10px; margin-bottom: 6px; display: none;">背心 XS~3XL</div>
-        <div style="display: none; flex-wrap: wrap; row-gap: 6px; column-gap: 6px; margin-bottom: 10px;" id="ci-vest-grid">
+        <div class="stitle">衣服尺寸</div>
+        <div class="stitle" style="color:#888;font-size:10px;margin-bottom:6px">背心 XS~3XL</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px" id="ci-vest-grid">
           <button class="dbtn" onclick="selCiSize('vest','XS',this)">XS</button>
           <button class="dbtn" onclick="selCiSize('vest','S',this)">S</button>
           <button class="dbtn" onclick="selCiSize('vest','M',this)">M</button>
@@ -228,8 +229,8 @@
           <button class="dbtn" onclick="selCiSize('vest','2XL',this)">2XL</button>
           <button class="dbtn" onclick="selCiSize('vest','3XL',this)">3XL</button>
         </div>
-        <div class="stitle" style="color: rgb(136, 136, 136); font-size: 10px; margin-bottom: 6px; display: none;">短袖 XS~5XL</div>
-        <div style="display: none; flex-wrap: wrap; row-gap: 6px; column-gap: 6px;" id="ci-tshirt-grid">
+        <div class="stitle" style="color:#888;font-size:10px;margin-bottom:6px">短袖 XS~5XL</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px" id="ci-tshirt-grid">
           <button class="dbtn" onclick="selCiSize('tshirt','XS',this)">XS</button>
           <button class="dbtn" onclick="selCiSize('tshirt','S',this)">S</button>
           <button class="dbtn" onclick="selCiSize('tshirt','M',this)">M</button>
@@ -344,7 +345,7 @@
   </div>
 
   <!-- 確認打勾 -->
-  <div class="card" id="c-confirm-chk-card">
+  <div class="card hidden" id="c-confirm-chk-card">
     <div id="c-confirm-chk-item" onclick="toggleConfirmChk()" style="display:flex;align-items:center;gap:14px;padding:4px;cursor:pointer">
       <div id="c-confirm-chk-box" style="width:28px;height:28px;border-radius:50%;border:2.5px solid #444;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s">
         <div id="c-confirm-chk-inner" style="width:10px;height:6px;border-left:2.5px solid #111;border-bottom:2.5px solid #111;transform:rotate(-45deg) translate(1px,-1px);opacity:0;transition:opacity .2s"></div>
@@ -357,22 +358,9 @@
   </div>
 
   <!-- 結果 -->
-  <div class="card" id="c-result-card">
+  <div class="card hidden" id="c-result-card">
     <span class="card-label">回覆內容</span>
-    <div class="result-box" id="c-result-box">確認有收到款項，報名已完成✅
-⏰ 第一堂課上課日期：8/11（二），18:30-19:30
-🔺上課集合地點：台北田徑場主場館Ｃ門外側
-🔺授課教練：正洋教練
-🔗一定要加！班級Line群組連結：http://line.me/ti/g/hpLixdID4g
-🔴課程貼心提醒：課程是沒有提供寄物，建議同學們不要帶太貴重的東西，隨身物品輕便為主，若需要寄物可以至附近捷運站至物櫃寄物。課程中會流比較多的汗，建議各位同學可以帶著水跟毛巾，適時的補充水分。
-🔴課程注意事項：課前千萬不要空腹，記得吃點東西再來上課，吃東西的時間建議提前1~1.5個小時，若是早上的課程沒辦法提前那麼早起，建議只少半小時前吃點東西，但不要吃太飽喔！
-🔴補課方法：
-1. 私訊原班教練補課申請補課
-2. NID『對應的肌力課程』都可以補課
-3. 每期提供6次的補課機會，若請假次數超過則不再提供額外補課次數。
-4. 申請補課後若未出席，一樣算一次補課申請。
-5. 補課超過六次，每次則以單堂課程費用500元計費。
-歡迎加入NID大家庭😍</div>
+    <div class="result-box" id="c-result-box"></div>
     <button class="copy-btn" id="c-copy-btn" onclick="doCopy('c-result-box','c-copy-btn')">複製回覆內容</button>
   </div>
 </div>
