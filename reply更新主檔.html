@@ -2400,13 +2400,15 @@ function loadClassStatus(){
   btn.textContent = "⏳ 讀取中...";
   btn.disabled = true;
 
-  var url = "https://docs.google.com/spreadsheets/d/" + SHEET_ID + "/gviz/tq?tqx=out:json&sheet=工作表1";
+  var url = "https://docs.google.com/spreadsheets/d/" + SHEET_ID + "/gviz/tq?tqx=out:json";
 
   fetch(url)
     .then(function(r){ return r.text(); })
     .then(function(text){
       // Parse Google Visualization JSON
-      var json = JSON.parse(text.replace(/.*?\(/, "").replace(/\);?\s*$/, ""));
+      var start = text.indexOf("(") + 1;
+      var end = text.lastIndexOf(")");
+      var json = JSON.parse(text.substring(start, end));
       var rows = json.table.rows;
 
       var full = [], open = [];
