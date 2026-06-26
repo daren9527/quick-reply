@@ -2434,6 +2434,7 @@ function loadClassStatus(){
         statusMap[name]={current:current,limit:limit,full:current>=limit};
       });
 
+      globalStatusMap=statusMap;
       // Render each category
       Object.keys(STATUS_CATS).forEach(function(catKey){
         var cat=STATUS_CATS[catKey];
@@ -2462,6 +2463,7 @@ function loadClassStatus(){
 
       document.getElementById("status-list").style.display="";
       document.getElementById("status-error").style.display="none";
+      applyStatusToPages();
       var now=new Date();
       document.getElementById("status-last-update").textContent="最後更新："+now.toLocaleTimeString("zh-TW");
     })
@@ -2472,6 +2474,27 @@ function loadClassStatus(){
     .finally(function(){
       btn.textContent="🔄 更新報名狀況"; btn.disabled=false;
     });
+}
+
+// Store status map globally for use in other pages
+var globalStatusMap = {};
+
+function applyStatusToPages(){
+  if(!globalStatusMap || Object.keys(globalStatusMap).length===0) return;
+  // Hide full class buttons in p1 (fee) and p2 (confirm)
+  document.querySelectorAll("#p1 .p2btn, #p2 .p2btn").forEach(function(btn){
+    var label = btn.textContent.trim();
+    // Find matching class
+    Object.keys(globalStatusMap).forEach(function(cls){
+      if(label.startsWith(cls) || label===cls){
+        if(globalStatusMap[cls].full){
+          btn.style.display="none";
+        } else {
+          btn.style.display="";
+        }
+      }
+    });
+  });
 }
 
 function statusSelectClass(cls){
