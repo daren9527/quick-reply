@@ -747,7 +747,12 @@ function selDay(d,btn){
   document.querySelectorAll("#app #day-grid .gbtn").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
   const fi=cat?CF[cat]:()=>true;
-  renderCls(Object.keys(CL).filter(n=>n.startsWith(d)&&!n.includes("未開班")&&fi(n)));
+  renderCls(Object.keys(CL).filter(n=>{
+    if(!n.startsWith(d)||n.includes("未開班")||!fi(n)) return false;
+    var cn=n.replace("(NEW)","");
+    if(globalStatusMap[cn]&&globalStatusMap[cn].full) return false;
+    return true;
+  }));
   resetType();resetResult();
 }
 
@@ -879,7 +884,13 @@ function p2SelDay(mode, day, btn) {
   btn.classList.add("active");
 
   const fi=CF[cat];
-  const names=Object.keys(CL).filter(n=>n.startsWith(day)&&!n.includes("未開班")&&fi(n));
+  const names=Object.keys(CL).filter(n=>{
+    if(!n.startsWith(day)||n.includes("未開班")||!fi(n)) return false;
+    // Hide full classes if status loaded
+    var cleanName=n.replace("(NEW)","");
+    if(globalStatusMap[cleanName]&&globalStatusMap[cleanName].full) return false;
+    return true;
+  });
   const wrap=document.getElementById(`${prefix}-class-wrap`);
   const titleEl=document.getElementById(`${prefix}-class-title`);
   const listEl=document.getElementById(`${prefix}-class-list`);
@@ -2446,9 +2457,7 @@ function loadClassStatus(){
           if(!s) return;
           var btn=document.createElement("button");
           if(s.full){
-            btn.style.cssText="padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700;background:#4a1010;color:#ff6b6b;border:1.5px solid #ff6b6b;cursor:not-allowed;opacity:0.8;";
-            btn.textContent=cls+" 🔴";
-            btn.disabled=true;
+            return; // 隱藏滿班班級
           } else {
             btn.style.cssText="padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700;background:#2a2200;color:#FFD600;border:1.5px solid #FFD600;cursor:pointer;";
             btn.textContent=cls+" ("+s.current+"/"+s.limit+")";
@@ -2483,17 +2492,14 @@ function applyStatusToPages(){
   if(!globalStatusMap || Object.keys(globalStatusMap).length===0) return;
   // Hide full class buttons in p1 (fee) and p2 (confirm)
   document.querySelectorAll("#p1 .p2btn, #p2 .p2btn").forEach(function(btn){
-    var label = btn.textContent.trim();
-    // Find matching class
+    var label=btn.textContent.trim();
+    var isFull=false;
     Object.keys(globalStatusMap).forEach(function(cls){
-      if(label.startsWith(cls) || label===cls){
-        if(globalStatusMap[cls].full){
-          btn.style.display="none";
-        } else {
-          btn.style.display="";
-        }
+      if(label===cls || label.replace(/\s*\$[\d,]+$/,"")===cls){
+        if(globalStatusMap[cls].full) isFull=true;
       }
     });
+    btn.style.display=isFull?"none":"";
   });
 }
 
