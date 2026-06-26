@@ -605,7 +605,7 @@
 <!-- PAGE 6 報名狀況 -->
 <div class="page" id="p6">
   <h2 style="margin-top:4px">📊 報名狀況</h2>
-  <p class="sub">即時讀取 Google 試算表資料</p>
+  <p class="sub">點擊有名額的班級直接進入費用回覆</p>
 
   <div class="card">
     <button class="copy-btn" onclick="loadClassStatus()" id="status-refresh-btn">🔄 更新報名狀況</button>
@@ -613,13 +613,25 @@
   </div>
 
   <div id="status-list" style="display:none">
-    <div class="card" id="status-full-card" style="display:none">
-      <span class="card-label" style="color:#ff6b6b">🔴 滿班</span>
-      <div id="status-full-list"></div>
+    <div class="card" id="status-cat-taipei">
+      <span class="card-label">🏙️ 台北跑步班</span>
+      <div id="status-list-taipei" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"></div>
     </div>
-    <div class="card" id="status-open-card" style="display:none">
-      <span class="card-label" style="color:#22c55e">✅ 開放報名</span>
-      <div id="status-open-list"></div>
+    <div class="card" id="status-cat-kaohsiung">
+      <span class="card-label">🌆 高雄跑步班</span>
+      <div id="status-list-kaohsiung" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"></div>
+    </div>
+    <div class="card" id="status-cat-nurture">
+      <span class="card-label">🏃 養成班</span>
+      <div id="status-list-nurture" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"></div>
+    </div>
+    <div class="card" id="status-cat-hyrox">
+      <span class="card-label">💪 Hyrox</span>
+      <div id="status-list-hyrox" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"></div>
+    </div>
+    <div class="card" id="status-cat-strength">
+      <span class="card-label">🏋️ 肌力班</span>
+      <div id="status-list-strength" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"></div>
     </div>
   </div>
 
@@ -2393,62 +2405,104 @@ function buildOnlineVersion(){
 
 // ── 報名狀況 ──
 const SHEET_ID = "19ak8kuALBe-EPIam6LnpXW3zW5eS5Qq81gwGm29S0zo";
-const CAPACITY = 25;
+const STATUS_CATS = {
+  "taipei": {"label":"台北","classes":['週一北田跑步班', '週一中和跑步班', '週一中正初階跑步班', '週一大同初階跑步班', '週二內湖跑步班', '週二龍江跑步班', '週二中正初階跑步班', '週二北田初階跑步班', '週二板一初階跑步班', '週三北田跑步班', '週三板一跑步班', '週三內湖跑步班', '週三北田初階跑步班', '週三新莊初階跑步班', '週三信義初階跑步班', '週四大同跑步班', '週四北田初階跑步班', '週四內湖初階跑步班', '週四板一初階跑步班', '週四中正跑步班', '週五新莊跑步班', '週五北田跑步班', '週五板二初階跑步班', '週五內湖初階跑步班', '週六汐止早跑班', '週六北田初階早跑班', '週日北田早跑班']},
+  "kaohsiung": {"label":"高雄","classes":['週二苓雅初階跑步班', '週二高大初階跑步班', '週三高大跑步班', '週三鳳山跑步班', '週四苓雅跑步班', '週四高大初階跑步班', '週六苓雅早跑班']},
+  "nurture": {"label":"養成","classes":['週一北田跑者養成班', '週四龍江跑者養成班']},
+  "hyrox": {"label":"Hyrox","classes":['週六Hyrox訓練營']},
+  "strength": {"label":"肌力","classes":['週一北田跑者肌力班1830', '週一北田跑者肌力班1930', '週一松江跑者肌力班', '週一北田繩流律動肌力班', '週二北田跑者肌力班1830', '週二北田跑者肌力班1930', '週五大直跑者肌力班', '週六松江跑者肌力班1700']}
+};
 
 function loadClassStatus(){
-  var btn = document.getElementById("status-refresh-btn");
-  btn.textContent = "⏳ 讀取中...";
-  btn.disabled = true;
-
-  var url = "https://docs.google.com/spreadsheets/d/" + SHEET_ID + "/gviz/tq?tqx=out:json";
-
+  var btn=document.getElementById("status-refresh-btn");
+  btn.textContent="⏳ 讀取中..."; btn.disabled=true;
+  var url="https://docs.google.com/spreadsheets/d/"+SHEET_ID+"/gviz/tq?tqx=out:json";
   fetch(url)
-    .then(function(r){ return r.text(); })
+    .then(function(r){return r.text();})
     .then(function(text){
-      // Parse Google Visualization JSON
-      var start = text.indexOf("(") + 1;
-      var end = text.lastIndexOf(")");
-      var json = JSON.parse(text.substring(start, end));
-      var rows = json.table.rows;
+      var start=text.indexOf("(")+1; var end=text.lastIndexOf(")");
+      var json=JSON.parse(text.substring(start,end));
+      var rows=json.table.rows;
 
-      var full = [], open = [];
+      // Build status map
+      var statusMap={};
       rows.forEach(function(row){
-        if(!row.c || !row.c[0] || !row.c[0].v) return;
-        var name = row.c[0].v;
-        var limit = row.c[1] ? (row.c[1].v || CAPACITY) : CAPACITY;
-        var current = row.c[2] ? (row.c[2].v || 0) : 0;
-        var pct = Math.round(current / limit * 100);
-
-        var item = '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #222;">' +
-          '<span style="font-size:13px;color:#eee">' + name + '</span>' +
-          '<span style="font-size:12px;color:' + (current >= limit ? "#ff6b6b" : "#22c55e") + ';font-weight:700">' + current + ' / ' + limit + '</span>' +
-          '</div>';
-
-        if(current >= limit) full.push(item);
-        else open.push(item);
+        if(!row.c||!row.c[0]||!row.c[0].v) return;
+        var name=row.c[0].v;
+        var limit=row.c[1]?(row.c[1].v||25):25;
+        var current=row.c[2]?(row.c[2].v||0):0;
+        statusMap[name]={current:current,limit:limit,full:current>=limit};
       });
 
-      document.getElementById("status-full-list").innerHTML = full.join("") || '<div style="color:#666;font-size:13px;padding:8px 0">目前沒有滿班班級</div>';
-      document.getElementById("status-open-list").innerHTML = open.join("") || '<div style="color:#666;font-size:13px;padding:8px 0">目前沒有開放報名班級</div>';
+      // Render each category
+      Object.keys(STATUS_CATS).forEach(function(catKey){
+        var cat=STATUS_CATS[catKey];
+        var el=document.getElementById("status-list-"+catKey);
+        if(!el) return;
+        el.innerHTML="";
+        cat.classes.forEach(function(cls){
+          var s=statusMap[cls];
+          if(!s) return;
+          var btn=document.createElement("button");
+          if(s.full){
+            btn.style.cssText="padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700;background:#4a1010;color:#ff6b6b;border:1.5px solid #ff6b6b;cursor:not-allowed;opacity:0.8;";
+            btn.textContent=cls+" 🔴";
+            btn.disabled=true;
+          } else {
+            btn.style.cssText="padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700;background:#2a2200;color:#FFD600;border:1.5px solid #FFD600;cursor:pointer;";
+            btn.textContent=cls+" ("+s.current+"/"+s.limit+")";
+            btn.onclick=function(){
+              // Jump to fee page and select this class
+              statusSelectClass(cls);
+            };
+          }
+          el.appendChild(btn);
+        });
+      });
 
-      document.getElementById("status-full-card").style.display = "";
-      document.getElementById("status-open-card").style.display = "";
-      document.getElementById("status-list").style.display = "";
-      document.getElementById("status-error").style.display = "none";
-
-      var now = new Date();
-      document.getElementById("status-last-update").textContent = "最後更新：" + now.toLocaleTimeString("zh-TW");
+      document.getElementById("status-list").style.display="";
+      document.getElementById("status-error").style.display="none";
+      var now=new Date();
+      document.getElementById("status-last-update").textContent="最後更新："+now.toLocaleTimeString("zh-TW");
     })
     .catch(function(err){
-      document.getElementById("status-error").textContent = "❌ 讀取失敗，請確認試算表已設為公開：" + err.message;
-      document.getElementById("status-error").style.display = "block";
-      document.getElementById("status-list").style.display = "none";
+      document.getElementById("status-error").textContent="❌ 讀取失敗："+err.message;
+      document.getElementById("status-error").style.display="block";
     })
     .finally(function(){
-      btn.textContent = "🔄 更新報名狀況";
-      btn.disabled = false;
+      btn.textContent="🔄 更新報名狀況"; btn.disabled=false;
     });
 }
 
+function statusSelectClass(cls){
+  // Switch to fee page and pre-select class
+  var feeBtn=document.querySelector(".tab-btn[onclick*=\'p1\']");
+  if(feeBtn) {feeBtn.click();}
+  // Try to find and click matching category then class
+  setTimeout(function(){
+    // Find which category this class belongs to
+    var catMap={};
+    Object.keys(CL).forEach(function(k){
+      if(k===cls||k.replace("(NEW)","")===cls) catMap[k]=true;
+    });
+    // Trigger selCat based on class type
+    var SK_keys=SK||[];
+    var isStr=SK_keys.some(function(k){return cls.includes(k);});
+    var isNurture=cls.includes("養成");
+    var isKH=["苓雅","高大","鳳山"].some(function(k){return cls.includes(k);});
+    var catBtn=null;
+    if(isStr) catBtn=document.querySelector("[onclick*=\"selCat(\'strength\']");
+    else if(isNurture) catBtn=document.querySelector("[onclick*=\"selCat(\'nurture\']");
+    else if(isKH) catBtn=document.querySelector("[onclick*=\"selCat(\'kaohsiung\']");
+    else catBtn=document.querySelector("[onclick*=\"selCat(\'taipei\']");
+    if(catBtn) catBtn.click();
+    setTimeout(function(){
+      // Click the class button
+      document.querySelectorAll("#p1 .p2btn, #p1 .gbtn").forEach(function(b){
+        if(b.textContent.trim().startsWith(cls)) b.click();
+      });
+    },200);
+  },100);
+}
 </script>
 </body></html>
