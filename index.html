@@ -89,6 +89,7 @@
       <button class="gbtn" onclick="selectCat('kaohsiung',this)">🌆 高雄跑步班</button>
       <button class="gbtn" onclick="selectCat('nurture',this)">🏃 跑者養成班</button>
       <button class="gbtn" onclick="selectCat('strength',this)">💪 肌力班</button>
+      <button class="gbtn" onclick="selectCat('hyrox',this)">🏋️ Hyrox</button>
     </div>
   </div>
   <div class="card" id="day-card">
@@ -144,6 +145,7 @@
       <button class="gbtn" onclick="p2SelCat('full','kaohsiung',this)">🌆 高雄跑步班</button>
       <button class="gbtn" onclick="p2SelCat('full','nurture',this)">🏃 跑者養成班</button>
       <button class="gbtn" onclick="p2SelCat('full','strength',this)">💪 肌力班</button>
+      <button class="gbtn" onclick="p2SelCat('full','hyrox',this)">🏋️ Hyrox</button>
     </div>
     <div class="hidden" id="full-day-wrap" style="margin-top:10px">
       <div class="stitle">選擇星期</div>
@@ -200,6 +202,7 @@
       <button class="gbtn" onclick="p2SelCat('insert','kaohsiung',this)">🌆 高雄跑步班</button>
       <button class="gbtn" onclick="p2SelCat('insert','nurture',this)">🏃 跑者養成班</button>
       <button class="gbtn" onclick="p2SelCat('insert','strength',this)">💪 肌力班</button>
+      <button class="gbtn" onclick="p2SelCat('insert','hyrox',this)">🏋️ Hyrox</button>
     </div>
     <div class="hidden" id="insert-day-wrap" style="margin-top:10px">
       <div class="stitle">選擇星期</div>
@@ -256,6 +259,7 @@
       <button class="gbtn" onclick="p2SelCat('trial','kaohsiung',this)">🌆 高雄跑步班</button>
       <button class="gbtn" onclick="p2SelCat('trial','nurture',this)">🏃 跑者養成班</button>
       <button class="gbtn" onclick="p2SelCat('trial','strength',this)">💪 肌力班</button>
+      <button class="gbtn" onclick="p2SelCat('trial','hyrox',this)">🏋️ Hyrox</button>
     </div>
     <div class="hidden" id="trial-day-wrap" style="margin-top:10px">
       <div class="stitle">選擇星期</div>
@@ -501,7 +505,7 @@ function getTodayNum(){var d=new Date();return(d.getMonth()+1)*100+d.getDate();}
 
 const FL={kaohsiung:"https://www.surveycake.com/s/gr1Zr",nurture:"https://www.surveycake.com/s/QyK4n",strength:"https://www.surveycake.com/s/K9p4y",taipei:"https://www.surveycake.com/s/grd10"};
 const KK=["苓雅","高大","鳳山"],SK=["肌力","敏捷","繩流律動"];
-const CF={taipei:n=>!KK.some(k=>n.includes(k))&&!n.includes("跑者養成")&&!SK.some(k=>n.includes(k)),kaohsiung:n=>KK.some(k=>n.includes(k)),nurture:n=>n.includes("跑者養成"),strength:n=>SK.some(k=>n.includes(k))};
+const CF={taipei:n=>!KK.some(k=>n.includes(k))&&!n.includes("跑者養成")&&!SK.some(k=>n.includes(k))&&!n.includes("Hyrox"),kaohsiung:n=>KK.some(k=>n.includes(k)),nurture:n=>n.includes("跑者養成"),strength:n=>SK.some(k=>n.includes(k)),hyrox:n=>n.includes("Hyrox")};
 function flink(n){if(n.includes("跑者養成"))return FL.nurture;if(KK.some(k=>n.includes(k)))return FL.kaohsiung;if(SK.some(k=>n.includes(k)))return FL.strength;return FL.taipei;}
 
 const CL={
@@ -738,8 +742,8 @@ function p2SelDay(mode, day, btn) {
   const names=Object.keys(CL).filter(n=>{
     if(!n.startsWith(day)||n.includes("未開班")||!fi(n)) return false;
     // Hide full classes if status loaded
-    var cleanName=n.replace("(NEW)","");
-    if(globalStatusMap[cleanName]&&globalStatusMap[cleanName].full) return false;
+    var cn=n.replace("(NEW)","");
+    if(globalStatusMap[cn]&&globalStatusMap[cn].full) return false;
     return true;
   });
   const wrap=document.getElementById(`${prefix}-class-wrap`);
