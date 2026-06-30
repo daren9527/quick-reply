@@ -217,12 +217,20 @@
       <div class="stitle">選擇第一堂上課日期</div>
       <div class="date-grid" id="date-grid"></div>
       <div id="insert-student-fields" style="margin-top:12px">
+        <div id="ci-student-wrap">
+          <div class="stitle">新生 / 舊生</div>
+          <div class="g2" style="margin-bottom:10px">
+            <button class="gbtn" id="ci-new-btn" onclick="selCiStudent('new',this)">🆕 新生</button>
+            <button class="gbtn" id="ci-old-btn" onclick="selCiStudent('old',this)">🔄 舊生</button>
+          </div>
+        </div>
         <div class="stitle">學生姓名</div>
         <input type="text" id="ci-name" placeholder="請輸入姓名" oninput="buildConfirm();buildNotify()">
         <div class="stitle">電話</div>
         <input type="text" id="ci-phone" placeholder="請輸入電話" oninput="buildConfirm();buildNotify()">
         <div class="stitle">運動目標</div>
         <input type="text" id="ci-goal" placeholder="例：減重、增強體能、完成馬拉松" oninput="buildConfirm();buildNotify()">
+        <div id="ci-size-wrap">
         <div class="stitle">衣服尺寸</div>
         <div class="stitle" style="color:#888;font-size:10px;margin-bottom:6px">背心 XS~3XL</div>
         <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px" id="ci-vest-grid">
@@ -245,6 +253,7 @@
           <button class="dbtn" onclick="selCiSize('tshirt','3XL',this)">3XL</button>
           <button class="dbtn" onclick="selCiSize('tshirt','4XL',this)">4XL</button>
           <button class="dbtn" onclick="selCiSize('tshirt','5XL',this)">5XL</button>
+        </div>
         </div>
       </div>
     </div>
@@ -312,6 +321,9 @@
       <div class="stitle" style="margin-top:10px">學生姓名</div>
       <input type="text" id="rf-name" placeholder="請輸入姓名" oninput="buildRefundNotify()">
 
+      <div class="stitle" style="margin-top:10px">退費原因（顯示於通知會計，與下方計算金額用的退費原因分開）</div>
+      <input type="text" id="rf-acct-reason" placeholder="例：手術後需休養" oninput="buildAccountingNotify()">
+
       <div id="rf-student-wrap">
         <div class="stitle" style="margin-top:10px">新生 / 舊生</div>
         <div class="g2">
@@ -346,6 +358,12 @@
       <div class="fee-box hidden" id="rf-fee-box" style="margin-top:10px">
         <span class="fl" id="rf-fee-label">退費金額</span>
         <span class="fa" id="rf-fee-amt">$0</span>
+      </div>
+
+      <div class="stitle" style="margin-top:10px">退費帳戶</div>
+      <div class="g2">
+        <input type="text" id="rf-bank-code" placeholder="銀行代碼（例：012）" oninput="buildRefundNotify()">
+        <input type="text" id="rf-account-num" placeholder="帳號" oninput="buildRefundNotify()">
       </div>
     </div>
   </div>
@@ -389,6 +407,12 @@
     <span class="card-label">通知內容</span>
     <div class="result-box" id="n-result-box"></div>
     <button class="copy-btn" id="n-copy-btn" onclick="doCopy('n-result-box','n-copy-btn')">複製通知內容</button>
+  </div>
+
+  <div class="card hidden" id="p3-accounting-card">
+    <span class="card-label" style="color:#FFD600">💰 通知會計（退費）</span>
+    <div class="result-box" id="n-accounting-box"></div>
+    <button class="copy-btn" id="n-accounting-copy-btn" onclick="doCopy('n-accounting-box','n-accounting-copy-btn')">複製通知會計內容</button>
   </div>
 </div>
 
@@ -563,7 +587,7 @@ const CL={
 const DAYS=["週一","週二","週三","週四","週五","週六","週日"];
 let cat=null,day=null,cls=null,type=null,lessons=1;
 let ctype=null,fullCls=null,insertCls=null,selectedDate=null;
-let ciVestSize=null,ciTshirtSize=null;
+let ciVestSize=null,ciTshirtSize=null,ciStudentType=null;
 
 // Tab
 function switchTab(id,btn){
@@ -823,22 +847,29 @@ function selFullCls(n,btn){
 }
 
 function selInsertCls(n,btn){
-  // Show/hide clothing based on strength class
+  // Show/hide 新生/舊生 selector and clothing based on strength class
   const isStrength=SK.some(k=>n.includes(k));
   const sf=document.getElementById("insert-student-fields");
   if(sf){
-    const clothingEls=sf.querySelectorAll(".stitle, #ci-vest-grid, #ci-tshirt-grid");
-    let hideNext=false;
-    sf.querySelectorAll(".stitle").forEach(el=>{
-      if(el.textContent==="衣服尺寸"||el.textContent==="背心 XS~3XL"||el.textContent==="短袖 XS~5XL"){
-        el.style.display=isStrength?"none":"";
-      }
-    });
-    ["ci-vest-grid","ci-tshirt-grid"].forEach(id=>{
-      const el=document.getElementById(id);
-      if(el) el.style.display=isStrength?"none":"";
-    });
-    if(isStrength){ciVestSize=null;ciTshirtSize=null;}
+    const studentWrap=document.getElementById("ci-student-wrap");
+    if(isStrength){
+      // 肌力班：隱藏新生/舊生選擇，自動設為新生，隱藏衣服尺寸
+      if(studentWrap) studentWrap.style.display="none";
+      ciStudentType="new";
+      const sizeWrap=document.getElementById("ci-size-wrap");
+      if(sizeWrap) sizeWrap.style.display="none";
+      ciVestSize=null;ciTshirtSize=null;
+    } else {
+      // 非肌力班：顯示新生/舊生選擇，重置狀態讓使用者選擇
+      if(studentWrap) studentWrap.style.display="";
+      ciStudentType=null;
+      document.getElementById("ci-new-btn").classList.remove("active");
+      document.getElementById("ci-old-btn").classList.remove("active");
+      const sizeWrap2=document.getElementById("ci-size-wrap");
+      if(sizeWrap2) sizeWrap2.style.display="none"; // 等選了新生才顯示
+      ciVestSize=null;ciTshirtSize=null;
+      document.querySelectorAll("#ci-vest-grid .dbtn, #ci-tshirt-grid .dbtn").forEach(b=>b.classList.remove("active"));
+    }
   }
   insertCls=n;selectedDate=null;
   document.querySelectorAll("#app #insert-class-list .p2btn").forEach(b=>b.classList.remove("active"));
@@ -913,6 +944,22 @@ const CLASS_INFO = {
   "週六大直跑者肌力班(未開班)":{coach:"初力",line:"https://line.me/ti/g/gNX6gGpdC_",loc:"初力體能\n台北市中山區樂群三路67號",phone:""},
   "週日松江跑者肌力班(未開班)":{coach:"STEPX",line:"https://line.me/ti/g/tSXLjYARgA",loc:"STEPX FITNESS 健身房\n臺北市中山區南京東路2段8號B1",phone:""}
 };
+
+function selCiStudent(type, btn){
+  ciStudentType=type;
+  document.getElementById("ci-new-btn").classList.toggle("active", type==="new");
+  document.getElementById("ci-old-btn").classList.toggle("active", type==="old");
+  var sizeWrap=document.getElementById("ci-size-wrap");
+  if(type==="old"){
+    sizeWrap.style.display="none";
+    ciVestSize=null; ciTshirtSize=null;
+    document.querySelectorAll("#ci-vest-grid .dbtn, #ci-tshirt-grid .dbtn").forEach(b=>b.classList.remove("active"));
+  } else {
+    sizeWrap.style.display="";
+  }
+  buildConfirm();
+  buildNotify();
+}
 
 function selCiSize(type, size, btn){
   if(type==="vest"){
@@ -1220,6 +1267,60 @@ function buildRefundResult(amt, desc){
 }
 
 // ── 退費通知教練 ──
+function buildAccountingNotify(){
+  if(!rfCls||!rfReason) return;
+  var name=(document.getElementById("rf-name")?document.getElementById("rf-name").value.trim():"")||"【姓名】";
+  var bankCode=(document.getElementById("rf-bank-code")?document.getElementById("rf-bank-code").value.trim():"")||"【待填寫】";
+  var accountNum=(document.getElementById("rf-account-num")?document.getElementById("rf-account-num").value.trim():"")||"【待填寫】";
+  var acctReason=(document.getElementById("rf-acct-reason")?document.getElementById("rf-acct-reason").value.trim():"")||"【待填寫】";
+
+  // 班級簡稱：去掉星期前綴後，再去掉常見字尾
+  var shortCls=rfCls;
+  var days=["週一","週二","週三","週四","週五","週六","週日"];
+  var wdPrefix=days.find(function(d){return rfCls.startsWith(d);})||"";
+  shortCls=shortCls.replace(wdPrefix,"");
+  shortCls=shortCls.replace(/初階跑步班$|跑步班$|跑者養成班$|早跑班$|訓練班$|肌力班\d*$|肌力班$/,"");
+  var classLabel=wdPrefix+shortCls;
+
+  // 退費金額
+  var amtEl=document.getElementById("rf-fee-amt");
+  var amtText=amtEl?amtEl.textContent.replace("$","").replace(/,/g,""):"0";
+  var amt=parseInt(amtText)||0;
+
+  // 退費堂數 + 退費日期區間（從 rfDate 到學期末最後一堂）
+  var remaining=0;
+  var dateRangeStr="";
+  if(rfDate&&(rfReason==="injury"||rfReason==="early")){
+    var allDates=CL[rfCls].dates;
+    var futureDates=allDates.filter(function(d){return dateToNum(d)>=dateToNum(rfDate);});
+    remaining=futureDates.length;
+    var lastDate=allDates[allDates.length-1];
+    dateRangeStr=rfDate+"~"+lastDate;
+  } else if(rfReason==="3days"||rfReason==="before"){
+    remaining=CL[rfCls].total;
+    var allDates2=CL[rfCls].dates;
+    if(allDates2.length>0) dateRangeStr=allDates2[0]+"~"+allDates2[allDates2.length-1];
+  }
+
+  // 判斷是否為富邦銀行（代碼 012），非富邦需扣手續費
+  var isFubon=/012/.test(bankCode);
+  var feeNote=isFubon?"":" 扣手續費";
+  var accountDisplay="("+bankCode+") "+accountNum;
+
+  var acctText="以下為退費學生\n姓名："+name+" "+classLabel+
+    "\n退費金額："+amt.toLocaleString()+"元"+feeNote+
+    (dateRangeStr?"\n退費日期：從"+dateRangeStr:"")+
+    (rfReason==="3days"||rfReason==="before"?"":"\n退費堂數："+remaining+"堂")+
+    "\n退費帳戶："+accountDisplay+
+    "\n退費原因："+acctReason;
+
+  var accBox=document.getElementById("n-accounting-box");
+  if(accBox) accBox.textContent=acctText;
+  var accCard=document.getElementById("p3-accounting-card");
+  if(accCard) accCard.classList.remove("hidden");
+  resetBtn("n-accounting-copy-btn");
+}
+
 function buildRefundNotify(){
   if(ctype!=="refund"||!rfCls||!rfReason) return;
   var wdMap={"週一":"（一）","週二":"（二）","週三":"（三）","週四":"（四）","週五":"（五）","週六":"（六）","週日":"（日）"};
@@ -1256,6 +1357,8 @@ function buildRefundNotify(){
   var todayStr=(now.getFullYear()-2000)+"/"+String(now.getMonth()+1).padStart(2,"0")+"/"+String(now.getDate()).padStart(2,"0");
 
   var t="以下是退費的學生\n姓名："+name+"\n退費原因："+reasonStr+"\n退課班級："+rfCls.replace("","")+"\n退費日期："+todayStr+(remaining>0?"\n退費堂數："+remaining+" 堂":"")+"\n⚠️點名表部分再幫我們將退費學生後面日期的格子都劃掉喔！";
+
+  buildAccountingNotify();
 
 
 
@@ -1306,6 +1409,7 @@ function buildNotify(){
     document.getElementById("p3-empty").classList.remove("hidden");
     document.getElementById("p3-info-box").classList.add("hidden");
     document.getElementById("p3-result-card").classList.add("hidden");
+  document.getElementById("p3-accounting-card").classList.add("hidden");
     return;
   }
 
@@ -1332,10 +1436,12 @@ function buildNotify(){
     const lessons=c.dates.filter(function(d){return dateToNum(d)>=dateToNum(selectedDate);}).length;
     const sizeStr=ciVestSize?"背心 "+ciVestSize:ciTshirtSize?"短袖 "+ciTshirtSize:"【未選】";
     const isStrength=SK.some(k=>insertCls.includes(k));
-    const sizeRow=isStrength?"":"\n衣服尺寸："+sizeStr;
+    // 只有新生（且非肌力班）才顯示衣服尺寸
+    const showSize=!isStrength&&ciStudentType==="new";
+    const sizeRow=showSize?"\n衣服尺寸："+sizeStr:"";
     typeLabel="🔄 插班學生";
     summary=insertCls.replace("","")+" ／ "+selectedDate+" ／ "+name;
-    t="以下為插班上課的學生\n姓名："+name+"\n電話："+phone+"\n插班時間："+selectedDate+(wdMap[wd]||"")+"，"+(c.time||"【時間】")+"\n插班班級："+insertCls.replace("","")+"\n插班堂數："+lessons+" 堂\n運動目標："+goal+sizeRow;
+    t="以下為插班上課的學生\n姓名："+name+"\n電話："+phone+"\n插班時間："+selectedDate+(wdMap[wd]||"")+"，"+(c.time||"【時間】")+"\n插班班級："+insertCls.replace("","")+"\n插班堂數："+lessons+" 堂\n運動目標："+goal+sizeRow+"\n請幫我在點名單上加上學生名字。";
 
   } else if(ctype==="trial" && trialCls && trialDate){
     const c=CL[trialCls];
@@ -1351,6 +1457,7 @@ function buildNotify(){
     document.getElementById("p3-empty").classList.remove("hidden");
     document.getElementById("p3-info-box").classList.add("hidden");
     document.getElementById("p3-result-card").classList.add("hidden");
+  document.getElementById("p3-accounting-card").classList.add("hidden");
     return;
   }
 
@@ -1539,14 +1646,15 @@ function resetChecklist(){
   updateProgress();
 
   // Reset confirm page fields
-  ["cf-name","cf-phone","cf-goal","ci-name","ci-phone","ci-goal","ct-name","ct-phone","ct-goal"].forEach(function(id){
+  ["cf-name","cf-phone","cf-goal","ci-name","ci-phone","ci-goal","ct-name","ct-phone","ct-goal",
+   "rf-name","rf-acct-reason","rf-bank-code","rf-account-num","rf-injury-detail"].forEach(function(id){
     var el=document.getElementById(id);
     if(el) el.value="";
   });
 
   // Reset confirm page selections
   ctype=null; fullCls=null; insertCls=null; selectedDate=null;
-  trialCls=null; trialDate=null; ciVestSize=null; ciTshirtSize=null;
+  trialCls=null; trialDate=null; ciVestSize=null; ciTshirtSize=null; ciStudentType=null;
   rfCls=null; rfReason=null; rfDate=null; rfStudent=null;
 
   // Reset all active buttons in p2
@@ -1581,6 +1689,7 @@ function resetChecklist(){
   document.getElementById("p3-empty").classList.remove("hidden");
   document.getElementById("p3-info-box").classList.add("hidden");
   document.getElementById("p3-result-card").classList.add("hidden");
+  document.getElementById("p3-accounting-card").classList.add("hidden");
   document.getElementById("n-result-box").textContent="";
   // Reset p3 variables
   nType=null;
