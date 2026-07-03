@@ -403,6 +403,11 @@
     <div class="info-box" id="p3-summary"></div>
   </div>
 
+  <div class="card hidden" id="p3-coach-card">
+    <span class="card-label">👨‍🏫 通知教練</span>
+    <div class="info-box" id="p3-coach-box"></div>
+  </div>
+
   <div class="card hidden" id="p3-result-card">
     <span class="card-label">通知內容</span>
     <div class="result-box" id="n-result-box"></div>
@@ -1376,6 +1381,16 @@ function buildRefundNotify(){
   document.getElementById("p3-type-label").textContent="💸 退費學生";
   document.getElementById("p3-summary").textContent=rfCls.replace("","")+" ／ "+name;
   document.getElementById("p3-info-box").classList.remove("hidden");
+
+  // 顯示通知教練
+  var coachInfoRf=CLASS_INFO[rfCls];
+  if(coachInfoRf&&coachInfoRf.coach){
+    document.getElementById("p3-coach-box").textContent=rfCls.replace("","")+"　教練："+coachInfoRf.coach;
+    document.getElementById("p3-coach-card").classList.remove("hidden");
+  } else {
+    document.getElementById("p3-coach-card").classList.add("hidden");
+  }
+
   document.getElementById("n-result-box").textContent=t;
   document.getElementById("p3-result-card").classList.remove("hidden");
   resetBtn("n-copy-btn");
@@ -1408,14 +1423,16 @@ function buildNotify(){
   if(!ctype){
     document.getElementById("p3-empty").classList.remove("hidden");
     document.getElementById("p3-info-box").classList.add("hidden");
+    document.getElementById("p3-coach-card").classList.add("hidden");
     document.getElementById("p3-result-card").classList.add("hidden");
   document.getElementById("p3-accounting-card").classList.add("hidden");
     return;
   }
 
-  let t="", summary="", typeLabel="";
+  let t="", summary="", typeLabel="", coachCls="";
 
   if(ctype==="full" && fullCls){
+    coachCls=fullCls;
     const c=CL[fullCls];
     const name=getField("cf-name")||"【姓名】";
     const phone=getField("cf-phone")||"【電話】";
@@ -1428,6 +1445,7 @@ function buildNotify(){
     t="以下是新生的同學\n姓名："+name+"\n電話："+phone+"\n上課班級："+fullCls.replace("","")+"\n運動目標："+goal+sizeRow+"\n⚠️再麻煩將學生資訊寫到點名單上喔！";
 
   } else if(ctype==="insert" && insertCls && selectedDate){
+    coachCls=insertCls;
     const c=CL[insertCls];
     const wd=insertCls.slice(0,2);
     const name=getField("ci-name")||"【姓名】";
@@ -1444,6 +1462,7 @@ function buildNotify(){
     t="以下為插班上課的學生\n姓名："+name+"\n電話："+phone+"\n插班時間："+selectedDate+(wdMap[wd]||"")+"，"+(c.time||"【時間】")+"\n插班班級："+insertCls.replace("","")+"\n插班堂數："+lessons+" 堂\n運動目標："+goal+sizeRow+"\n請幫我在點名單上加上學生名字。";
 
   } else if(ctype==="trial" && trialCls && trialDate){
+    coachCls=trialCls;
     const c=CL[trialCls];
     const wd=trialCls.slice(0,2);
     const name=getField("ct-name")||"【姓名】";
@@ -1456,6 +1475,7 @@ function buildNotify(){
   } else {
     document.getElementById("p3-empty").classList.remove("hidden");
     document.getElementById("p3-info-box").classList.add("hidden");
+    document.getElementById("p3-coach-card").classList.add("hidden");
     document.getElementById("p3-result-card").classList.add("hidden");
   document.getElementById("p3-accounting-card").classList.add("hidden");
     return;
@@ -1465,6 +1485,16 @@ function buildNotify(){
   document.getElementById("p3-type-label").textContent=typeLabel;
   document.getElementById("p3-summary").textContent=summary;
   document.getElementById("p3-info-box").classList.remove("hidden");
+
+  // 顯示通知教練
+  const coachInfo=CLASS_INFO[coachCls];
+  if(coachInfo&&coachInfo.coach){
+    document.getElementById("p3-coach-box").textContent=coachCls.replace("","")+"　教練："+coachInfo.coach;
+    document.getElementById("p3-coach-card").classList.remove("hidden");
+  } else {
+    document.getElementById("p3-coach-card").classList.add("hidden");
+  }
+
   document.getElementById("n-result-box").textContent=t;
   document.getElementById("p3-result-card").classList.remove("hidden");
   resetBtn("n-copy-btn");
@@ -1688,6 +1718,7 @@ function resetChecklist(){
   // Reset notify page
   document.getElementById("p3-empty").classList.remove("hidden");
   document.getElementById("p3-info-box").classList.add("hidden");
+  document.getElementById("p3-coach-card").classList.add("hidden");
   document.getElementById("p3-result-card").classList.add("hidden");
   document.getElementById("p3-accounting-card").classList.add("hidden");
   document.getElementById("n-result-box").textContent="";
