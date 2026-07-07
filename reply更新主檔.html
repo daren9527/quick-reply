@@ -1150,7 +1150,8 @@ function buildConfirm(){
     const loc=info.loc||"【集合地點】";
     const lineUrl=info.line||"【群組連結】";
     var makeupLine2=SK.some(function(k){return insertCls.includes(k);})?"NID『對應的肌力課程』都可以補課":"NID『跑步課程』都可以補課";
-    t=`確認有收到款項，報名已完成✅\n⏰ 第一堂課上課日期：${selectedDate}${wdMap[wd]||""}，${timeStr}\n🔺上課集合地點：${loc}\n🔺授課教練：${coach}\n🔗一定要加！班級Line群組連結：${lineUrl}\n🔴課程貼心提醒：課程是沒有提供寄物，建議同學們不要帶太貴重的東西，隨身物品輕便為主，若需要寄物可以至附近捷運站至物櫃寄物。課程中會流比較多的汗，建議各位同學可以帶著水跟毛巾，適時的補充水分。\n🔴課程注意事項：課前千萬不要空腹，記得吃點東西再來上課，吃東西的時間建議提前1~1.5個小時，若是早上的課程沒辦法提前那麼早起，建議只少半小時前吃點東西，但不要吃太飽喔！\n🔴補課方法：\n1. 私訊原班教練補課申請補課\n2. ${makeupLine2}\n3. 每期提供6次的補課機會，若請假次數超過則不再提供額外補課次數。\n4. 申請補課後若未出席，一樣算一次補課申請。\n5. 補課超過六次，每次則以單堂課程費用500元計費。\n歡迎加入NID大家庭😍`;
+    var mapNote=insertCls.includes("高大")?"\n6. 高雄大學上課位置地圖 https://maps.app.goo.gl/PPa36VkaEr8PWiRu6?g_st=":"";
+    t=`確認有收到款項，報名已完成✅\n⏰ 第一堂課上課日期：${selectedDate}${wdMap[wd]||""}，${timeStr}\n🔺上課集合地點：${loc}\n🔺授課教練：${coach}\n🔗一定要加！班級Line群組連結：${lineUrl}\n🔴課程貼心提醒：課程是沒有提供寄物，建議同學們不要帶太貴重的東西，隨身物品輕便為主，若需要寄物可以至附近捷運站至物櫃寄物。課程中會流比較多的汗，建議各位同學可以帶著水跟毛巾，適時的補充水分。\n🔴課程注意事項：課前千萬不要空腹，記得吃點東西再來上課，吃東西的時間建議提前1~1.5個小時，若是早上的課程沒辦法提前那麼早起，建議只少半小時前吃點東西，但不要吃太飽喔！\n🔴補課方法：\n1. 私訊原班教練補課申請補課\n2. ${makeupLine2}\n3. 每期提供6次的補課機會，若請假次數超過則不再提供額外補課次數。\n4. 申請補課後若未出席，一樣算一次補課申請。\n5. 補課超過六次，每次則以單堂課程費用500元計費。${mapNote}\n歡迎加入NID大家庭😍`;
   }else if(ctype==="trial"&&trialCls&&trialDate){
     const c=CL[trialCls];
     const info=CLASS_INFO[trialCls]||{};
@@ -1160,7 +1161,17 @@ function buildConfirm(){
     const coach=info.coach||"【教練】";
     const phone=info.phone||"【電話】";
     const loc=info.loc||"【集合地點】";
-    t=`恭喜您體驗課程報名完成🎉\n【體驗課程資訊】\n⏰上課時間：${trialDate}${wdMap[wd]||""}，${timeStr}\n📍上課集合地點：${loc}\n🙋🏻‍♂️上課教練：${coach}\n教練聯絡電話：${phone}\n⚠️上課貼心提醒\n🙋🏻‍♂️當天教練會穿教練服在集合地點等您（教練服如附圖）\n🔺因在戶外場地，教練有可能會臨時因場地關係更改地點，請提前10分鐘至集合場地，避免找不到上課位置，若真的找不到場地可以直接打電話給教練，教練都會協助大家\n🔺課程需要準備的東西：穿著運動服裝，帶水跟毛巾\n🔺下雨天會照常上課，停班停課依照政府公告為主\n🔺課前千萬不要空腹，記得吃點東西再來上課，吃東西的時間建議提前1~1.5個小時，若是早上的課程沒辦法提前那麼早起，建議至少半小時前吃點東西，但不要吃太飽喔！\n🔺體驗課程可申請延期，但須於兩個月內完成體驗( 限一次延課 )`;
+    const mapNote2=trialCls.includes("高大")?"\n🔺高雄大學上課位置地圖 https://maps.app.goo.gl/PPa36VkaEr8PWiRu6?g_st=":"";
+    function add30Days(dateStr){
+      const parts=dateStr.split("/");
+      const m=parseInt(parts[0]), d=parseInt(parts[1]);
+      const year=new Date().getFullYear();
+      const dt=new Date(year,m-1,d);
+      dt.setDate(dt.getDate()+30);
+      return (dt.getMonth()+1)+"/"+dt.getDate();
+    }
+    const extendEnd=add30Days(trialDate);
+    t=`恭喜您體驗課程報名完成🎉\n【體驗課程資訊】\n⏰上課時間：${trialDate}${wdMap[wd]||""}，${timeStr}\n📍上課集合地點：${loc}\n🙋🏻‍♂️上課教練：${coach}\n教練聯絡電話：${phone}\n⚠️上課貼心提醒\n🙋🏻‍♂️當天教練會穿教練服在集合地點等您（教練服如附圖）\n🔺因在戶外場地，教練有可能會臨時因場地關係更改地點，請提前10分鐘至集合場地，避免找不到上課位置，若真的找不到場地可以直接打電話給教練，教練都會協助大家\n🔺課程需要準備的東西：穿著運動服裝，帶水跟毛巾\n🔺下雨天會照常上課，停班停課依照政府公告為主\n🔺課前千萬不要空腹，記得吃點東西再來上課，吃東西的時間建議提前1~1.5個小時，若是早上的課程沒辦法提前那麼早起，建議至少半小時前吃點東西，但不要吃太飽喔！\n🔺體驗課程可申請延期，但須於一個月內完成體驗（體驗期限：${trialDate}~${extendEnd}）${mapNote2}`;
   }else return;
   document.getElementById("c-result-box").textContent=t;
   resetBtn("c-copy-btn");
@@ -1608,7 +1619,7 @@ function buildNotify(){
     const sizeRow=showSize?"\n衣服尺寸："+sizeStr:"";
     typeLabel="🔄 插班學生";
     summary=insertCls.replace("","")+" ／ "+selectedDate+" ／ "+name;
-    t="以下為插班上課的學生\n姓名："+name+"\n電話："+phone+"\n插班時間："+selectedDate+(wdMap[wd]||"")+"，"+(c.time||"【時間】")+"\n插班班級："+insertCls.replace("","")+"\n插班堂數："+lessons+" 堂\n運動目標："+goal+sizeRow+"\n請幫我在點名單上加上學生名字。";
+    t="以下為插班上課的學生\n姓名："+name+"\n電話："+phone+"\n插班時間："+selectedDate+(wdMap[wd]||"")+"，"+(c.time||"【時間】")+"\n插班班級："+insertCls.replace("","")+"\n插班堂數："+lessons+" 堂\n運動目標："+goal+sizeRow+"\n請幫我在點名單上加上學生名字。\n⚠️再麻煩將學生資訊寫到點名單上喔！\n⚠️請在插班日那天的格子左上方標注\"三角形\"";
 
   } else if(ctype==="trial" && trialCls && trialDate){
     coachCls=trialCls;
