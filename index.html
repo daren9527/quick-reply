@@ -133,6 +133,7 @@
       <button class="gbtn" onclick="selConfirm('insert',this)">🔄 插班報名</button>
       <button class="gbtn" onclick="selConfirm('trial',this)">🎉 體驗課程報名</button>
       <button class="gbtn" onclick="selConfirm('refund',this)">💸 退費申請</button>
+      <button class="gbtn" onclick="selConfirm('renew',this)">🔁 舊生續報</button>
     </div>
   </div>
 
@@ -190,6 +191,27 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- 舊生續報 -->
+  <div class="card hidden" id="c-renew-card">
+    <span class="card-label">舊生續報資訊</span>
+    <div class="stitle">選擇類別</div>
+    <div class="g2" id="renew-cat-grid">
+      <button class="gbtn" onclick="renewSelCat('taipei',this)">🏙️ 台北跑步班</button>
+      <button class="gbtn" onclick="renewSelCat('kaohsiung',this)">🌆 高雄跑步班</button>
+      <button class="gbtn" onclick="renewSelCat('nurture',this)">🏃 跑者養成班</button>
+      <button class="gbtn" onclick="renewSelCat('strength',this)">💪 肌力班</button>
+      <button class="gbtn" onclick="renewSelCat('hyrox',this)">🏋️ Hyrox</button>
+    </div>
+    <div class="hidden" id="renew-day-wrap" style="margin-top:10px">
+      <div class="stitle">選擇星期</div>
+      <div class="g4" id="renew-day-grid"></div>
+    </div>
+    <div class="hidden" id="renew-class-wrap" style="margin-top:10px">
+      <div class="stitle" id="renew-class-title">選擇班級</div>
+      <div class="p2list" id="renew-class-list"></div>
     </div>
   </div>
 
@@ -533,60 +555,66 @@ function dateToNum(s){var p=s.split("/");return parseInt(p[0])*100+parseInt(p[1]
 function getTodayNum(){var d=new Date();return(d.getMonth()+1)*100+d.getDate();}
 
 const FL={kaohsiung:"https://www.surveycake.com/s/gr1Zr",nurture:"https://www.surveycake.com/s/QyK4n",strength:"https://www.surveycake.com/s/K9p4y",taipei:"https://www.surveycake.com/s/grd10"};
-const KK=["苓雅","高大","鳳山"],SK=["肌力","敏捷","繩流律動"];
-const CF={taipei:n=>!KK.some(k=>n.includes(k))&&!n.includes("跑者養成")&&!SK.some(k=>n.includes(k))&&!n.includes("Hyrox"),kaohsiung:n=>KK.some(k=>n.includes(k)),nurture:n=>n.includes("跑者養成"),strength:n=>SK.some(k=>n.includes(k)),hyrox:n=>n.includes("Hyrox")};
+const KK=["苓雅","高大","鳳山","三民"],SK=["肌力","敏捷","繩流律動"];
+const isHyrox=n=>/hyrox/i.test(n);
+const CF={taipei:n=>!KK.some(k=>n.includes(k))&&!n.includes("跑者養成")&&!SK.some(k=>n.includes(k))&&!isHyrox(n),kaohsiung:n=>KK.some(k=>n.includes(k))&&!isHyrox(n),nurture:n=>n.includes("跑者養成"),strength:n=>SK.some(k=>n.includes(k)),hyrox:n=>isHyrox(n)};
 function flink(n){if(n.includes("跑者養成"))return FL.nurture;if(KK.some(k=>n.includes(k)))return FL.kaohsiung;if(SK.some(k=>n.includes(k)))return FL.strength;return FL.taipei;}
 
 const CL={
-  "週一北田跑步班":      {p:375,f:5250,rf:4725,total:14,time:"19:30~21:00",dates:["6/1","6/8","6/15","6/22","6/29","7/6","7/13","7/20","7/27","8/3","8/10","8/17","8/24","8/31"]},
-  "週一中和跑步班":      {p:375,f:5250,rf:4725,total:14,time:"19:30~21:00",dates:["6/1","6/8","6/15","6/22","6/29","7/6","7/13","7/20","7/27","8/3","8/10","8/17","8/24","8/31"]},
-  "週一中正初階跑步班":  {p:375,f:5250,rf:4725,total:14,time:"19:30~21:00",dates:["6/1","6/8","6/15","6/22","6/29","7/6","7/13","7/20","7/27","8/3","8/10","8/17","8/24","8/31"]},
-  "週一大同初階跑步班":  {p:375,f:5250,rf:4725,total:14,time:"19:30~21:00",dates:["6/1","6/8","6/15","6/22","6/29","7/6","7/13","7/20","7/27","8/3","8/10","8/17","8/24","8/31"]},
-  "週一北田跑者養成班":  {p:350,f:4900,rf:4410,total:14,time:"19:00~20:00",dates:["6/1","6/8","6/15","6/22","6/29","7/6","7/13","7/20","7/27","8/3","8/10","8/17","8/24","8/31"]},
-  "週二內湖跑步班":      {p:375,f:4875,rf:4387,total:13,time:"18:30~20:00",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
-  "週二龍江跑步班":      {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
-  "週二中正初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
-  "週二北田初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
-  "週二板一初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
-  "週二苓雅初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
-  "週二高大初階跑步班":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
-  "週三北田跑步班":      {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
-  "週三板一跑步班":      {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
-  "週三內湖跑步班":      {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
-  "週三北田初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
-  "週三新莊初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
-  "週三信義初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
-  "週三高大跑步班":      {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
-  "週三鳳山跑步班": {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
-  "週四大同跑步班":      {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
-  "週四北田初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
-  "週四內湖初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
-  "週四板一初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
-  "週四中正初階跑步班": {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
-  "週四龍江跑者養成班":  {p:350,f:4550,rf:4095,total:13,time:"19:30~20:30",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
-  "週四苓雅跑步班": {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
-  "週四高大初階跑步班":  {p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
-  "週五新莊跑步班":      {p:375,f:4500,rf:4050,total:12,time:"19:40~21:10",dates:["6/5","6/12","6/26","7/3","7/17","7/24","7/31","8/7","8/14","8/21","8/28","9/4"]},
-  "週五北田跑步班":      {p:375,f:4500,rf:4050,total:12,time:"19:30~21:00",dates:["6/5","6/12","6/26","7/3","7/17","7/24","7/31","8/7","8/14","8/21","8/28","9/4"]},
-  "週五板二初階跑步班":  {p:375,f:4500,rf:4050,total:12,time:"19:30~21:00",dates:["6/5","6/12","6/26","7/3","7/17","7/24","7/31","8/7","8/14","8/21","8/28","9/4"]},
-  "週五內湖初階跑步班":  {p:375,f:4500,rf:4050,total:12,time:"19:30~21:00",dates:["6/5","6/12","6/26","7/3","7/17","7/24","7/31","8/7","8/14","8/21","8/28","9/4"]},
-  "週六汐止早跑班":      {p:375,f:4500,rf:4050,total:12,time:"06:00~07:30",dates:["6/6","6/13","6/27","7/4","7/18","7/25","8/1","8/8","8/15","8/22","8/29","9/5"]},
-  "週六北田初階早跑班":  {p:375,f:4500,rf:4050,total:12,time:"06:30~08:00",dates:["6/6","6/13","6/27","7/4","7/18","7/25","8/1","8/8","8/15","8/22","8/29","9/5"]},
-  "週六HYROX訓練班":     {p:480,f:5760,rf:5184,total:12,time:"09:00~10:30",dates:["6/6","6/13","6/27","7/4","7/18","7/25","8/1","8/8","8/15","8/22","8/29","9/5"]},
-  "週六苓雅早跑班":      {p:375,f:4500,rf:4050,total:12,time:"19:30~21:00",dates:["6/6","6/13","6/27","7/4","7/18","7/25","8/1","8/8","8/15","8/22","8/29","9/5"]},
-  "週日北田早跑班":      {p:375,f:4500,rf:4050,total:12,time:"06:30~08:00",dates:["6/7","6/14","6/28","7/5","7/12","7/19","7/26","8/2","8/9","8/16","8/23","8/30"]},
-  "週一北田跑者肌力班1830":{p:250,f:3500,total:14,time:"18:30-19:30",dates:["6/1","6/8","6/15","6/22","6/29","7/6","7/13","7/20","7/27","8/3","8/10","8/17","8/24","8/31"]},
-  "週一北田跑者肌力班1930":{p:250,f:3500,total:14,time:"19:30-20:30",dates:["6/1","6/8","6/15","6/22","6/29","7/6","7/13","7/20","7/27","8/3","8/10","8/17","8/24","8/31"]},
-  "週一松江跑者肌力班":  {p:500,f:7000,total:14,time:"19:00-20:00",dates:["6/1","6/8","6/15","6/22","6/29","7/6","7/13","7/20","7/27","8/3","8/10","8/17","8/24","8/31"]},
-  "週一北田繩流律動肌力班":{p:250,f:3500,total:14,time:"19:30-20:30",dates:["6/1","6/8","6/15","6/22","6/29","7/6","7/13","7/20","7/27","8/3","8/10","8/17","8/24","8/31"]},
-  "週二北田跑者肌力班1830":{p:250,f:3250,total:13,time:"18:30-19:30",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
-  "週二北田跑者肌力班1930":{p:250,f:3250,total:13,time:"19:30-20:30",dates:["6/2","6/9","6/16","6/23","6/30","7/7","7/14","7/21","7/28","8/4","8/11","8/18","8/25"]},
-  "週四中正敏捷肌力班(未開班)":{p:250,f:3250,total:13,time:"19:10-20:10",dates:["6/4","6/11","6/18","6/25","7/2","7/9","7/16","7/23","7/30","8/6","8/13","8/20","8/27"]},
-  "週五大直跑者肌力班":  {p:500,f:5500,total:11,time:"19:00-20:00",dates:["6/12","6/26","7/3","7/17","7/24","7/31","8/7","8/14","8/21","8/28","9/4"]},
-  "週六松江跑者肌力班0900(未開班)":{p:500,f:6000,total:12,time:"09:00-10:00",dates:["6/6","6/13","6/27","7/4","7/18","7/25","8/1","8/8","8/15","8/22","8/29","9/5"]},
-  "週六松江跑者肌力班1700":{p:500,f:6000,total:12,time:"17:00-18:00",dates:["6/6","6/13","6/27","7/4","7/18","7/25","8/1","8/8","8/15","8/22","8/29","9/5"]},
-  "週六大直跑者肌力班(未開班)":{p:500,f:6000,total:12,time:"",dates:["6/6","6/13","6/27","7/4","7/18","7/25","8/1","8/8","8/15","8/22","8/29","9/5"]},
-  "週日松江跑者肌力班(未開班)":{p:500,f:6000,total:12,time:"09:00-10:00",dates:["6/7","6/14","6/28","7/5","7/12","7/19","7/26","8/2","8/9","8/16","8/23","8/30"]},
+  "週一北田跑步班":{p:375,f:4125,rf:3712,total:11,time:"19:30~21:00",dates:["9/7","9/14","9/21","10/5","10/12","10/19","11/2","11/9","11/16","11/23","11/30"]},
+  "週一中正初階跑步班":{p:375,f:4125,rf:3712,total:11,time:"19:30~21:00",dates:["9/7","9/14","9/21","10/5","10/12","10/19","11/2","11/9","11/16","11/23","11/30"]},
+  "週一大同初階跑步班":{p:375,f:4125,rf:3712,total:11,time:"19:30~21:00",dates:["9/7","9/14","9/21","10/5","10/12","10/19","11/2","11/9","11/16","11/23","11/30"]},
+  "週一北田跑者養成班":{p:350,f:3850,rf:3465,total:11,time:"19:00~20:00",dates:["9/7","9/14","9/21","10/5","10/12","10/19","11/2","11/9","11/16","11/23","11/30"]},
+  "週二內湖跑步班":{p:375,f:4875,rf:4387,total:13,time:"18:30~20:00",dates:["9/1","9/8","9/15","9/22","9/29","10/6","10/13","10/20","10/27","11/3","11/10","11/17","11/24"]},
+  "週二龍江跑步班":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["9/1","9/8","9/15","9/22","9/29","10/6","10/13","10/20","10/27","11/3","11/10","11/17","11/24"]},
+  "週二中正初階跑步班":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["9/1","9/8","9/15","9/22","9/29","10/6","10/13","10/20","10/27","11/3","11/10","11/17","11/24"]},
+  "週二北田初階跑步班":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["9/1","9/8","9/15","9/22","9/29","10/6","10/13","10/20","10/27","11/3","11/10","11/17","11/24"]},
+  "週二板一初階跑步班":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["9/1","9/8","9/15","9/22","9/29","10/6","10/13","10/20","10/27","11/3","11/10","11/17","11/24"]},
+  "週三北田跑步班":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["9/2","9/9","9/16","9/23","9/30","10/7","10/14","10/21","10/28","11/4","11/11","11/18","11/25"]},
+  "週三板一跑步班":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["9/2","9/9","9/16","9/23","9/30","10/7","10/14","10/21","10/28","11/4","11/11","11/18","11/25"]},
+  "週三內湖跑步班":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["9/2","9/9","9/16","9/23","9/30","10/7","10/14","10/21","10/28","11/4","11/11","11/18","11/25"]},
+  "週三北田初階跑步班":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["9/2","9/9","9/16","9/23","9/30","10/7","10/14","10/21","10/28","11/4","11/11","11/18","11/25"]},
+  "週四大同跑步班":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["9/3","9/10","9/17","9/24","10/1","10/8","10/15","10/22","10/29","11/5","11/12","11/19","11/26"]},
+  "週四北田初階跑步班":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["9/3","9/10","9/17","9/24","10/1","10/8","10/15","10/22","10/29","11/5","11/12","11/19","11/26"]},
+  "週四內湖初階跑步班":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["9/3","9/10","9/17","9/24","10/1","10/8","10/15","10/22","10/29","11/5","11/12","11/19","11/26"]},
+  "週四中正初階跑步班":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["9/3","9/10","9/17","9/24","10/1","10/8","10/15","10/22","10/29","11/5","11/12","11/19","11/26"]},
+  "週四龍江跑者養成班":{p:350,f:4550,rf:4095,total:13,time:"19:30~20:30",dates:["9/3","9/10","9/17","9/24","10/1","10/8","10/15","10/22","10/29","11/5","11/12","11/19","11/26"]},
+  "週五新莊跑步班":{p:375,f:3750,rf:3375,total:10,time:"19:40~21:10",dates:["9/11","9/18","10/2","10/16","10/23","10/30","11/6","11/13","11/20","11/27"]},
+  "週五板二初階跑步班":{p:375,f:3750,rf:3375,total:10,time:"19:30~21:00",dates:["9/11","9/18","10/2","10/16","10/23","10/30","11/6","11/13","11/20","11/27"]},
+  "週五內湖初階跑步班":{p:375,f:3750,rf:3375,total:10,time:"19:30~21:00",dates:["9/11","9/18","10/2","10/16","10/23","10/30","11/6","11/13","11/20","11/27"]},
+  "週六汐止早跑班":{p:375,f:3375,rf:3037,total:9,time:"06:00~07:30",dates:["9/12","9/19","10/3","10/17","10/31","11/7","11/14","11/21","11/28"]},
+  "週六Hyrox訓練營":{p:480,f:4320,rf:3888,total:9,time:"09:00~10:30",dates:["9/12","9/19","10/3","10/17","10/31","11/7","11/14","11/21","11/28"]},
+  "週日北田早跑班":{p:375,f:3750,rf:3375,total:10,time:"06:30~08:00",dates:["9/6","9/13","9/20","10/4","10/18","11/1","11/8","11/15","11/22","11/29"]},
+  "週一三民跑步班":{p:375,f:4125,rf:3712,total:11,time:"19:30~21:00",dates:["9/7","9/14","9/21","10/5","10/12","10/19","11/2","11/9","11/16","11/23","11/30"]},
+  "週一三民HYROX訓練班":{p:480,f:5280,rf:4752,total:11,time:"19:30~21:00",dates:["9/7","9/14","9/21","10/5","10/12","10/19","11/2","11/9","11/16","11/23","11/30"]},
+  "週二苓雅初階跑步班":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["9/1","9/8","9/15","9/22","9/29","10/6","10/13","10/20","10/27","11/3","11/10","11/17","11/24"]},
+  "週二高大初階跑步班":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["9/1","9/8","9/15","9/22","9/29","10/6","10/13","10/20","10/27","11/3","11/10","11/17","11/24"]},
+  "週三高大跑步班":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["9/2","9/9","9/16","9/23","9/30","10/7","10/14","10/21","10/28","11/4","11/11","11/18","11/25"]},
+  "週三苓雅跑步班":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["9/2","9/9","9/16","9/23","9/30","10/7","10/14","10/21","10/28","11/4","11/11","11/18","11/25"]},
+  "週四苓雅跑步班":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["9/3","9/10","9/17","9/24","10/1","10/8","10/15","10/22","10/29","11/5","11/12","11/19","11/26"]},
+  "週四高大初階跑步班":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["9/3","9/10","9/17","9/24","10/1","10/8","10/15","10/22","10/29","11/5","11/12","11/19","11/26"]},
+  "週五三民初階跑步班":{p:375,f:4125,rf:3712,total:11,time:"19:30~21:00",dates:["9/4","9/11","9/18","10/2","10/16","10/23","10/30","11/6","11/13","11/20","11/27"]},
+  "週六苓雅早跑班":{p:375,f:3375,rf:3037,total:9,time:"19:30~21:00",dates:["9/12","9/19","10/3","10/17","10/31","11/7","11/14","11/21","11/28"]},
+  "週一中和跑步班(未開班)":{p:375,f:5250,rf:4725,total:14,time:"19:30~21:00",dates:["6/1","6/8","6/15","6/22","6/29","7/6","7/13","7/20","7/27","8/3","8/10","8/17","8/24","8/31"]},
+  "週三新莊初階跑步班(未開班)":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
+  "週三信義初階跑步班(未開班)":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
+  "週三鳳山跑步班(未開班)":{p:375,f:4875,rf:4387,total:13,time:"19:30~21:00",dates:["6/3","6/10","6/17","6/24","7/1","7/8","7/15","7/22","7/29","8/5","8/12","8/19","8/26"]},
+  "週五北田跑步班(未開班)":{p:375,f:4500,rf:4050,total:12,time:"19:30~21:00",dates:["6/5","6/12","6/26","7/3","7/17","7/24","7/31","8/7","8/14","8/21","8/28","9/4"]},
+  "週六北田初階早跑班(未開班)":{p:375,f:4500,rf:4050,total:12,time:"06:30~08:00",dates:["6/6","6/13","6/27","7/4","7/18","7/25","8/1","8/8","8/15","8/22","8/29","9/5"]},
+  "週一北田跑者肌力班1830(正洋)":{p:250,f:2750,total:11,time:"18:30-19:30",dates:["9/7","9/14","9/21","10/5","10/12","10/19","11/2","11/9","11/16","11/23","11/30"]},
+  "週一北田跑者肌力班1830(Peter)":{p:250,f:2750,total:11,time:"18:30-19:30",dates:["9/7","9/14","9/21","10/5","10/12","10/19","11/2","11/9","11/16","11/23","11/30"]},
+  "週一北田跑者肌力班1930":{p:250,f:2750,total:11,time:"19:30-20:30",dates:["9/7","9/14","9/21","10/5","10/12","10/19","11/2","11/9","11/16","11/23","11/30"]},
+  "週一松江跑者肌力班":{p:500,f:5500,total:11,time:"19:00-20:00",dates:["9/7","9/14","9/21","10/5","10/12","10/19","11/2","11/9","11/16","11/23","11/30"]},
+  "週二北田跑者肌力班1830":{p:250,f:3250,total:13,time:"18:30-19:30",dates:["9/1","9/8","9/15","9/22","9/29","10/6","10/13","10/20","10/27","11/3","11/10","11/17","11/24"]},
+  "週二北田跑者肌力班1930":{p:250,f:3250,total:13,time:"19:30-20:30",dates:["9/1","9/8","9/15","9/22","9/29","10/6","10/13","10/20","10/27","11/3","11/10","11/17","11/24"]},
+  "週四中正敏捷肌力班(未開班)":{p:250,f:3000,total:12,time:"19:10-20:10",dates:["9/3","9/10","9/17","10/1","10/8","10/15","10/22","10/29","11/5","11/12","11/19","11/26"]},
+  "週五大直跑者肌力班":{p:500,f:5000,total:10,time:"19:00-20:00",dates:["9/11","9/18","10/2","10/16","10/23","10/30","11/6","11/13","11/20","11/27"]},
+  "週六松江跑者肌力班1000":{p:500,f:5000,total:10,time:"10:00-11:00",dates:["9/5","9/12","9/19","10/3","10/17","10/31","11/7","11/14","11/21","11/28"]},
+  "週六松江跑者肌力班1700":{p:500,f:4500,total:9,time:"17:00-18:00",dates:["9/12","9/19","10/3","10/17","10/31","11/7","11/14","11/21","11/28"]},
+  "週六大直跑者肌力班(未開班)":{p:500,f:5000,total:10,time:"",dates:["9/5","9/12","9/19","10/3","10/17","10/31","11/7","11/14","11/21","11/28"]},
+  "週日松江跑者肌力班":{p:500,f:5000,total:10,time:"09:00-10:00",dates:["9/6","9/13","9/20","10/4","10/18","11/1","11/8","11/15","11/22","11/29"]},
+  "週一北田繩流律動肌力班(未開班)":{p:250,f:3500,total:14,time:"19:30-20:30",dates:["6/1","6/8","6/15","6/22","6/29","7/6","7/13","7/20","7/27","8/3","8/10","8/17","8/24","8/31"]},
+  "週六松江跑者肌力班0900(未開班)":{p:500,f:6000,total:12,time:"09:00-10:00",dates:["6/6","6/13","6/27","7/4","7/18","7/25","8/1","8/8","8/15","8/22","8/29"]},
 };
 
 const DAYS=["週一","週二","週三","週四","週五","週六","週日"];
@@ -646,9 +674,10 @@ function renderCls(names){
   if(!names.length){list.innerHTML='<p class="empty">沒有符合班級</p>';return;}
   list.innerHTML=names.map(n=>{
     const c=CL[n];
+    const rfStr=c.rf?` <span style="color:#888;font-size:11px">/舊 $${c.rf.toLocaleString()}</span>`:"";
     return`<button class="cbtn" onclick="selCls('${n}',this)">
       <span>${n.replace(/^週./,"")}</span>
-      <span class="fh">$${c.f.toLocaleString()}</span>
+      <span class="fh">$${c.f.toLocaleString()}${rfStr}</span>
     </button>`;
   }).join("");
 }
@@ -819,14 +848,16 @@ function selTrialDate(d,btn){
 function selConfirm(t,btn){
   ctype=t;fullCls=null;insertCls=null;selectedDate=null;trialCls=null;trialDate=null;p2FullCat=null;p2InsertCat=null;p2TrialCat=null;
   rfCls=null;rfReason=null;rfDate=null;rfStudent=null;
+  renewCat=null;renewCls=null;
   document.querySelectorAll("#app .gbtn[onclick^='selConfirm']").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
   document.getElementById("c-full-card").classList.toggle("hidden",t!=="full");
   document.getElementById("c-insert-card").classList.toggle("hidden",t!=="insert");
   document.getElementById("c-trial-card").classList.toggle("hidden",t!=="trial");
   document.getElementById("c-refund-card").classList.toggle("hidden",t!=="refund");
+  document.getElementById("c-renew-card").classList.toggle("hidden",t!=="renew");
   // reset all inner states
-  ["full","insert","trial","refund"].forEach(prefix=>{
+  ["full","insert","trial","refund","renew"].forEach(prefix=>{
     const dw=document.getElementById(`${prefix}-day-wrap`);
     const cw=document.getElementById(`${prefix}-class-wrap`);
     const ci=document.getElementById(`${prefix}-class-info`);
@@ -836,6 +867,60 @@ function selConfirm(t,btn){
     document.querySelectorAll(`#${prefix}-cat-grid .gbtn`).forEach(b=>b.classList.remove("active"));
   });
   document.getElementById("c-result-card").classList.add("hidden");
+  document.getElementById("c-confirm-chk-card").classList.add("hidden");
+}
+
+// ── 舊生續報 ──
+let renewCat=null, renewCls=null;
+
+function renewSelCat(cat,btn){
+  renewCat=cat; renewCls=null;
+  document.querySelectorAll("#renew-cat-grid .gbtn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  document.getElementById("renew-day-wrap").classList.remove("hidden");
+  document.getElementById("renew-class-wrap").classList.add("hidden");
+  document.getElementById("c-result-card").classList.add("hidden");
+  document.getElementById("c-confirm-chk-card").classList.add("hidden");
+  const grid=document.getElementById("renew-day-grid");
+  grid.innerHTML="";
+  const fi=CF[cat];
+  DAYS.forEach(d=>{
+    const has=Object.keys(CL).some(n=>n.startsWith(d)&&!n.includes("未開班")&&fi(n));
+    if(!has)return;
+    const b=document.createElement("button");
+    b.className="gbtn"; b.textContent=d;
+    b.onclick=()=>renewSelDay(d,b);
+    grid.appendChild(b);
+  });
+}
+
+function renewSelDay(day,btn){
+  renewCls=null;
+  document.querySelectorAll("#renew-day-grid .gbtn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  const fi=CF[renewCat];
+  // 續報不受滿班限制過濾，因為是舊生本來就在班上
+  const names=Object.keys(CL).filter(n=>n.startsWith(day)&&!n.includes("未開班")&&fi(n));
+  const titleEl=document.getElementById("renew-class-title");
+  const listEl=document.getElementById("renew-class-list");
+  titleEl.textContent=`選擇班級（${names.length} 個）`;
+  listEl.innerHTML=names.map(n=>`<button class="p2btn" onclick="renewSelCls('${n}',this)">${n.replace(/^週./,"")}</button>`).join("");
+  document.getElementById("renew-class-wrap").classList.remove("hidden");
+  document.getElementById("c-result-card").classList.add("hidden");
+  document.getElementById("c-confirm-chk-card").classList.add("hidden");
+}
+
+function renewSelCls(n,btn){
+  renewCls=n;
+  document.querySelectorAll("#renew-class-list .p2btn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  const c=CL[n];
+  const price=(c.rf!=null?c.rf:c.f);
+  const t=`嗨嗨您好～感謝您的報名☺️\n\n確認有收到款項(${n.replace("","")}/${c.total}堂${price.toLocaleString()}元)，報名已完成✅\n課程發票我們會Email到您的信箱或進到您的載具\n開課前三天我們會Email上課通知給您唷！再幫我們注意一下信箱的信件\n若前三天尚未收到信件，請私訊我們確認唷！ 感謝您的報名🙏🏻期待開課～`;
+  document.getElementById("c-result-box").textContent=t;
+  document.getElementById("c-result-card").classList.remove("hidden");
+  document.getElementById("c-confirm-chk-card").classList.remove("hidden");
+  resetBtn("c-copy-btn");
 }
 
 function selFullCls(n,btn){
@@ -844,7 +929,8 @@ function selFullCls(n,btn){
   btn.classList.add("active");
   const c=CL[n];
   const timeStr=c.time?`上課時間：<span>${c.time}</span>　`:"";
-  document.getElementById("full-info-box").innerHTML=`${timeStr}共 <span>${c.total}</span> 堂　報名費用：<span>${c.f.toLocaleString()}</span> 元`;
+  const rfStr=c.rf?`　續報費用：<span>${c.rf.toLocaleString()}</span> 元`:"";
+  document.getElementById("full-info-box").innerHTML=`${timeStr}共 <span>${c.total}</span> 堂　報名費用：<span>${c.f.toLocaleString()}</span> 元${rfStr}`;
   document.getElementById("full-class-info").classList.remove("hidden");
   document.getElementById("c-result-card").classList.remove("hidden");
   document.getElementById("c-confirm-chk-card").classList.remove("hidden");
@@ -901,7 +987,6 @@ function selDate(d,btn){
 
 const CLASS_INFO = {
   "週一北田跑步班":{coach:"阿飛教練",line:"http://line.me/ti/g/NYQSo5pl3c",loc:"台北田徑場暖身場靠小巨蛋的操場半圓集合 / 台北田徑場主場館面對司令台右側半圓集合",phone:"0981206608"},
-  "週一中和跑步班":{coach:"智遠教練",line:"https://line.me/ti/g/IereNny3RD",loc:"新北市中和綜合運動場面對司令台右手邊",phone:"0979268123"},
   "週一中正初階跑步班":{coach:"承勳教練",line:"http://line.me/ti/g/T8GLJ-hg7e",loc:"中正紀念堂廣場中間的旗杆旁集合",phone:"0919481100"},
   "週一大同初階跑步班":{coach:"佩珊教練",line:"https://line.me/ti/g/63w4Xkx6-q",loc:"大同高中操場面對司令台右側階梯的最右側集合",phone:"0910800096"},
   "週一北田跑者養成班":{coach:"竺均教練",line:"https://line.me/ti/g/pZfKmy7jP3",loc:"台北田徑場暖身場靠小巨蛋的操場半圓集合",phone:"0989611269"},
@@ -910,44 +995,50 @@ const CLASS_INFO = {
   "週二中正初階跑步班":{coach:"承勳教練",line:"https://line.me/ti/g/ecI0DxFdKf",loc:"中正紀念堂廣場中間的旗杆旁集合",phone:"0919481100"},
   "週二北田初階跑步班":{coach:"智遠教練",line:"https://line.me/ti/g/92eXRugx6k",loc:"台北田徑場暖身場靠近小巨蛋的操場半圓集合",phone:"0979268123"},
   "週二板一初階跑步班":{coach:"佩珊教練",line:"https://line.me/ti/g/5_PzUxuRvh",loc:"板橋第一運動場面對司令台右邊操場半圓集合",phone:"0910800096"},
-  "週二苓雅初階跑步班":{coach:"明儒教練",line:"https://line.me/ti/g/PMK-HH2BvG",loc:"苓雅田徑場主看台正前方",phone:"0933037076"},
-  "週二高大初階跑步班":{coach:"傑化教練",line:"https://line.me/ti/g/86MAhXSTmW",loc:"高雄大學主司令台集合",phone:"0973012457"},
   "週三北田跑步班":{coach:"凱為教練",line:"https://line.me/ti/g/VkhSqTBDxJ",loc:"台北田徑場暖身場靠小巨蛋的操場半圓集合 / 台北田徑場主場館面對司令台右側半圓集合",phone:"0980685897"},
   "週三板一跑步班":{coach:"姚姚教練",line:"https://line.me/ti/g/CzrN_H9ENZ",loc:"板橋第一運動場面對司令台左側半圓集合",phone:"0912768909"},
   "週三內湖跑步班":{coach:"阿飛教練",line:"https://line.me/ti/g/HNSGm762ZE",loc:"內湖高工操場司令台集合",phone:"0981206608"},
   "週三北田初階跑步班":{coach:"承勳教練",line:"https://line.me/ti/g/WwXkF4zt6S",loc:"台北田徑場暖身場靠小巨蛋的操場半圓集合 / 台北田徑場主場館面對司令台右側半圓集合",phone:"0919481100"},
-  "週三新莊初階跑步班":{coach:"智遠教練",line:"https://line.me/ti/g/2H5gDOBe2P",loc:"新莊田徑場面對籃球場右側半圓集合",phone:"0979268123"},
-  "週三信義初階跑步班":{coach:"明志教練",line:"https://line.me/ti/g/E8M-Lhvo-V",loc:"臺北市立信義國中 松仁路上側門入口進入",phone:"0919474467"},
-  "週三高大跑步班":{coach:"傑化教練",line:"https://line.me/ti/g/dSSxd2KrkW",loc:"高雄大學主司令台集合",phone:"0973012457"},
-  "週三鳳山跑步班":{coach:"明儒教練",line:"https://line.me/ti/g/wtRs-86tec",loc:"鳳山田徑場集合(靠近鳳山體育館區域)",phone:"0933037076"},
   "週四大同跑步班":{coach:"凱為教練",line:"https://line.me/ti/g/8XNOguNCbA",loc:"大同高中操場面對司令台右側階梯的最右側集合",phone:"0980685897"},
   "週四北田初階跑步班":{coach:"姚姚教練",line:"https://line.me/ti/g/DdONeHmVIQ",loc:"台北田徑場暖身場靠小巨蛋的操場半圓集合 / 台北田徑場主場館面對司令台右側半圓集合",phone:"0912768909"},
   "週四內湖初階跑步班":{coach:"柏鈞教練",line:"https://line.me/ti/g/40MASxX3yY",loc:"內湖高工操場司令台集合",phone:"0913672780"},
-  "週四板一初階跑步班":{coach:"明志教練",line:"https://line.me/ti/g/-V4UmRb-Fd",loc:"板橋第一運動場面對司令台右側半圓集合",phone:"0919474467"},
   "週四中正初階跑步班":{coach:"承勳教練",line:"https://line.me/ti/g/WpVrp4f5bP",loc:"中正紀念堂廣場中間的旗杆旁集合",phone:"0919481100"},
   "週四龍江跑者養成班":{coach:"肯尼教練",line:"https://line.me/ti/g/U7ykPQSf2C",loc:"台北市中正國小司令台集合",phone:"0919615282"},
-  "週四苓雅跑步班":{coach:"宸瑨教練",line:"https://line.me/ti/g/EbsgVW3qSN",loc:"苓雅田徑場主看台正前方",phone:"0978866762"},
-  "週四高大初階跑步班":{coach:"阿哲教練",line:"https://line.me/ti/g/CCny-RPvVm",loc:"高雄大學主司令台集合",phone:"0963017638"},
   "週五新莊跑步班":{coach:"凱為教練",line:"https://line.me/ti/g/TYgVCdnpj7",loc:"新莊田徑場面對司令台左側操場半圓集合",phone:"0980685897"},
-  "週五北田跑步班":{coach:"智遠教練",line:"https://line.me/ti/g/t5B3QJV9d4",loc:"台北田徑場暖身場靠小巨蛋的操場半圓集合 / 台北田徑場主場館面對司令台右側半圓集合",phone:"0979268123"},
   "週五板二初階跑步班":{coach:"佩珊教練",line:"https://line.me/ti/g/r29FCtUwsD",loc:"板橋第二運動場面對司令台右側階梯集合",phone:"0910800096"},
   "週五內湖初階跑步班":{coach:"承勳教練",line:"https://line.me/ti/g/6EVyf4VQxt",loc:"內湖高工操場司令台集合",phone:"0919481100"},
   "週六汐止早跑班":{coach:"凱為教練",line:"http://line.me/ti/g/wzwd38YpAT",loc:"汐止田徑場面對司令台左側半圓集合",phone:"0980685897"},
-  "週六北田初階早跑班":{coach:"智遠教練",line:"https://line.me/ti/g/fLKLwYdPqH",loc:"台北田徑場暖身場靠小巨蛋的操場半圓集合 / 台北田徑場主場館面對司令台右側半圓集合",phone:"0979268123"},
-  "週六HYROX訓練班":{coach:"凱為教練",line:"https://line.me/ti/g/3aH7BuWdf_",loc:"台北田徑場暖身場靠小巨蛋的操場半圓集合 / 大同高中操場面對司令台右側階梯的最右側集合",phone:"0980685897"},
-  "週六苓雅早跑班":{coach:"宸瑨教練",line:"https://line.me/ti/g/SWeMy_XVkq",loc:"苓雅田徑場主看台正前方",phone:"0978866762"},
   "週日北田早跑班":{coach:"凱為教練",line:"https://line.me/ti/g/FZKk2AKStY",loc:"台北田徑場暖身場靠小巨蛋的操場半圓集合 / 台北田徑場主場館面對司令台左側半圓集合",phone:"0980685897"},
-  "週一北田跑者肌力班1830":{coach:"正洋教練",line:"https://line.me/ti/g/GyDS1gr9db",loc:"台北田徑場主場館Ｃ門外側",phone:"0925-602-780"},
+  "週二苓雅初階跑步班":{coach:"明儒教練",line:"https://line.me/ti/g/PMK-HH2BvG",loc:"苓雅田徑場主看台正前方",phone:"0933037076"},
+  "週二高大初階跑步班":{coach:"傑化教練",line:"https://line.me/ti/g/86MAhXSTmW",loc:"高雄大學主司令台集合",phone:"0973012457"},
+  "週三高大跑步班":{coach:"傑化教練",line:"https://line.me/ti/g/dSSxd2KrkW",loc:"高雄大學主司令台集合",phone:"0973012457"},
+  "週四苓雅跑步班":{coach:"宸瑨教練",line:"https://line.me/ti/g/EbsgVW3qSN",loc:"苓雅田徑場主看台正前方",phone:"0978866762"},
+  "週四高大初階跑步班":{coach:"阿哲教練",line:"https://line.me/ti/g/CCny-RPvVm",loc:"高雄大學主司令台集合",phone:"0963017638"},
+  "週六苓雅早跑班":{coach:"宸瑨教練",line:"https://line.me/ti/g/SWeMy_XVkq",loc:"苓雅田徑場主看台正前方",phone:"0978866762"},
   "週一北田跑者肌力班1930":{coach:"正洋教練",line:"http://line.me/ti/g/fw_LCOMLc9",loc:"台北田徑場主場館Ｃ門外側",phone:"0925-602-780"},
-  "週一松江跑者肌力班":{coach:"STEPX",line:"https://line.me/ti/g/j8dXAVaSed",loc:"STEPX FITNESS 健身房\n臺北市中山區南京東路2段8號B1",phone:""},
-  "週一北田繩流律動肌力班":{coach:"Peter教練",line:"https://line.me/ti/g/nErtESqAYd",loc:"台北田徑場主場館Ｃ門外側",phone:"0919759882"},
+  "週一松江跑者肌力班":{coach:"STEPX",line:"https://line.me/ti/g/j8dXAVaSed",loc:"STEPX FITNESS 健身房\\n臺北市中山區南京東路2段8號B1",phone:""},
   "週二北田跑者肌力班1830":{coach:"正洋教練",line:"http://line.me/ti/g/hpLixdID4g",loc:"台北田徑場主場館Ｃ門外側",phone:"0925-602-780"},
   "週二北田跑者肌力班1930":{coach:"正洋教練",line:"https://line.me/ti/g/DwLuXbTMpn",loc:"台北田徑場主場館Ｃ門外側",phone:"0925-602-780"},
   "週四中正敏捷肌力班(未開班)":{coach:"Poca教練",line:"https://line.me/ti/g/KSS7A7eVwy",loc:"中正紀念堂國家戲劇院5號門出口處",phone:"0919341394"},
-  "週五大直跑者肌力班":{coach:"初力",line:"https://line.me/ti/g/qqBGzcsGDZ",loc:"初力體能\n台北市中山區樂群三路67號",phone:""},
-  "週六松江跑者肌力班1700":{coach:"STEPX",line:"https://line.me/ti/g/ZRn7WTNuku",loc:"STEPX FITNESS 健身房\n臺北市中山區南京東路2段8號B1",phone:""},
-  "週六大直跑者肌力班(未開班)":{coach:"初力",line:"https://line.me/ti/g/gNX6gGpdC_",loc:"初力體能\n台北市中山區樂群三路67號",phone:""},
-  "週日松江跑者肌力班(未開班)":{coach:"STEPX",line:"https://line.me/ti/g/tSXLjYARgA",loc:"STEPX FITNESS 健身房\n臺北市中山區南京東路2段8號B1",phone:""}
+  "週五大直跑者肌力班":{coach:"初力",line:"https://line.me/ti/g/qqBGzcsGDZ",loc:"初力體能\\n台北市中山區樂群三路67號",phone:""},
+  "週六松江跑者肌力班1700":{coach:"STEPX",line:"https://line.me/ti/g/ZRn7WTNuku",loc:"STEPX FITNESS 健身房\\n臺北市中山區南京東路2段8號B1",phone:""},
+  "週六大直跑者肌力班(未開班)":{coach:"初力",line:"https://line.me/ti/g/gNX6gGpdC_",loc:"初力體能\\n台北市中山區樂群三路67號",phone:""},
+  "週六Hyrox訓練營":{coach:"凱為教練",line:"https://line.me/ti/g/3aH7BuWdf_",loc:"台北田徑場暖身場靠小巨蛋的操場半圓集合 / 大同高中操場面對司令台右側階梯的最右側集合",phone:"0980685897"},
+  "週日松江跑者肌力班":{coach:"STEPX",line:"https://line.me/ti/g/tSXLjYARgA",loc:"STEPX FITNESS 健身房\\n臺北市中山區南京東路2段8號B1",phone:""},
+  "週一中和跑步班(未開班)":{coach:"智遠教練",line:"https://line.me/ti/g/IereNny3RD",loc:"新北市中和綜合運動場面對司令台右手邊",phone:"0979268123"},
+  "週三新莊初階跑步班(未開班)":{coach:"智遠教練",line:"https://line.me/ti/g/2H5gDOBe2P",loc:"新莊田徑場面對籃球場右側半圓集合",phone:"0979268123"},
+  "週三信義初階跑步班(未開班)":{coach:"明志教練",line:"https://line.me/ti/g/E8M-Lhvo-V",loc:"臺北市立信義國中 松仁路上側門入口進入",phone:"0919474467"},
+  "週三鳳山跑步班(未開班)":{coach:"明儒教練",line:"https://line.me/ti/g/wtRs-86tec",loc:"鳳山田徑場集合(靠近鳳山體育館區域)",phone:"0933037076"},
+  "週五北田跑步班(未開班)":{coach:"智遠教練",line:"https://line.me/ti/g/t5B3QJV9d4",loc:"台北田徑場暖身場靠小巨蛋的操場半圓集合 / 台北田徑場主場館面對司令台右側半圓集合",phone:"0979268123"},
+  "週六北田初階早跑班(未開班)":{coach:"智遠教練",line:"https://line.me/ti/g/fLKLwYdPqH",loc:"台北田徑場暖身場靠小巨蛋的操場半圓集合 / 台北田徑場主場館面對司令台右側半圓集合",phone:"0979268123"},
+  "週一北田繩流律動肌力班(未開班)":{coach:"Peter教練",line:"https://line.me/ti/g/nErtESqAYd",loc:"台北田徑場主場館Ｃ門外側",phone:"0919759882"},
+  "週一北田跑者肌力班1830(正洋)":{coach:"正洋教練",line:"https://line.me/ti/g/GyDS1gr9db",loc:"台北田徑場主場館Ｃ門外側",phone:"0925-602-780"},
+  "週一北田跑者肌力班1830(Peter)":{coach:"Peter教練",line:"【待補充】",loc:"台北田徑場主場館Ｃ門外側",phone:"0919759882"},
+  "週一三民跑步班":{coach:"【待補充】",line:"【待補充】",loc:"【待補充】",phone:"【待補充】"},
+  "週一三民HYROX訓練班":{coach:"【待補充】",line:"【待補充】",loc:"【待補充】",phone:"【待補充】"},
+  "週三苓雅跑步班":{coach:"【待補充】",line:"【待補充】",loc:"【待補充】",phone:"【待補充】"},
+  "週五三民初階跑步班":{coach:"【待補充】",line:"【待補充】",loc:"【待補充】",phone:"【待補充】"},
+  "週六松江跑者肌力班1000":{coach:"【待補充】",line:"【待補充】",loc:"【待補充】",phone:"【待補充】"},
 };
 
 function selCiStudent(type, btn){
@@ -1697,6 +1788,7 @@ function resetChecklist(){
   ctype=null; fullCls=null; insertCls=null; selectedDate=null;
   trialCls=null; trialDate=null; ciVestSize=null; ciTshirtSize=null; ciStudentType=null;
   rfCls=null; rfReason=null; rfDate=null; rfStudent=null;
+  renewCat=null; renewCls=null;
 
   // Reset all active buttons in p2
   document.querySelectorAll("#p2 .gbtn.active, #p2 .dbtn.active, #p2 .p2btn.active").forEach(function(b){
@@ -1707,11 +1799,14 @@ function resetChecklist(){
   document.getElementById("c-insert-card").classList.add("hidden");
   document.getElementById("c-trial-card").classList.add("hidden");
   document.getElementById("c-refund-card").classList.add("hidden");
+  document.getElementById("c-renew-card").classList.add("hidden");
   document.getElementById("c-result-card").classList.add("hidden");
   document.getElementById("c-confirm-chk-card").classList.add("hidden");
   document.getElementById("full-class-info").classList.add("hidden");
   document.getElementById("insert-class-info").classList.add("hidden");
   document.getElementById("trial-class-info").classList.add("hidden");
+  document.getElementById("renew-day-wrap").classList.add("hidden");
+  document.getElementById("renew-class-wrap").classList.add("hidden");
 
   // Reset confirm chk
   confirmChked=false;
@@ -1762,11 +1857,11 @@ function resetChecklist(){
 // ── 報名狀況 ──
 const SHEET_ID = "19ak8kuALBe-EPIam6LnpXW3zW5eS5Qq81gwGm29S0zo";
 const STATUS_CATS = {
-  "taipei": {"label":"台北","classes":['週一北田跑步班', '週一中和跑步班', '週一中正初階跑步班', '週一大同初階跑步班', '週二內湖跑步班', '週二龍江跑步班', '週二中正初階跑步班', '週二北田初階跑步班', '週二板一初階跑步班', '週三北田跑步班', '週三板一跑步班', '週三內湖跑步班', '週三北田初階跑步班', '週三新莊初階跑步班', '週三信義初階跑步班', '週四大同跑步班', '週四北田初階跑步班', '週四內湖初階跑步班', '週四板一初階跑步班', '週四中正初階跑步班', '週五新莊跑步班', '週五北田跑步班', '週五板二初階跑步班', '週五內湖初階跑步班', '週六汐止早跑班', '週六北田初階早跑班', '週日北田早跑班']},
-  "kaohsiung": {"label":"高雄","classes":['週二苓雅初階跑步班', '週二高大初階跑步班', '週三高大跑步班', '週三鳳山跑步班', '週四苓雅跑步班', '週四高大初階跑步班', '週六苓雅早跑班']},
+  "taipei": {"label":"台北","classes":['週一北田跑步班', '週一中正初階跑步班', '週一大同初階跑步班', '週二內湖跑步班', '週二龍江跑步班', '週二中正初階跑步班', '週二北田初階跑步班', '週二板一初階跑步班', '週三北田跑步班', '週三板一跑步班', '週三內湖跑步班', '週三北田初階跑步班', '週四大同跑步班', '週四北田初階跑步班', '週四內湖初階跑步班', '週四中正初階跑步班', '週五新莊跑步班', '週五板二初階跑步班', '週五內湖初階跑步班', '週六汐止早跑班', '週日北田早跑班']},
+  "kaohsiung": {"label":"高雄","classes":['週一三民跑步班', '週二苓雅初階跑步班', '週二高大初階跑步班', '週三高大跑步班', '週三苓雅跑步班', '週四苓雅跑步班', '週四高大初階跑步班', '週五三民初階跑步班', '週六苓雅早跑班']},
   "nurture": {"label":"養成","classes":['週一北田跑者養成班', '週四龍江跑者養成班']},
-  "hyrox": {"label":"Hyrox","classes":['週六HYROX訓練班']},
-  "strength": {"label":"肌力","classes":['週一北田跑者肌力班1830', '週一北田跑者肌力班1930', '週一松江跑者肌力班', '週一北田繩流律動肌力班', '週二北田跑者肌力班1830', '週二北田跑者肌力班1930', '週五大直跑者肌力班', '週六松江跑者肌力班1700']}
+  "hyrox": {"label":"Hyrox","classes":['週六Hyrox訓練營', '週一三民HYROX訓練班']},
+  "strength": {"label":"肌力","classes":['週一北田跑者肌力班1830(正洋)', '週一北田跑者肌力班1830(Peter)', '週一北田跑者肌力班1930', '週一松江跑者肌力班', '週二北田跑者肌力班1830', '週二北田跑者肌力班1930', '週五大直跑者肌力班', '週六松江跑者肌力班1000', '週六松江跑者肌力班1700', '週日松江跑者肌力班']}
 };
 
 function loadClassStatus(){
