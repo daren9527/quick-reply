@@ -660,7 +660,7 @@
 <!-- PAGE 6 報名狀況 -->
 <div class="page active" id="p6">
   <h2 style="margin-top:4px">📊 報名狀況</h2>
-  <p class="sub">點擊有名額的班級直接進入費用回覆</p>
+  <p class="sub">各分類目前報名總人數</p>
 
   <div class="card">
     <button class="copy-btn" onclick="loadClassStatus()" id="status-refresh-btn">🔄 更新報名狀況</button>
@@ -2687,28 +2687,24 @@ function loadClassStatus(){
       });
 
       globalStatusMap=statusMap;
-      // Render each category
+      // Render each category as a TOTAL count (sum across all classes in that category)
       Object.keys(STATUS_CATS).forEach(function(catKey){
         var cat=STATUS_CATS[catKey];
         var el=document.getElementById("status-list-"+catKey);
         if(!el) return;
         el.innerHTML="";
+        var totalCurrent=0, totalLimit=0, classCount=0;
         cat.classes.forEach(function(cls){
           var s=statusMap[cls];
           if(!s) return;
-          var btn=document.createElement("button");
-          if(s.full){
-            return; // 隱藏滿班班級
-          } else {
-            btn.style.cssText="padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700;background:#2a2200;color:#FFD600;border:1.5px solid #FFD600;cursor:pointer;";
-            btn.textContent=cls+" ("+s.current+"/"+s.limit+")";
-            btn.onclick=function(){
-              // Jump to fee page and select this class
-              statusSelectClass(cls);
-            };
-          }
-          el.appendChild(btn);
+          totalCurrent+=s.current;
+          totalLimit+=s.limit;
+          classCount++;
         });
+        var box=document.createElement("div");
+        box.style.cssText="padding:14px;border-radius:10px;background:#2a2200;border:1.5px solid #FFD600;display:flex;justify-content:space-between;align-items:center;";
+        box.innerHTML="<span style=\"font-size:13px;color:#ccc\">共 "+classCount+" 個班級</span><span style=\"font-size:20px;font-weight:700;color:#FFD600\">"+totalCurrent+" / "+totalLimit+" 人</span>";
+        el.appendChild(box);
       });
 
       document.getElementById("status-list").style.display="";
