@@ -1897,20 +1897,16 @@ function loadClassStatus(){
         box.style.cssText="padding:14px;border-radius:10px;background:#2a2200;border:1.5px solid #FFD600;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;";
         box.innerHTML="<span style=\"font-size:13px;color:#ccc\">共 "+classCount+" 個班級</span><span style=\"font-size:20px;font-weight:700;color:#FFD600\">"+totalCurrent+" / "+totalLimit+" 人</span>";
         el.appendChild(box);
-        // 各班級明細按鈕
+        // 各班級明細按鈕（滿班隱藏，跟之前一樣）
         var btnWrap=document.createElement("div");
         btnWrap.style.cssText="display:flex;flex-wrap:wrap;gap:6px;";
         cat.classes.forEach(function(cls){
           var s=statusMap[cls];
           if(!s) return;
+          if(s.full) return; // 滿班隱藏
           var btn=document.createElement("button");
-          if(s.full){
-            btn.style.cssText="padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700;background:#4a1010;color:#ff6b6b;border:1.5px solid #ff6b6b;cursor:pointer;";
-            btn.textContent=cls+" ("+s.current+"/"+s.limit+") 🔴";
-          } else {
-            btn.style.cssText="padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700;background:#2a2200;color:#FFD600;border:1.5px solid #FFD600;cursor:pointer;";
-            btn.textContent=cls+" ("+s.current+"/"+s.limit+")";
-          }
+          btn.style.cssText="padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700;background:#2a2200;color:#FFD600;border:1.5px solid #FFD600;cursor:pointer;";
+          btn.textContent=cls+" ("+s.current+"/"+s.limit+")";
           btn.onclick=function(){
             statusSelectClass(cls);
           };
