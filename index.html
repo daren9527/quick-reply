@@ -76,6 +76,7 @@
   <button class="tab-btn" onclick="switchTab('p2',this)">✅ 確認報名</button>
   <button class="tab-btn" onclick="switchTab('p3',this)">📣 通知教練</button>
   <button class="tab-btn" onclick="switchTab('p5',this)">☑️ 核對清單</button>
+  <button class="tab-btn" onclick="switchTab('p4',this)">🔍 名單比對</button>
 </div>
 
 <!-- PAGE 1 -->
@@ -543,6 +544,39 @@
 
   <div id="status-error" style="display:none;text-align:center;color:#ff6b6b;padding:20px;font-size:13px"></div>
 </div>
+
+<!-- PAGE 4 名單比對 -->
+<div class="page" id="p4">
+  <h2 style="margin-top:4px">🔍 名單比對</h2>
+  <p class="sub">找出 Google Sheet 上「SurveyCake 已刪除、但 Sheet 沒跟著清掉」的舊資料，全部在瀏覽器本機比對，資料不會上傳到任何地方</p>
+
+  <div class="card">
+    <span class="card-label">① SurveyCake 後台匯出的 Excel（含標題列，整個表格全選複製後貼上）</span>
+    <textarea id="cmp-survey" rows="6" style="font-family:ui-monospace,monospace;font-size:11px" placeholder="從 Excel 選取整個表格（含姓名/電話/報名課程名稱等標題列）複製，貼在這裡"></textarea>
+  </div>
+
+  <div class="card">
+    <span class="card-label">② Google Sheet 目前的名單（同樣含標題列，全選複製後貼上）</span>
+    <textarea id="cmp-sheet" rows="6" style="font-family:ui-monospace,monospace;font-size:11px" placeholder="從 Google Sheet 選取整個表格複製，貼在這裡"></textarea>
+  </div>
+
+  <div class="card">
+    <button class="copy-btn" onclick="runCompare()">🔍 開始比對</button>
+    <div id="cmp-error" class="hidden" style="color:#ff6b6b;font-size:12px;margin-top:8px;text-align:center"></div>
+  </div>
+
+  <div class="card hidden" id="cmp-remove-card">
+    <span class="card-label" style="color:#ff6b6b">🔴 Sheet 有、但 SurveyCake 已經沒有（建議去 Sheet 手動刪除）</span>
+    <div class="result-box" id="cmp-remove-list"></div>
+    <button class="copy-btn" id="cmp-remove-copy-btn" onclick="copyCmpList('cmp-remove-list','cmp-remove-copy-btn')">複製名單</button>
+  </div>
+
+  <div class="card hidden" id="cmp-add-card">
+    <span class="card-label" style="color:#22c55e">🟢 SurveyCake 有、但 Sheet 還沒有（可能漏同步，確認一下）</span>
+    <div class="result-box" id="cmp-add-list"></div>
+    <button class="copy-btn" id="cmp-add-copy-btn" onclick="copyCmpList('cmp-add-list','cmp-add-copy-btn')">複製名單</button>
+  </div>
+</div>
 </div>
 
 <!-- hidden fallback fields -->
@@ -551,8 +585,23 @@
 <input type="hidden" id="n-insert-goal">
 
 <script>
-function dateToNum(s){var p=s.split("/");return parseInt(p[0])*100+parseInt(p[1]);}
-function getTodayNum(){var d=new Date();return(d.getMonth()+1)*100+d.getDate();}
+// "M/D" 字串沒有年份，直接比大小遇到跨年班期（例如12月開課、隔年1~2月還有課）會算錯。
+// 這裡以「今天」為基準，把 M/D 換算成最接近今天（±182天內）的實際西元日期再比較，
+// 這樣同一份班表不管有沒有跨過年底都能正確判斷過去/未來。
+function todayDate(){var d=new Date();d.setHours(0,0,0,0);return d;}
+function mdToDate(s,anchor){
+  var p=s.split("/");
+  var m=parseInt(p[0],10),day=parseInt(p[1],10);
+  var ref=anchor||todayDate();
+  var y=ref.getFullYear();
+  var dt=new Date(y,m-1,day);
+  var diffDays=(dt-ref)/86400000;
+  if(diffDays<-182)dt=new Date(y+1,m-1,day);
+  else if(diffDays>182)dt=new Date(y-1,m-1,day);
+  return dt;
+}
+function mdGTEToday(s){var t=todayDate();return mdToDate(s,t)>=t;}
+function mdGTE(a,b){var t=todayDate();return mdToDate(a,t)>=mdToDate(b,t);}
 
 const FL={kaohsiung:"https://www.surveycake.com/s/gr1Zr",nurture:"https://www.surveycake.com/s/QyK4n",strength:"https://www.surveycake.com/s/K9p4y",taipei:"https://www.surveycake.com/s/grd10"};
 const KK=["苓雅","高大","鳳山","三民"],SK=["肌力","敏捷","繩流律動"];
@@ -697,8 +746,7 @@ function selectType(t){
     resetResult();
     // Render date buttons filtered to today onwards
     if(cls){
-      const todayN=getTodayNum();
-      const dates=CL[cls].dates.filter(d=>dateToNum(d)>=todayN);
+      const dates=CL[cls].dates.filter(d=>mdGTEToday(d));
       document.getElementById("insert-date-grid").innerHTML=
         dates.map(d=>`<button class="dbtn" onclick="selInsertDate('${d}',this)">${d}</button>`).join("");
     }
@@ -713,8 +761,7 @@ function selInsertDate(d, btn){
   btn.classList.add("active");
   if(!cls) return;
   const c=CL[cls];
-  const todayN=getTodayNum();
-  lessons=c.dates.filter(function(x){return dateToNum(x)>=dateToNum(d);}).length;
+  lessons=c.dates.filter(function(x){return mdGTE(x,d);}).length;
   const fee=c.p*lessons;
   document.getElementById("fee-label").textContent="剩餘 "+lessons+" 堂";
   document.getElementById("fee-amt").textContent="$"+fee.toLocaleString();
@@ -820,8 +867,7 @@ function selTrialCls(n,btn){
   document.getElementById("trial-class-info").classList.remove("hidden");
   // render dates
   const dg=document.getElementById("trial-date-grid");
-  const todayN2=getTodayNum();
-  dg.innerHTML=c.dates.filter(d=>dateToNum(d)>=todayN2).map(d=>`<button class="dbtn" onclick="selTrialDate('${d}',this)">${d}</button>`).join("");
+  dg.innerHTML=c.dates.filter(d=>mdGTEToday(d)).map(d=>`<button class="dbtn" onclick="selTrialDate('${d}',this)">${d}</button>`).join("");
   document.getElementById("c-result-card").classList.add("hidden");
 }
 
@@ -961,8 +1007,7 @@ function selInsertCls(n,btn){
   document.getElementById("insert-class-info").classList.remove("hidden");
   // 渲染日期按鈕
   const dg=document.getElementById("date-grid");
-  const todayN=getTodayNum();
-  dg.innerHTML=c.dates.filter(d=>dateToNum(d)>=todayN).map(d=>`<button class="dbtn" onclick="selDate('${d}',this)">${d}</button>`).join("");
+  dg.innerHTML=c.dates.filter(d=>mdGTEToday(d)).map(d=>`<button class="dbtn" onclick="selDate('${d}',this)">${d}</button>`).join("");
   document.getElementById("c-result-card").classList.add("hidden");
 }
 
@@ -1288,7 +1333,7 @@ function rfCalc(){
     refundDesc="不退費（開課第5堂後）";
   } else if(rfReason==="injury"||rfReason==="early"){
     if(!rfDate) return;
-    var remaining=CL[rfCls].dates.filter(function(d){return dateToNum(d)>=dateToNum(rfDate);}).length;
+    var remaining=CL[rfCls].dates.filter(function(d){return mdGTE(d,rfDate);}).length;
     if(rfReason==="injury"){
       refundAmt=remaining*unitPrice;
       refundDesc="全額退費（受傷／調職，剩餘"+remaining+"堂）";
@@ -1318,7 +1363,7 @@ function buildRefundResult(amt, desc){
   var isStrength=SK.some(function(k){return rfCls.includes(k);});
   var unitPrice=rfStudent==="old"&&!isStrength?Math.floor((c.rf||Math.floor(c.f*0.9))/c.total):c.p;
   var remaining=0;
-  if(rfDate) remaining=CL[rfCls].dates.filter(function(d){return dateToNum(d)>=dateToNum(rfDate);}).length;
+  if(rfDate) remaining=CL[rfCls].dates.filter(function(d){return mdGTE(d,rfDate);}).length;
 
   var t="";
   if(rfReason==="3days"){
@@ -1390,7 +1435,7 @@ function buildAccountingNotify(){
   var dateRangeStr="";
   if(rfDate&&(rfReason==="injury"||rfReason==="early")){
     var allDates=CL[rfCls].dates;
-    var futureDates=allDates.filter(function(d){return dateToNum(d)>=dateToNum(rfDate);});
+    var futureDates=allDates.filter(function(d){return mdGTE(d,rfDate);});
     remaining=futureDates.length;
     var lastDate=allDates[allDates.length-1];
     dateRangeStr=rfDate+"~"+lastDate;
@@ -1445,7 +1490,7 @@ function buildRefundNotify(){
   // 退費堂數
   var remaining=0;
   if(rfDate&&(rfReason==="injury"||rfReason==="early")){
-    remaining=CL[rfCls].dates.filter(function(d){return dateToNum(d)>=dateToNum(rfDate);}).length;
+    remaining=CL[rfCls].dates.filter(function(d){return mdGTE(d,rfDate);}).length;
   } else if(rfReason==="3days"||rfReason==="before"){
     remaining=CL[rfCls].total;
   }
@@ -1493,21 +1538,6 @@ function buildRefundNotify(){
 
 function getField(id){ const el=document.getElementById(id); return el?el.value.trim():""; }
 
-function dateToNum(s){ const p=s.split("/"); return parseInt(p[0])*100+parseInt(p[1]); }
-function getTodayNum(){ const d=new Date(); return (d.getMonth()+1)*100+d.getDate(); }
-
-const HOLIDAYS = new Set(["1/1","1/2","1/3","1/26","1/27","1/28","1/29","1/30","2/4","2/5","2/6","2/7","2/8","2/9","2/10","2/27","2/28","3/1","4/3","4/4","4/5","4/6","4/30","5/1","5/2","5/3","6/9","6/19","6/20","6/21","9/15","9/25","9/26","9/27","9/28","10/9","10/10","10/11","10/23","10/24","10/25","10/26","12/24","12/25","12/26","12/27","12/31"]);
-const SEASONS = [
-  {key:"spring2026", label:"🌸 春2026（3~5月）", year:2026, months:[3,4,5]},
-  {key:"summer2026", label:"☀️ 夏2026（6~8月）", year:2026, months:[6,7,8]},
-  {key:"autumn2026", label:"🍂 秋2026（9~11月）", year:2026, months:[9,10,11]},
-  {key:"winter2026", label:"❄️ 冬2026（12~2月）", year:2026, months:[12,1,2]},
-  {key:"spring2027", label:"🌸 春2027（3~5月）", year:2027, months:[3,4,5]},
-  {key:"summer2027", label:"☀️ 夏2027（6~8月）", year:2027, months:[6,7,8]},
-  {key:"autumn2027", label:"🍂 秋2027（9~11月）", year:2027, months:[9,10,11]},
-  {key:"winter2027", label:"❄️ 冬2027（12~2月）", year:2027, months:[12,1,2]},
-];
-
 function buildNotify(){
   if(ctype==="refund"){ buildRefundNotify(); return; }
   const wdMap={"週一":"（一）","週二":"（二）","週三":"（三）","週四":"（四）","週五":"（五）","週六":"（六）","週日":"（日）"};
@@ -1544,7 +1574,7 @@ function buildNotify(){
     const name=getField("ci-name")||"【姓名】";
     const phone=getField("ci-phone")||"【電話】";
     const goal=getField("ci-goal")||"【運動目標】";
-    const lessons=c.dates.filter(function(d){return dateToNum(d)>=dateToNum(selectedDate);}).length;
+    const lessons=c.dates.filter(function(d){return mdGTE(d,selectedDate);}).length;
     const sizeStr=ciVestSize?"背心 "+ciVestSize:ciTshirtSize?"短袖 "+ciTshirtSize:"【未選】";
     const isStrength=SK.some(k=>insertCls.includes(k));
     // 只有新生（且非肌力班）才顯示衣服尺寸
@@ -1691,7 +1721,7 @@ function syncToChecklist(){
     amount=fee.toLocaleString()+" 元";
   } else if(ctype==="insert"&&insertCls&&CL[insertCls]&&selectedDate){
     var c=CL[insertCls];
-    var remaining=c.dates.filter(function(d){return dateToNum(d)>=dateToNum(selectedDate);}).length;
+    var remaining=c.dates.filter(function(d){return mdGTE(d,selectedDate);}).length;
     var fee=c.p*remaining;
     amount=fee.toLocaleString()+" 元（"+remaining+" 堂 × "+c.p+" 元）";
   } else if(ctype==="trial"&&trialCls&&CL[trialCls]){
@@ -1986,6 +2016,100 @@ function statusSelectClass(cls){
       },200);
     },200);
   },100);
+}
+
+// ── PAGE 4 名單比對 ──
+// 從 Excel / Google Sheet 複製貼上的內容是「Tab 分隔」的純文字，第一列當標題列，
+// 用標題文字找欄位（不用管欄位順序，Sheet 增減欄位也不會壞掉）。
+function parseTSV(text){
+  var lines=text.replace(/\r/g,"").split("\n").filter(function(l){return l.trim()!=="";});
+  if(!lines.length) return {header:[],rows:[]};
+  var header=lines[0].split("\t").map(function(h){return h.trim();});
+  var rows=lines.slice(1).map(function(l){return l.split("\t");});
+  return {header:header,rows:rows};
+}
+function findCmpCol(header,candidates){
+  for(var i=0;i<header.length;i++){
+    for(var j=0;j<candidates.length;j++){
+      if(header[i].indexOf(candidates[j])>-1) return i;
+    }
+  }
+  return -1;
+}
+function normPhone(s){return (s||"").replace(/[^0-9]/g,"");}
+function normText(s){return (s||"").trim();}
+
+function buildCmpKeySet(text){
+  var parsed=parseTSV(text);
+  var nameIdx=findCmpCol(parsed.header,["姓名"]);
+  var phoneIdx=findCmpCol(parsed.header,["聯絡電話","電話"]);
+  var clsIdx=findCmpCol(parsed.header,["報名課程名稱","報名課程","課程名稱"]);
+  var ok=nameIdx>-1&&phoneIdx>-1&&clsIdx>-1;
+  var map={};
+  if(ok){
+    parsed.rows.forEach(function(r){
+      var name=normText(r[nameIdx]);
+      var phone=normPhone(r[phoneIdx]);
+      var cls=normText(r[clsIdx]);
+      if(!name&&!phone) return;
+      var key=name+"|"+phone+"|"+cls;
+      if(!map[key]) map[key]={name:name,phone:phone,cls:cls};
+    });
+  }
+  return {map:map,ok:ok,rowCount:parsed.rows.length};
+}
+
+function runCompare(){
+  var scText=document.getElementById("cmp-survey").value;
+  var shText=document.getElementById("cmp-sheet").value;
+  var errEl=document.getElementById("cmp-error");
+  errEl.classList.add("hidden");
+  document.getElementById("cmp-remove-card").classList.add("hidden");
+  document.getElementById("cmp-add-card").classList.add("hidden");
+
+  if(!scText.trim()||!shText.trim()){
+    errEl.textContent="請把①②兩邊的名單都貼上再比對";
+    errEl.classList.remove("hidden");
+    return;
+  }
+
+  var sc=buildCmpKeySet(scText);
+  var sh=buildCmpKeySet(shText);
+
+  if(!sc.ok||!sh.ok){
+    errEl.textContent="找不到「姓名」「電話」「報名課程名稱」欄位，請確認貼上的內容第一列是標題列";
+    errEl.classList.remove("hidden");
+    return;
+  }
+
+  var toRemove=[],toAdd=[];
+  Object.keys(sh.map).forEach(function(k){ if(!sc.map[k]) toRemove.push(sh.map[k]); });
+  Object.keys(sc.map).forEach(function(k){ if(!sh.map[k]) toAdd.push(sc.map[k]); });
+
+  function fmt(list){
+    return list.map(function(x){return x.name+"　"+x.phone+"　"+x.cls;}).join("\n");
+  }
+
+  document.getElementById("cmp-remove-list").textContent=toRemove.length?fmt(toRemove):"沒有差異，兩邊一致 👍";
+  document.getElementById("cmp-add-list").textContent=toAdd.length?fmt(toAdd):"沒有差異，兩邊一致 👍";
+  document.getElementById("cmp-remove-card").classList.remove("hidden");
+  document.getElementById("cmp-add-card").classList.remove("hidden");
+}
+
+function copyCmpList(boxId,btnId){
+  var t=document.getElementById(boxId).textContent;
+  if(!t||t.trim()==="") return;
+  var b=document.getElementById(btnId);
+  var orig=b.textContent;
+  function done(){
+    b.textContent="✅ 已複製！"; b.classList.add("copied");
+    setTimeout(function(){b.textContent=orig;b.classList.remove("copied");},2500);
+  }
+  if(navigator.clipboard&&window.isSecureContext){
+    navigator.clipboard.writeText(t).then(done).catch(function(){fallbackCopy(t,b);});
+  }else{
+    fallbackCopy(t,b);
+  }
 }
 </script>
 </body></html>
