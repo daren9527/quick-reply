@@ -566,7 +566,7 @@
   </div>
 
   <div class="card hidden" id="cmp-remove-card">
-    <span class="card-label" style="color:#ff6b6b">🔴 Sheet 有、但 SurveyCake 已經沒有（建議去 Sheet 手動刪除）</span>
+    <span class="card-label">比對結果</span>
     <div class="result-box" id="cmp-remove-list"></div>
     <button class="copy-btn" id="cmp-remove-copy-btn" onclick="copyCmpList('cmp-remove-list','cmp-remove-copy-btn')">複製名單</button>
   </div>
@@ -2075,14 +2075,21 @@ function runCompare(){
     return;
   }
 
-  var toRemove=[];
+  var toRemove=[],toAdd=[];
   Object.keys(sh.map).forEach(function(k){ if(!sc.map[k]) toRemove.push(sh.map[k]); });
+  Object.keys(sc.map).forEach(function(k){ if(!sh.map[k]) toAdd.push(sc.map[k]); });
 
   function fmt(list){
     return list.map(function(x){return x.name+"　"+x.phone+"　"+x.cls;}).join("\n");
   }
 
-  document.getElementById("cmp-remove-list").textContent=toRemove.length?fmt(toRemove):"沒有差異，兩邊一致 👍";
+  var combined=
+    "🔴 Sheet 有、SurveyCake 沒有（建議去 Sheet 手動刪除）\n"+
+    (toRemove.length?fmt(toRemove):"沒有差異，兩邊一致 👍")+
+    "\n\n🟢 SurveyCake 有、Sheet 沒有（可能漏同步）\n"+
+    (toAdd.length?fmt(toAdd):"沒有差異，兩邊一致 👍");
+
+  document.getElementById("cmp-remove-list").textContent=combined;
   document.getElementById("cmp-remove-card").classList.remove("hidden");
 }
 
