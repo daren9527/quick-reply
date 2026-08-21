@@ -597,11 +597,11 @@ function mdToDate(s,anchor){
 function mdGTEToday(s){var t=todayDate();return mdToDate(s,t)>=t;}
 function mdGTE(a,b){var t=todayDate();return mdToDate(a,t)>=mdToDate(b,t);}
 
-const FL={kaohsiung:"https://www.surveycake.com/s/gr1Zr",nurture:"https://www.surveycake.com/s/QyK4n",strength:"https://www.surveycake.com/s/K9p4y",taipei:"https://www.surveycake.com/s/grd10"};
+const FL={kaohsiung:"https://www.surveycake.com/s/Z2n96",nurture:"https://www.surveycake.com/s/qov86",strength:"https://www.surveycake.com/s/nxdKO",taipei:"https://www.surveycake.com/s/vLBbX",hyroxTaipei:"https://www.surveycake.com/s/2Ayqw",hyroxKaohsiung:"https://www.surveycake.com/s/zAYkX"};
 const KK=["苓雅","高大","鳳山","三民"],SK=["肌力","敏捷","繩流律動"];
 const isHyrox=n=>/hyrox/i.test(n);
 const CF={taipei:n=>!KK.some(k=>n.includes(k))&&!n.includes("跑者養成")&&!SK.some(k=>n.includes(k))&&!isHyrox(n),kaohsiung:n=>KK.some(k=>n.includes(k))&&!isHyrox(n),nurture:n=>n.includes("跑者養成"),strength:n=>SK.some(k=>n.includes(k)),hyrox:n=>isHyrox(n)};
-function flink(n){if(n.includes("跑者養成"))return FL.nurture;if(KK.some(k=>n.includes(k)))return FL.kaohsiung;if(SK.some(k=>n.includes(k)))return FL.strength;return FL.taipei;}
+function flink(n){if(isHyrox(n))return KK.some(k=>n.includes(k))?FL.hyroxKaohsiung:FL.hyroxTaipei;if(n.includes("跑者養成"))return FL.nurture;if(KK.some(k=>n.includes(k)))return FL.kaohsiung;if(SK.some(k=>n.includes(k)))return FL.strength;return FL.taipei;}
 
 const CL={
   "週一北田跑步班":{p:375,f:4125,rf:3712,total:11,time:"19:30~21:00",dates:["9/7","9/14","9/21","10/5","10/12","10/19","11/2","11/9","11/16","11/23","11/30"]},
