@@ -1560,7 +1560,7 @@ function buildNotify(){
     const sizeRow=isStrength?"":"\n衣服尺寸："+nbSizeStr;
     typeLabel="🆕 新生學生";
     summary=fullCls.replace("","")+" ／ "+name;
-    t="以下是新生的同學\n姓名："+name+"\n電話："+phone+"\n上課班級："+fullCls.replace("","")+"\n運動目標："+goal+sizeRow+"\n⚠️再麻煩將學生資訊寫到點名單上喔！";
+    t="以下是新生的同學\n姓名："+name+"\n上課班級："+fullCls.replace("","")+"\n運動目標："+goal+sizeRow+"\n⚠️再麻煩確認系統上學生的名字。";
 
   } else if(ctype==="insert" && insertCls && selectedDate){
     coachCls=insertCls;
@@ -1577,7 +1577,7 @@ function buildNotify(){
     const sizeRow=showSize?"\n衣服尺寸："+sizeStr:"";
     typeLabel="🔄 插班學生";
     summary=insertCls.replace("","")+" ／ "+selectedDate+" ／ "+name;
-    t="以下為插班上課的學生\n姓名："+name+"\n電話："+phone+"\n插班時間："+selectedDate+(wdMap[wd]||"")+"，"+(c.time||"【時間】")+"\n插班班級："+insertCls.replace("","")+"\n插班堂數："+lessons+" 堂\n運動目標："+goal+sizeRow+"\n請幫我在點名單上加上學生名字。\n⚠️再麻煩將學生資訊寫到點名單上喔！\n⚠️請在插班日那天的格子左上方標注\"三角形\"";
+    t="以下為插班上課的學生\n姓名："+name+"\n插班時間："+selectedDate+(wdMap[wd]||"")+"，"+(c.time||"【時間】")+"\n插班班級："+insertCls.replace("","")+"\n插班堂數："+lessons+" 堂\n運動目標："+goal+sizeRow+"\n⚠️再麻煩確認系統上學生的名字。";
 
   } else if(ctype==="trial" && trialCls && trialDate){
     coachCls=trialCls;
